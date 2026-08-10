@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+
+{% block title %}Ordine {{ ordine.codice }} | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .my-order-page { padding: 40px 0 72px; background: #fcfbfa; }
+    .my-order-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; color: var(--vivalei-purple); font-weight: 700; text-decoration: none; }
+    .my-order-back:hover { color: var(--vivalei-purple-dark); }
+    .my-order-status { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: 999px; background: #f0f7f2; color: #486a50; font-size: 14px; font-weight: 700; }
+    .my-order-title { margin: 15px 0 8px; font-size: clamp(38px, 4vw, 50px); font-weight: 500; }
+    .my-order-code { color: var(--vivalei-text-muted); font-size: 15px; }
+    .my-order-card { padding: 29px; background: #fff; border: 1px solid var(--vivalei-border); border-radius: 20px; }
+    .my-order-card-title { margin-bottom: 23px; font-size: 24px; font-weight: 500; }
+    .my-order-product { display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 18px 0; border-bottom: 1px solid var(--vivalei-border); }
+    .my-order-product:first-of-type { padding-top: 0; }
+    .my-order-product:last-child { padding-bottom: 0; border-bottom: 0; }
+    .my-order-product-name { font-size: 17px; font-weight: 700; }
+    .my-order-product-info { margin-top: 3px; color: var(--vivalei-text-muted); font-size: 14px; }
+    .my-order-product-price { white-space: nowrap; font-size: 17px; font-weight: 700; }
+    .my-order-address { color: var(--vivalei-text-muted); line-height: 1.7; }
+    .my-order-summary { position: sticky; top: 125px; }
+    .my-order-summary-row { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 13px; color: var(--vivalei-text-muted); }
+    .my-order-summary-total { display: flex; justify-content: space-between; gap: 16px; padding-top: 20px; margin-top: 20px; border-top: 1px solid var(--vivalei-border); font-size: 23px; font-weight: 700; }
+    .my-order-help { display: flex; gap: 13px; padding: 19px; margin-top: 24px; border-radius: 15px; background: #faf8f6; }
+    .my-order-help i { color: var(--vivalei-purple); font-size: 22px; }
+    @media (max-width: 991.98px) { .my-order-summary { position: static; } }
+    @media (max-width: 767.98px) { .my-order-page { padding: 27px 0 52px; } .my-order-card { padding: 22px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="my-order-page">
+    <div class="container">
+        <a href="{% url 'orders:miei_ordini' %}" class="my-order-back"><i class="bi bi-arrow-left"></i> Torna ai miei ordini</a>
+
+        <div class="mb-5">
+            <span class="my-order-status"><i class="bi bi-check-circle-fill"></i> {{ ordine.get_stato_pagamento_display }}</span>
+            <h1 class="my-order-title">Grazie per il tuo ordine</h1>
+            <p class="my-order-code mb-0">Effettuato il {{ ordine.data_creazione|date:"d/m/Y alle H:i" }} · Codice {{ ordine.codice }}</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-12 col-lg-8">
+                <div class="my-order-card">
+                    <h2 class="my-order-card-title">I prodotti del tuo ordine</h2>
+                    {% for riga in ordine.righe.all %}
+                        <div class="my-order-product">
+                            <div>
+                                <div class="my-order-product-name">{{ riga.nome_prodotto }}</div>
+                                <div class="my-order-product-info">{{ riga.sku }} · Quantità: {{ riga.quantita }}</div>
+                            </div>
+                            <div class="my-order-product-price">€ {{ riga.totale|floatformat:2 }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="my-order-card mt-4">
+                    <h2 class="my-order-card-title">Indirizzo di spedizione</h2>
+                    <p class="my-order-address mb-0">
+                        <strong class="text-body">{{ ordine.nome }} {{ ordine.cognome }}</strong><br>
+                        {{ ordine.indirizzo }} {{ ordine.numero_civico }}<br>
+                        {{ ordine.cap }} {{ ordine.citta }} ({{ ordine.provincia }})<br>
+                        {{ ordine.paese }}
+                    </p>
+                </div>
+
+                <div class="my-order-help">
+                    <i class="bi bi-headset"></i>
+                    <div><strong>Hai bisogno di aiuto?</strong><div class="small text-vivalei-muted mt-1">Conserva il codice ordine: ci aiuterà ad assisterti più velocemente.</div></div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-4">
+                <aside class="my-order-card my-order-summary">
+                    <h2 class="my-order-card-title">Riepilogo</h2>
+                    <div class="my-order-summary-row"><span>Subtotale</span><span>€ {{ ordine.subtotale|floatformat:2 }}</span></div>
+                    <div class="my-order-summary-row"><span>Spedizione</span>{% if ordine.costo_spedizione == 0 %}<span class="text-success fw-semibold">Gratuita</span>{% else %}<span>€ {{ ordine.costo_spedizione|floatformat:2 }}</span>{% endif %}</div>
+                    <div class="my-order-summary-total"><span>Totale</span><span>€ {{ ordine.totale|floatformat:2 }}</span></div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

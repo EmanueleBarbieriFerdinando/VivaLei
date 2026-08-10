@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+
+{% block title %}I miei ordini | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .my-orders-page { padding: 48px 0 72px; background: #fcfbfa; }
+    .my-orders-eyebrow { display: inline-flex; align-items: center; gap: 8px; padding: 7px 13px; border-radius: 999px; background: var(--vivalei-purple-light); color: var(--vivalei-purple); font-size: 14px; font-weight: 700; }
+    .my-orders-title { margin: 14px 0 7px; font-size: clamp(38px, 4vw, 50px); font-weight: 500; }
+    .my-orders-subtitle { margin: 0; color: var(--vivalei-text-muted); font-size: 17px; }
+    .my-orders-action { border: 1px solid var(--vivalei-purple); border-radius: 10px; color: var(--vivalei-purple); font-weight: 700; }
+    .my-orders-action:hover { background: var(--vivalei-purple); color: #fff; }
+    .orders-list { margin-top: 34px; overflow: hidden; background: #fff; border: 1px solid var(--vivalei-border); border-radius: 20px; }
+    .my-order { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 25px 29px; border-bottom: 1px solid var(--vivalei-border); transition: background .2s ease; }
+    .my-order:last-child { border-bottom: 0; }
+    .my-order:hover { background: #fdfafd; }
+    .my-order-date { margin-bottom: 5px; font-size: 18px; font-weight: 700; }
+    .my-order-code { color: var(--vivalei-text-muted); font-size: 14px; }
+    .my-order-meta { display: flex; align-items: center; gap: 22px; }
+    .my-order-amount { font-size: 18px; font-weight: 700; text-align: right; white-space: nowrap; }
+    .my-order-status { display: inline-flex; align-items: center; gap: 6px; padding: 6px 10px; border-radius: 999px; background: #f0f7f2; color: #486a50; font-size: 13px; font-weight: 700; white-space: nowrap; }
+    .my-order-link { display: inline-flex; align-items: center; justify-content: center; width: 42px; height: 42px; border: 1px solid var(--vivalei-border); border-radius: 10px; color: var(--vivalei-purple); transition: .2s ease; }
+    .my-order-link:hover { border-color: var(--vivalei-purple); background: var(--vivalei-purple); color: #fff; }
+    .my-orders-empty { padding: 64px 25px; text-align: center; }
+    .my-orders-empty-icon { display: grid; width: 58px; height: 58px; margin: 0 auto 18px; place-items: center; border-radius: 50%; background: var(--vivalei-purple-light); color: var(--vivalei-purple); font-size: 25px; }
+    @media (max-width: 767.98px) { .my-orders-page { padding: 30px 0 52px; } .my-orders-header { align-items: flex-start !important; } .my-order { align-items: flex-start; padding: 21px; } .my-order-meta { align-items: flex-end; gap: 12px; flex-direction: column; } .my-order-amount { font-size: 16px; } }
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="my-orders-page">
+    <div class="container">
+        <div class="my-orders-header d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-4">
+            <div>
+                <span class="my-orders-eyebrow"><i class="bi bi-box-seam"></i> Il mio account</span>
+                <h1 class="my-orders-title">I miei ordini</h1>
+                <p class="my-orders-subtitle">Tieni sotto controllo i tuoi acquisti e le loro consegne.</p>
+            </div>
+            <a href="{% url 'products:lista_prodotti' %}" class="btn my-orders-action">
+                <i class="bi bi-bag-plus me-2"></i>Continua gli acquisti
+            </a>
+        </div>
+
+        <div class="orders-list">
+            {% for ordine in ordini %}
+                <article class="my-order">
+                    <div>
+                        <div class="my-order-date">Ordine del {{ ordine.data_creazione|date:"d F Y" }}</div>
+                        <div class="my-order-code">Codice ordine · {{ ordine.codice }}</div>
+                    </div>
+                    <div class="my-order-meta">
+                        <div class="text-md-end">
+                            <span class="my-order-status"><i class="bi bi-check-circle-fill"></i> {{ ordine.get_stato_display }}</span>
+                            <div class="my-order-amount mt-2">€ {{ ordine.totale|floatformat:2 }}</div>
+                        </div>
+                        <a href="{% url 'orders:dettaglio_mio_ordine' ordine.codice %}" class="my-order-link" aria-label="Apri il dettaglio dell'ordine {{ ordine.codice }}">
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                </article>
+            {% empty %}
+                <div class="my-orders-empty">
+                    <div class="my-orders-empty-icon"><i class="bi bi-bag-heart"></i></div>
+                    <h2 class="h4 mb-2">Non hai ancora effettuato ordini.</h2>
+                    <p class="text-vivalei-muted mb-4">Quando completerai un acquisto, lo troverai qui.</p>
+                    <a href="{% url 'products:lista_prodotti' %}" class="btn btn-vivalei">Scopri i prodotti</a>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

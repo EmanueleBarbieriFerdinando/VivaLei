@@ -879,6 +879,11 @@
                                     Il mio account
                                 </a>
 
+                                <a href="{% url 'orders:miei_ordini' %}" class="dropdown-item">
+                                    <i class="bi bi-box-seam"></i>
+                                    I miei ordini
+                                </a>
+
                                 <a href="{% url 'carrello:dettaglio' %}" class="dropdown-item">
                                     <i class="bi bi-bag"></i>
                                     Il mio carrello
@@ -1056,6 +1061,11 @@
                 <a href="{% url 'users:account' %}" class="vivalei-mobile-menu-link">
                     <span>Il mio account</span>
                     <i class="bi bi-person-circle"></i>
+                </a>
+
+                <a href="{% url 'orders:miei_ordini' %}" class="vivalei-mobile-menu-link">
+                    <span>I miei ordini</span>
+                    <i class="bi bi-box-seam"></i>
                 </a>
 
                 <a href="{% url 'carrello:dettaglio' %}" class="vivalei-mobile-menu-link">

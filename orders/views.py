@@ -5,6 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from carrello.carrello import Carrello
+from django.core.exceptions import PermissionDenied
 
 from .forms import CheckoutForm
 from .models import Ordine, SessioneCheckout, RigaOrdine
@@ -81,15 +82,31 @@ def checkout(request):
 
 
 @login_required(login_url="users:login")
+@login_required(login_url="users:login")
 def dettaglio_ordine(request, codice):
+    if not request.user.is_superuser:
+        raise PermissionDenied
+
+    ordine = get_object_or_404(Ordine.objects.prefetch_related("righe"), codice=codice)
+
+    return render(request, "orders/dettaglio_ordine.html", {"ordine": ordine})
+
+@login_required(login_url="users:login")
+def miei_ordini(request):
+    ordini = Ordine.objects.filter(utente=request.user).prefetch_related("righe").order_by("-data_creazione")
+
+    return render(request, "orders/miei_ordini.html", {"ordini": ordini})
+
+
+@login_required(login_url="users:login")
+def dettaglio_mio_ordine(request, codice):
     ordine = get_object_or_404(
         Ordine.objects.prefetch_related("righe"),
         codice=codice,
         utente=request.user,
     )
 
-    return render(request, "orders/dettaglio_ordine.html", {"ordine": ordine})
-
+    return render(request, "orders/dettaglio_mio_ordine.html", {"ordine": ordine})
 
 @login_required(login_url="users:login")
 @require_POST
@@ -97,7 +114,7 @@ def crea_pagamento_checkout(request, token):
     sessione_checkout = get_object_or_404(SessioneCheckout.objects.prefetch_related("righe"), token=token, utente=request.user)
 
     if sessione_checkout.ordine_id:
-        return redirect("orders:dettaglio", codice=sessione_checkout.ordine.codice)
+        return redirect("orders:dettaglio_mio_ordine", codice=ordine.codice)
 
     if sessione_checkout.stato != SessioneCheckout.Stato.APERTA:
         messages.error(request, "Questa sessione checkout non può più essere pagata.")
