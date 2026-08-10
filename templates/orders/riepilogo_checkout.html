@@ -266,14 +266,9 @@
                     {% elif request.GET.checkout == "success" %}
                         <div class="alert alert-info summary-alert">
                             <i class="bi bi-hourglass-split me-2"></i>
-                            Pagamento ricevuto. Attendiamo la conferma da Stripe.
+                            Stiamo verificando il pagamento con Stripe. Se l'addebito è riuscito,
+                            il tuo ordine verrà confermato automaticamente.
                         </div>
-
-                        <script>
-                            window.setTimeout(function () {
-                                window.location.reload();
-                            }, 1500);
-                        </script>
                     {% endif %}
 
 

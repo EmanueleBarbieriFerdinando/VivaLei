@@ -22,6 +22,22 @@ from django.views.decorators.csrf import csrf_exempt
 from stripe import SignatureVerificationError
 import uuid
 
+
+def recupera_ordine_pagato_da_stripe(sessione_checkout):
+    """Recupera un checkout pagato quando il webhook non e ancora arrivato."""
+    if not settings.STRIPE_SECRET_KEY or not sessione_checkout.stripe_checkout_session_id:
+        return None
+
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    sessione_stripe = stripe.checkout.Session.retrieve(
+        sessione_checkout.stripe_checkout_session_id
+    )
+
+    if sessione_stripe.status != "complete" or sessione_stripe.payment_status != "paid":
+        return None
+
+    return conferma_pagamento_stripe(sessione_stripe)
+
 @login_required(login_url="users:login")
 def checkout(request):
     carrello = Carrello(request)
@@ -101,9 +117,15 @@ def crea_pagamento_checkout(request, token):
                 return redirect(sessione_stripe_esistente.url)
 
             if sessione_stripe_esistente.status == "complete":
-                messages.info(request, "Il pagamento è già stato completato. Attendiamo la conferma di Stripe.")
+                ordine = recupera_ordine_pagato_da_stripe(sessione_checkout)
+                if ordine:
+                    Carrello(request).svuota()
+                    messages.success(request, "Pagamento confermato. Il tuo ordine è stato ricevuto correttamente.")
+                    return redirect("orders:dettaglio", codice=ordine.codice)
+
+                messages.info(request, "Stripe non ha ancora confermato il pagamento.")
                 return redirect("orders:riepilogo_checkout", token=sessione_checkout.token)
-        except stripe.StripeError as errore:
+        except (stripe.StripeError, SessioneCheckout.DoesNotExist, ValueError) as errore:
             print(f"Errore recupero sessione Stripe: {errore}")
 
     elementi_stripe = []
@@ -134,7 +156,7 @@ def crea_pagamento_checkout(request, token):
         })
 
     url_riepilogo = request.build_absolute_uri(reverse("orders:riepilogo_checkout", kwargs={"token": sessione_checkout.token}))
-    url_successo = f"{url_riepilogo}?checkout=success"
+    url_successo = f"{url_riepilogo}?checkout=success&session_id={{CHECKOUT_SESSION_ID}}"
     url_annullamento = f"{url_riepilogo}?checkout=cancelled"
 
     try:
@@ -240,7 +262,7 @@ def stripe_webhook(request):
     except SignatureVerificationError:
         return HttpResponse("Firma Stripe non valida", status=400)
 
-    if evento.type == "checkout.session.completed":
+    if evento.type in {"checkout.session.completed", "checkout.session.async_payment_succeeded"}:
         try:
             conferma_pagamento_stripe(evento.data.object)
         except (SessioneCheckout.DoesNotExist, ValueError) as errore:
@@ -256,5 +278,16 @@ def riepilogo_checkout(request, token):
     if sessione.ordine_id:
         Carrello(request).svuota()
         return redirect("orders:dettaglio", codice=sessione.ordine.codice)
+
+    if request.GET.get("checkout") == "success":
+        try:
+            ordine = recupera_ordine_pagato_da_stripe(sessione)
+        except (stripe.StripeError, SessioneCheckout.DoesNotExist, ValueError) as errore:
+            print(f"Errore verifica pagamento Stripe: {errore}")
+        else:
+            if ordine:
+                Carrello(request).svuota()
+                messages.success(request, "Pagamento confermato. Il tuo ordine è stato ricevuto correttamente.")
+                return redirect("orders:dettaglio", codice=ordine.codice)
 
     return render(request, "orders/riepilogo_checkout.html", {"sessione": sessione})
