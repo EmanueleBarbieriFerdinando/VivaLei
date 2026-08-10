@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}{{ prodotto.nome }} | VivaLei{% endblock %}
 {% block meta_description %}{{ prodotto.descrizione|striptags|truncatechars:155 }}{% endblock %}
@@ -372,6 +373,33 @@
         width: 38px;
         height: 38px;
         margin-right: 12px;
+    }
+
+    /* VIDEO PRODOTTO */
+    .product-use-content {
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+        line-height: 1.7;
+    }
+
+    .product-use-content p {
+        margin-bottom: 1.25rem;
+    }
+
+    .product-video-box {
+        width: 100%;
+        margin-top: 1.5rem;
+        overflow: hidden;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 22px;
+        background: #f7f2ef;
+        box-shadow: 0 12px 30px rgba(0, 0, 0, .06);
+    }
+
+    .product-video {
+        width: 100%;
+        display: block;
+        border-radius: 22px;
     }
 
     /* CORRELATI */
@@ -920,9 +948,18 @@
                         data-bs-parent="#accordionProdotto"
                     >
                         <div class="accordion-body">
-                            Le istruzioni specifiche per questo prodotto verranno indicate qui.
-                            Nelle prossime fasi potremo aggiungere al prodotto una sezione
-                            dedicata alle modalità di utilizzo.
+                            <div class="product-use-content">
+                                <p>
+                                    Guarda com’è semplice: riempi il secchio, bagni il panno, lo strizzi con la centrifuga e passi il pavimento senza doverlo torcere con le mani.
+                                </p>
+
+                                <div class="product-video-box">
+                                    <video class="product-video" controls preload="metadata" poster="{% static 'img/mociofacile-poster.jpg' %}">
+                                        <source src="/media/prodotti/video/videomocio1.mp4" type="video/mp4">
+                                        Il tuo browser non supporta la riproduzione del video.
+                                    </video>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
