@@ -1,360 +1,140 @@
 {% extends "base.html" %}
 
-{% block title %}Ordine {{ ordine.codice }} | VivaLei{% endblock %}
+{% block title %}Gestione ordine {{ ordine.codice }} | VivaLei{% endblock %}
 
 {% block extra_css %}
 <style>
-    .order-page {
-        padding: 48px 0 72px;
-        background: #fcfbfa;
-    }
-
-    .order-header {
-        margin-bottom: 34px;
-    }
-
-    .order-status {
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        min-height: 34px;
-        padding: 5px 13px;
-        margin-bottom: 15px;
-        border-radius: 30px;
-        background: var(--vivalei-purple-light);
-        color: var(--vivalei-purple);
-        font-size: 14px;
-        font-weight: 700;
-    }
-
-    .order-title {
-        margin-bottom: 9px;
-        font-size: clamp(38px, 4vw, 50px);
-        font-weight: 500;
-    }
-
-    .order-code {
-        margin: 0;
-        color: var(--vivalei-text-muted);
-        font-size: 16px;
-    }
-
-    .order-card {
-        padding: 29px;
-        background: #ffffff;
-        border: 1px solid var(--vivalei-border);
-        border-radius: 20px;
-    }
-
-    .order-card-title {
-        margin-bottom: 23px;
-        font-size: 26px;
-        font-weight: 500;
-    }
-
-    .order-product {
-        padding: 18px 0;
-        border-bottom: 1px solid var(--vivalei-border);
-    }
-
-    .order-product:first-of-type {
-        padding-top: 0;
-    }
-
-    .order-product:last-child {
-        padding-bottom: 0;
-        border-bottom: 0;
-    }
-
-    .order-product-name {
-        font-size: 17px;
-        font-weight: 700;
-    }
-
-    .order-product-info {
-        margin-top: 3px;
-        color: var(--vivalei-text-muted);
-        font-size: 14px;
-    }
-
-    .order-product-price {
-        white-space: nowrap;
-        font-size: 17px;
-        font-weight: 700;
-    }
-
-    .order-sidebar {
-        position: sticky;
-        top: 125px;
-    }
-
-    .order-total-row {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        margin-bottom: 12px;
-        color: var(--vivalei-text-muted);
-    }
-
-    .order-total-final {
-        display: flex;
-        justify-content: space-between;
-        gap: 18px;
-        padding-top: 19px;
-        margin-top: 19px;
-        border-top: 1px solid var(--vivalei-border);
-        font-size: 23px;
-        font-weight: 700;
-    }
-
-    .order-payment-success {
-        padding: 19px;
-        margin-top: 24px;
-        border-radius: 14px;
-        background: #f0f7f2;
-        color: #486a50;
-    }
-
-    .order-payment-success-icon {
-        width: 42px;
-        height: 42px;
-        flex: 0 0 42px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 50%;
-        background: #ffffff;
-        color: #52775b;
-        font-size: 21px;
-    }
-
-    .order-alert {
-        margin-top: 22px;
-        border: 0;
-        border-radius: 13px;
-    }
-
-    .order-pay-button {
-        width: 100%;
-        min-height: 60px;
-        margin-top: 22px;
-        border: 0;
-        border-radius: 13px;
-        background: var(--vivalei-purple);
-        color: #ffffff;
-        font-size: 18px;
-        font-weight: 700;
-        transition: 0.2s ease;
-    }
-
-    .order-pay-button:hover {
-        background: var(--vivalei-purple-dark);
-    }
-
-    .order-help {
-        padding: 20px;
-        margin-top: 22px;
-        border-radius: 15px;
-        background: #faf8f6;
-    }
-
-    .order-help-icon {
-        color: var(--vivalei-purple);
-        font-size: 23px;
-    }
-
-    @media (max-width: 991.98px) {
-        .order-sidebar {
-            position: static;
-        }
-    }
-
-    @media (max-width: 767.98px) {
-        .order-page {
-            padding: 30px 0 52px;
-        }
-
-        .order-card {
-            padding: 22px;
-        }
-
-        .order-title {
-            font-size: 39px;
-        }
-    }
+    .order-management-page { padding: 38px 0 72px; background: #fcfbfa; }
+    .order-management-back { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 30px; color: var(--vivalei-purple); font-weight: 700; text-decoration: none; }
+    .order-management-back:hover { color: var(--vivalei-purple-dark); }
+    .order-management-status { display: inline-flex; align-items: center; gap: 7px; padding: 7px 13px; border-radius: 999px; background: var(--vivalei-purple-light); color: var(--vivalei-purple); font-size: 14px; font-weight: 700; }
+    .order-management-status.is-shipped { background: #eef5fb; color: #35688f; }
+    .order-management-status.is-completed { background: #f0f7f2; color: #486a50; }
+    .order-management-title { margin: 15px 0 8px; font-size: clamp(36px, 4vw, 49px); font-weight: 500; }
+    .order-management-code { margin: 0; color: var(--vivalei-text-muted); font-size: 15px; overflow-wrap: anywhere; }
+    .order-management-card { padding: 27px; background: #fff; border: 1px solid var(--vivalei-border); border-radius: 20px; }
+    .order-management-card + .order-management-card { margin-top: 24px; }
+    .order-management-card-title { margin-bottom: 22px; font-size: 23px; font-weight: 500; }
+    .order-product { display: flex; justify-content: space-between; align-items: center; gap: 18px; padding: 17px 0; border-bottom: 1px solid var(--vivalei-border); }
+    .order-product:first-of-type { padding-top: 0; }
+    .order-product:last-child { padding-bottom: 0; border-bottom: 0; }
+    .order-product-name { font-weight: 700; font-size: 17px; }
+    .order-product-info, .order-muted { margin-top: 3px; color: var(--vivalei-text-muted); font-size: 14px; }
+    .order-product-price { flex-shrink: 0; font-weight: 700; font-size: 17px; }
+    .order-customer-name { margin-bottom: 7px; font-size: 18px; font-weight: 700; }
+    .order-customer-address { color: var(--vivalei-text-muted); line-height: 1.7; }
+    .order-customer-contact { display: flex; flex-wrap: wrap; gap: 9px 20px; padding-top: 17px; margin-top: 17px; border-top: 1px solid var(--vivalei-border); }
+    .order-customer-contact a { color: var(--vivalei-purple); text-decoration: none; font-weight: 700; }
+    .order-client-note { padding: 16px; margin-top: 19px; border-radius: 12px; background: #faf8f6; color: var(--vivalei-text-muted); font-size: 14px; }
+    .order-sidebar { position: sticky; top: 112px; }
+    .order-payment { display: flex; align-items: center; gap: 10px; padding: 13px; margin-bottom: 21px; border-radius: 12px; background: #f0f7f2; color: #486a50; font-weight: 700; }
+    .order-summary-row { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 12px; color: var(--vivalei-text-muted); }
+    .order-summary-total { display: flex; justify-content: space-between; gap: 16px; padding-top: 19px; margin-top: 19px; border-top: 1px solid var(--vivalei-border); font-size: 22px; font-weight: 700; }
+    .order-section-label { margin-bottom: 8px; font-size: 13px; font-weight: 700; color: var(--vivalei-text-muted); text-transform: uppercase; letter-spacing: .04em; }
+    .order-management-card .form-label { margin-bottom: 7px; font-size: 14px; font-weight: 700; }
+    .order-management-card .form-control { min-height: 46px; border-color: var(--vivalei-border); border-radius: 10px; }
+    .order-management-card textarea.form-control { min-height: auto; }
+    .order-management-card .form-control:focus { border-color: var(--vivalei-purple); box-shadow: 0 0 0 .2rem rgba(134, 22, 125, .12); }
+    .order-logistics-help { margin: -10px 0 20px; color: var(--vivalei-text-muted); font-size: 13px; line-height: 1.5; }
+    .order-primary-action { width: 100%; min-height: 50px; border: 0; border-radius: 11px; background: var(--vivalei-purple); color: #fff; font-weight: 700; }
+    .order-primary-action:hover { background: var(--vivalei-purple-dark); }
+    .order-arrived-action { width: 100%; min-height: 50px; margin-top: 12px; border: 1px solid #83a88b; border-radius: 11px; background: #f0f7f2; color: #486a50; font-weight: 700; }
+    .order-arrived-action:hover { background: #dceee0; }
+    .order-preparation-action { width: 100%; min-height: 46px; margin: 17px 0 0; border: 1px solid var(--vivalei-border); border-radius: 11px; background: #fff; color: var(--vivalei-purple); font-weight: 700; }
+    .order-tracking-link { display: inline-flex; align-items: center; gap: 7px; margin-top: 13px; color: var(--vivalei-purple); font-weight: 700; text-decoration: none; }
+    .order-completed-note { padding: 14px; margin-top: 20px; border-radius: 12px; background: #f0f7f2; color: #486a50; font-size: 14px; }
+    @media (max-width: 991.98px) { .order-sidebar { position: static; } }
+    @media (max-width: 767.98px) { .order-management-page { padding: 26px 0 52px; } .order-management-card { padding: 21px; } .order-product { align-items: flex-start; } }
 </style>
 {% endblock %}
 
 {% block content %}
-
-<section class="order-page">
+<section class="order-management-page">
     <div class="container">
+        <a href="{% url 'gestione:ordini' %}" class="order-management-back"><i class="bi bi-arrow-left"></i> Torna agli ordini</a>
 
-        <div class="order-header">
-
-            <div class="order-status">
-                <i class="bi bi-box-seam"></i>
+        <header class="mb-5">
+            <span class="order-management-status {% if ordine.stato == 'spedito' %}is-shipped{% elif ordine.stato == 'completato' %}is-completed{% endif %}">
+                <i class="bi {% if ordine.stato == 'completato' %}bi-check-circle-fill{% elif ordine.stato == 'spedito' %}bi-truck{% else %}bi-box-seam{% endif %}"></i>
                 {{ ordine.get_stato_display }}
-            </div>
-
-            <h1 class="order-title">
-                Grazie per il tuo ordine
-            </h1>
-
-            <p class="order-code">
-                Ordine <strong>{{ ordine.codice }}</strong>
-            </p>
-
-        </div>
-
+            </span>
+            <h1 class="order-management-title">Gestisci ordine</h1>
+            <p class="order-management-code">{{ ordine.nome_cliente }} · {{ ordine.data_creazione|date:"d/m/Y H:i" }} · {{ ordine.codice }}</p>
+        </header>
 
         <div class="row g-4">
-
-            <div class="col-12 col-lg-8">
-
-                <div class="order-card">
-
-                    <h2 class="order-card-title">
-                        I prodotti del tuo ordine
-                    </h2>
-
+            <div class="col-12 col-lg-7">
+                <section class="order-management-card">
+                    <h2 class="order-management-card-title">Prodotti ordinati</h2>
                     {% for riga in ordine.righe.all %}
-                        <div class="order-product d-flex justify-content-between align-items-center gap-4">
-
-                            <div>
-
-                                <div class="order-product-name">
-                                    {{ riga.nome_prodotto }}
-                                </div>
-
-                                <div class="order-product-info">
-                                    {{ riga.sku }} · Quantità: {{ riga.quantita }}
-                                </div>
-
-                            </div>
-
-                            <div class="order-product-price">
-                                € {{ riga.totale|floatformat:2 }}
-                            </div>
-
+                        <div class="order-product">
+                            <div><div class="order-product-name">{{ riga.nome_prodotto }}</div><div class="order-product-info">{{ riga.sku }} · Quantità: {{ riga.quantita }}</div></div>
+                            <div class="order-product-price">€ {{ riga.totale|floatformat:2 }}</div>
                         </div>
                     {% endfor %}
+                </section>
 
-                </div>
-
-
-                <div class="order-help">
-
-                    <div class="d-flex gap-3 align-items-start">
-
-                        <i class="bi bi-headset order-help-icon"></i>
-
-                        <div>
-                            <strong>Hai bisogno di aiuto?</strong>
-
-                            <p class="text-vivalei-muted mb-0 mt-1">
-                                Conserva il codice ordine {{ ordine.codice }}:
-                                ci aiuterà ad assisterti più velocemente.
-                            </p>
-                        </div>
-
+                <section class="order-management-card">
+                    <h2 class="order-management-card-title">Consegna</h2>
+                    <div class="order-customer-name">{{ ordine.nome_cliente }}</div>
+                    <div class="order-customer-address">{{ ordine.indirizzo }} {{ ordine.numero_civico }}<br>{{ ordine.cap }} {{ ordine.citta }} ({{ ordine.provincia }})<br>{{ ordine.paese }}</div>
+                    <div class="order-customer-contact">
+                        <a href="mailto:{{ ordine.email }}"><i class="bi bi-envelope"></i> {{ ordine.email }}</a>
+                        {% if ordine.telefono %}<a href="tel:{{ ordine.telefono }}"><i class="bi bi-telephone"></i> {{ ordine.telefono }}</a>{% endif %}
                     </div>
-
-                </div>
-
+                    {% if ordine.note %}<div class="order-client-note"><strong class="d-block text-body mb-1">Nota del cliente</strong>{{ ordine.note|linebreaksbr }}</div>{% endif %}
+                </section>
             </div>
 
+            <div class="col-12 col-lg-5">
+                <div class="order-sidebar">
+                    <section class="order-management-card">
+                        <h2 class="order-management-card-title">Riepilogo</h2>
+                        <div class="order-payment"><i class="bi bi-check-circle-fill"></i> Pagamento: {{ ordine.get_stato_pagamento_display }}</div>
+                        <div class="order-summary-row"><span>Subtotale</span><span>€ {{ ordine.subtotale|floatformat:2 }}</span></div>
+                        <div class="order-summary-row"><span>Spedizione</span>{% if ordine.costo_spedizione == 0 %}<span class="text-success fw-semibold">Gratuita</span>{% else %}<span>€ {{ ordine.costo_spedizione|floatformat:2 }}</span>{% endif %}</div>
+                        <div class="order-summary-total"><span>Totale</span><span>€ {{ ordine.totale|floatformat:2 }}</span></div>
+                    </section>
 
-            <div class="col-12 col-lg-4">
-
-                <aside class="order-card order-sidebar">
-
-                    <h2 class="order-card-title">
-                        Riepilogo
-                    </h2>
-
-                    <div class="order-total-row">
-                        <span>Subtotale</span>
-                        <span>€ {{ ordine.subtotale|floatformat:2 }}</span>
-                    </div>
-
-                    <div class="order-total-row">
-                        <span>Spedizione</span>
-
-                        {% if ordine.costo_spedizione == 0 %}
-                            <span class="text-success fw-semibold">
-                                Gratuita
-                            </span>
-                        {% else %}
-                            <span>
-                                € {{ ordine.costo_spedizione|floatformat:2 }}
-                            </span>
-                        {% endif %}
-                    </div>
-
-                    <div class="order-total-final">
-                        <span>Totale</span>
-                        <span>€ {{ ordine.totale|floatformat:2 }}</span>
-                    </div>
-
-
-                    {% if ordine.stato_pagamento == "pagato" %}
-
-                        <div class="order-payment-success">
-
-                            <div class="d-flex gap-3 align-items-center">
-
-                                <div class="order-payment-success-icon">
-                                    <i class="bi bi-check-lg"></i>
-                                </div>
-
-                                <div>
-                                    <strong>
-                                        Pagamento completato
-                                    </strong>
-
-                                    <div class="small mt-1">
-                                        Il tuo ordine è stato ricevuto correttamente.
-                                    </div>
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    {% else %}
-
-                        {% if request.GET.checkout == "cancelled" %}
-                            <div class="alert alert-warning order-alert">
-                                <i class="bi bi-exclamation-circle me-2"></i>
-                                Pagamento annullato. Non è stato effettuato alcun addebito.
-                            </div>
-                        {% elif request.GET.checkout == "success" %}
-                            <div class="alert alert-info order-alert">
-                                <i class="bi bi-hourglass-split me-2"></i>
-                                Pagamento inviato. Attendiamo la conferma da Stripe.
-                            </div>
-                        {% endif %}
-
-
-                        <form method="post" action="{% url 'orders:crea_sessione_pagamento' ordine.codice %}">
+                    <section class="order-management-card">
+                        <h2 class="order-management-card-title">Logistica</h2>
+                        {% if form_logistica.non_field_errors %}<div class="alert alert-danger">{{ form_logistica.non_field_errors }}</div>{% endif %}
+                        <form method="post">
                             {% csrf_token %}
-
-                            <button type="submit" class="order-pay-button">
-                                <i class="bi bi-credit-card me-2"></i>
-                                Paga € {{ ordine.totale|floatformat:2 }}
-                            </button>
+                            <div class="row g-3">
+                                <div class="col-12"><label class="form-label" for="{{ form_logistica.corriere.id_for_label }}">{{ form_logistica.corriere.label }}</label>{{ form_logistica.corriere }}{{ form_logistica.corriere.errors }}</div>
+                                <div class="col-12"><label class="form-label" for="{{ form_logistica.codice_tracking.id_for_label }}">{{ form_logistica.codice_tracking.label }}</label>{{ form_logistica.codice_tracking }}{{ form_logistica.codice_tracking.errors }}</div>
+                                <div class="col-12"><label class="form-label" for="{{ form_logistica.url_tracking.id_for_label }}">{{ form_logistica.url_tracking.label }}</label>{{ form_logistica.url_tracking }}{{ form_logistica.url_tracking.errors }}</div>
+                            </div>
+                            <p class="order-logistics-help mt-3">Con un codice tracking salvato, l'ordine passa automaticamente a “Spedito”.</p>
+                            <button type="submit" class="order-primary-action"><i class="bi bi-truck me-2"></i>Salva e aggiorna la spedizione</button>
                         </form>
+                        {% if ordine.url_tracking %}<a class="order-tracking-link" href="{{ ordine.url_tracking }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i>Apri il tracking</a>{% endif %}
 
-                    {% endif %}
+                        {% if ordine.stato == 'pagato' %}
+                            <form method="post">{% csrf_token %}<input type="hidden" name="azione" value="in_preparazione"><button type="submit" class="order-preparation-action">Metti in preparazione</button></form>
+                        {% elif ordine.stato == 'spedito' %}
+                            <form method="post">{% csrf_token %}<input type="hidden" name="azione" value="ordine_arrivato"><button type="submit" class="order-arrived-action"><i class="bi bi-check2-circle me-2"></i>Ordine arrivato</button></form>
+                        {% elif ordine.stato == 'completato' %}
+                            <div class="order-completed-note"><i class="bi bi-check-circle-fill me-2"></i>Ordine chiuso il {{ ordine.data_consegna|date:"d/m/Y H:i" }}.</div>
+                        {% endif %}
+                    </section>
 
-                </aside>
-
+                    <section class="order-management-card">
+                        <h2 class="order-management-card-title">Note interne</h2>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="azione" value="salva_note">
+                            <label class="form-label" for="{{ form_note.nota_interna.id_for_label }}">Coordinamento logistico</label>
+                            {{ form_note.nota_interna }}
+                            {{ form_note.nota_interna.errors }}
+                            <p class="order-logistics-help mt-2">Queste note non sono visibili al cliente.</p>
+                            <button type="submit" class="order-preparation-action mt-0">Salva note interne</button>
+                        </form>
+                    </section>
+                </div>
             </div>
-
         </div>
-
     </div>
 </section>
-
 {% endblock %}

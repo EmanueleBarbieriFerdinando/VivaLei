@@ -1,13 +1,13 @@
 from decimal import Decimal
 
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 
 from carrello.carrello import Carrello
-from django.core.exceptions import PermissionDenied
 
-from .forms import CheckoutForm
+from .forms import CheckoutForm, GestioneOrdineForm, NotaInternaOrdineForm
 from .models import Ordine, SessioneCheckout, RigaOrdine
 from .services import crea_sessione_checkout_da_carrello
 import stripe
@@ -81,15 +81,58 @@ def checkout(request):
     return render(request, "orders/checkout.html", context)
 
 
-@login_required(login_url="users:login")
-@login_required(login_url="users:login")
+@staff_member_required(login_url="users:login")
 def dettaglio_ordine(request, codice):
-    if not request.user.is_superuser:
-        raise PermissionDenied
-
     ordine = get_object_or_404(Ordine.objects.prefetch_related("righe"), codice=codice)
 
-    return render(request, "orders/dettaglio_ordine.html", {"ordine": ordine})
+    if request.method == "POST":
+        azione = request.POST.get("azione")
+
+        if azione == "in_preparazione":
+            if ordine.stato == Ordine.Stato.PAGATO:
+                ordine.stato = Ordine.Stato.IN_PREPARAZIONE
+                ordine.save(update_fields=["stato", "data_modifica"])
+                messages.success(request, "Ordine spostato in preparazione.")
+            return redirect("orders:dettaglio", codice=ordine.codice)
+
+        if azione == "ordine_arrivato":
+            if ordine.stato == Ordine.Stato.SPEDITO:
+                ordine.stato = Ordine.Stato.COMPLETATO
+                ordine.data_consegna = timezone.now()
+                ordine.save(update_fields=["stato", "data_consegna", "data_modifica"])
+                messages.success(request, "Ordine segnato come consegnato e chiuso.")
+            return redirect("orders:dettaglio", codice=ordine.codice)
+
+        if azione == "salva_note":
+            form_note = NotaInternaOrdineForm(request.POST, instance=ordine)
+            if form_note.is_valid():
+                form_note.save()
+                messages.success(request, "Note interne salvate.")
+                return redirect("orders:dettaglio", codice=ordine.codice)
+            form_logistica = GestioneOrdineForm(instance=ordine)
+        else:
+            form_logistica = GestioneOrdineForm(request.POST, instance=ordine)
+            form_note = NotaInternaOrdineForm(instance=ordine)
+
+        if azione != "salva_note" and form_logistica.is_valid():
+            ordine = form_logistica.save(commit=False)
+            campi_aggiornati = ["corriere", "codice_tracking", "url_tracking", "data_modifica"]
+
+            if ordine.codice_tracking and ordine.stato != Ordine.Stato.COMPLETATO:
+                ordine.stato = Ordine.Stato.SPEDITO
+                campi_aggiornati.append("stato")
+                if not ordine.data_spedizione:
+                    ordine.data_spedizione = timezone.now()
+                    campi_aggiornati.append("data_spedizione")
+
+            ordine.save(update_fields=campi_aggiornati)
+            messages.success(request, "Dati logistici salvati.")
+            return redirect("orders:dettaglio", codice=ordine.codice)
+    else:
+        form_logistica = GestioneOrdineForm(instance=ordine)
+        form_note = NotaInternaOrdineForm(instance=ordine)
+
+    return render(request, "orders/dettaglio_ordine.html", {"ordine": ordine, "form_logistica": form_logistica, "form_note": form_note})
 
 @login_required(login_url="users:login")
 def miei_ordini(request):
@@ -114,7 +157,7 @@ def crea_pagamento_checkout(request, token):
     sessione_checkout = get_object_or_404(SessioneCheckout.objects.prefetch_related("righe"), token=token, utente=request.user)
 
     if sessione_checkout.ordine_id:
-        return redirect("orders:dettaglio_mio_ordine", codice=ordine.codice)
+        return redirect("orders:dettaglio_mio_ordine", codice=sessione_checkout.ordine.codice)
 
     if sessione_checkout.stato != SessioneCheckout.Stato.APERTA:
         messages.error(request, "Questa sessione checkout non può più essere pagata.")
@@ -138,7 +181,7 @@ def crea_pagamento_checkout(request, token):
                 if ordine:
                     Carrello(request).svuota()
                     messages.success(request, "Pagamento confermato. Il tuo ordine è stato ricevuto correttamente.")
-                    return redirect("orders:dettaglio", codice=ordine.codice)
+                    return redirect("orders:dettaglio_mio_ordine", codice=ordine.codice)
 
                 messages.info(request, "Stripe non ha ancora confermato il pagamento.")
                 return redirect("orders:riepilogo_checkout", token=sessione_checkout.token)
@@ -294,7 +337,7 @@ def riepilogo_checkout(request, token):
 
     if sessione.ordine_id:
         Carrello(request).svuota()
-        return redirect("orders:dettaglio", codice=sessione.ordine.codice)
+        return redirect("orders:dettaglio_mio_ordine", codice=sessione.ordine.codice)
 
     if request.GET.get("checkout") == "success":
         try:
@@ -305,6 +348,6 @@ def riepilogo_checkout(request, token):
             if ordine:
                 Carrello(request).svuota()
                 messages.success(request, "Pagamento confermato. Il tuo ordine è stato ricevuto correttamente.")
-                return redirect("orders:dettaglio", codice=ordine.codice)
+                return redirect("orders:dettaglio_mio_ordine", codice=ordine.codice)
 
     return render(request, "orders/riepilogo_checkout.html", {"sessione": sessione})

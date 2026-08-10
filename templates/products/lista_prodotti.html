@@ -833,7 +833,7 @@
                             </a>
 
                             <p class="catalog-description">
-                                {{ prodotto.descrizione|truncatechars:90 }}
+                                {{ prodotto.descrizione|striptags|truncatechars:90|safe }}
                             </p>
 
                             <div class="catalog-price-row d-flex justify-content-between align-items-center gap-2">
