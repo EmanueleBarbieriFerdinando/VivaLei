@@ -1,0 +1,1077 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}VivaLei | Vivi meglio, ogni giorno{% endblock %}
+
+{% block meta_description %}
+VivaLei seleziona soluzioni semplici e utili per la casa, il movimento e il tempo che dedichi a te.
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* SEZIONI */
+    .home-section { padding: 76px 0; }
+    .home-section-small { padding: 48px 0; }
+
+    /* HERO */
+    .home-hero {
+        min-height: 590px;
+        display: flex;
+        align-items: stretch;
+        overflow: hidden;
+        background: #faf8f6;
+    }
+
+    .home-hero-content {
+        min-height: 590px;
+        padding-top: 65px;
+        padding-bottom: 65px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .home-hero-kicker,
+    .home-worlds-eyebrow,
+    .home-brand-statement-eyebrow {
+        color: var(--vivalei-purple);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+    }
+
+    .home-hero-kicker {
+        margin-bottom: 18px;
+        font-size: 14px;
+    }
+
+    .home-title {
+        max-width: 620px;
+        margin-bottom: 24px;
+        font-size: clamp(46px, 5vw, 70px);
+        line-height: 1.04;
+        font-weight: 500;
+        letter-spacing: -1.8px;
+    }
+
+    .home-hero-accent { color: var(--vivalei-purple); }
+
+    .home-subtitle {
+        max-width: 540px;
+        margin-bottom: 32px;
+        color: var(--vivalei-text-muted);
+        font-size: 20px;
+        line-height: 1.6;
+    }
+
+    .home-hero-actions {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 14px;
+    }
+
+    .home-hero-image-wrapper {
+        position: relative;
+        min-height: 590px;
+        overflow: hidden;
+        background: #eee9e5;
+    }
+
+    .home-hero-image {
+        width: 100%;
+        height: 100%;
+        min-height: 590px;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    /* BENEFIT */
+    .home-benefits {
+        position: relative;
+        z-index: 5;
+        margin-top: -36px;
+    }
+
+    .home-benefits-box {
+        padding: 23px 20px;
+        background: #fff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+        box-shadow: 0 8px 28px rgba(0, 0, 0, .05);
+    }
+
+    .home-benefit {
+        min-height: 58px;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .home-benefit-icon {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        display: grid;
+        place-items: center;
+        border-radius: 50%;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 22px;
+    }
+
+    .home-benefit-title {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .home-benefit-text {
+        margin: 1px 0 0;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    /* STATEMENT */
+    .home-brand-statement {
+        padding: 82px 0;
+        background: #faf8f6;
+    }
+
+    .home-brand-statement-inner {
+        max-width: 900px;
+        margin: auto;
+        text-align: center;
+    }
+
+    .home-brand-statement-eyebrow { margin-bottom: 17px; }
+
+    .home-brand-statement-title {
+        margin: 0;
+        font-size: clamp(36px, 4.5vw, 56px);
+        line-height: 1.17;
+        font-weight: 500;
+        letter-spacing: -.025em;
+    }
+
+    /* MONDI */
+    .home-worlds {
+        padding: 90px 0 88px;
+        background: #fff;
+    }
+
+    .home-worlds-heading {
+        max-width: 840px;
+        margin: 0 auto 48px;
+        text-align: center;
+    }
+
+    .home-worlds-eyebrow { margin-bottom: 14px; }
+
+    .home-worlds-title {
+        margin-bottom: 17px;
+        font-size: clamp(40px, 5vw, 60px);
+        line-height: 1.08;
+        font-weight: 500;
+        letter-spacing: -.03em;
+    }
+
+    .home-worlds-description {
+        max-width: 690px;
+        margin: auto;
+        color: var(--vivalei-text-muted);
+        font-size: 18px;
+        line-height: 1.7;
+    }
+
+    /* TAB */
+    .home-world-tabs-scroll {
+        width: 100%;
+        overflow-x: auto;
+        scrollbar-width: none;
+        border-bottom: 1px solid #e9e4e7;
+    }
+
+    .home-world-tabs-scroll::-webkit-scrollbar { display: none; }
+
+    .home-world-tabs {
+        width: max-content;
+        min-width: 100%;
+        display: flex;
+        align-items: flex-end;
+        justify-content: center;
+        gap: 70px;
+    }
+
+    .home-world-tab {
+        position: relative;
+        padding: 0 5px 19px;
+        border: 0;
+        background: transparent;
+        color: #989194;
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 24px;
+        line-height: 1.25;
+        white-space: nowrap;
+        cursor: pointer;
+        transition: color .25s ease;
+    }
+
+    .home-world-tab:hover,
+    .home-world-tab.active {
+        color: var(--vivalei-text);
+    }
+
+    .home-world-tab::after {
+        content: "";
+        position: absolute;
+        right: 0;
+        bottom: -1px;
+        left: 0;
+        height: 3px;
+        background: var(--vivalei-purple);
+        transform: scaleX(0);
+        transition: transform .28s ease;
+    }
+
+    .home-world-tab.active::after { transform: scaleX(1); }
+
+    /* CONTENUTO MONDO */
+    .home-world-copy {
+        max-width: 720px;
+        margin: 42px auto 38px;
+        text-align: center;
+    }
+
+    .home-world-copy-title {
+        margin-bottom: 10px;
+        font-size: 30px;
+        font-weight: 500;
+        line-height: 1.25;
+    }
+
+    .home-world-copy-description {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+        line-height: 1.7;
+    }
+
+    .home-world-panel { display: none; }
+
+    .home-world-panel.active {
+        display: block;
+        animation: homeWorldFade .38s ease;
+    }
+
+    @keyframes homeWorldFade {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* PRODOTTI */
+    .home-product-card { height: 100%; }
+
+    .home-product-image-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1.08;
+        overflow: hidden;
+        border-radius: 18px;
+        background: #f7f5f4;
+    }
+
+    .home-product-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .45s ease;
+    }
+
+    .home-product-card:hover .home-product-image {
+        transform: scale(1.025);
+    }
+
+    .home-product-placeholder {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        background: #f7f5f4;
+        color: var(--vivalei-text-muted);
+    }
+
+    .home-product-body { padding: 18px 3px 0; }
+
+    .home-product-category {
+        margin-bottom: 6px;
+        color: var(--vivalei-purple);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .home-product-title {
+        margin: 0 0 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 19px;
+        font-weight: 600;
+        line-height: 1.4;
+    }
+
+    .home-product-price {
+        font-size: 21px;
+        font-weight: 700;
+    }
+
+    .home-product-link { color: var(--vivalei-text); }
+    .home-product-link:hover { color: var(--vivalei-purple); }
+
+    .home-world-empty {
+        padding: 55px 25px;
+        text-align: center;
+        border-radius: 18px;
+        background: #faf8f6;
+    }
+
+    .home-world-empty p {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+    }
+
+    .home-world-footer {
+        margin-top: 42px;
+        text-align: center;
+    }
+
+    .home-world-more {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding-bottom: 4px;
+        border-bottom: 1px solid var(--vivalei-purple);
+        color: var(--vivalei-purple);
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .home-world-more:hover {
+        color: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+    }
+
+    /* VISION */
+    .home-vision {
+        overflow: hidden;
+        background: var(--vivalei-cream);
+        border-radius: 26px;
+    }
+
+    .home-vision-image {
+        width: 100%;
+        height: 100%;
+        min-height: 420px;
+        object-fit: cover;
+    }
+
+    .home-vision-content { padding: 55px; }
+
+    .home-vision-title {
+        font-size: clamp(34px, 4vw, 50px);
+    }
+
+    /* NEWSLETTER */
+    .home-newsletter {
+        position: relative;
+        overflow: hidden;
+        padding: 48px 52px;
+        border-radius: 24px;
+        background: var(--vivalei-purple);
+        color: #fff;
+    }
+
+    .home-newsletter::after {
+        content: "10%";
+        position: absolute;
+        top: 50%;
+        right: -20px;
+        transform: translateY(-50%);
+        color: rgba(255, 255, 255, .065);
+        font-family: Georgia, "Times New Roman", serif;
+        font-size: 190px;
+        font-weight: 700;
+        line-height: 1;
+        pointer-events: none;
+    }
+
+    .home-newsletter-content,
+    .home-newsletter-form {
+        position: relative;
+        z-index: 1;
+    }
+
+    .home-newsletter-badge {
+        margin-bottom: 12px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .1em;
+        text-transform: uppercase;
+    }
+
+    .home-newsletter-title {
+        max-width: 560px;
+        margin: 0 0 12px;
+        color: #fff;
+        font-size: clamp(32px, 4vw, 46px);
+        line-height: 1.1;
+        font-weight: 500;
+    }
+
+    .home-newsletter-text {
+        max-width: 570px;
+        margin: 0;
+        color: rgba(255, 255, 255, .82);
+        font-size: 17px;
+        line-height: 1.6;
+    }
+
+    .home-newsletter-input {
+        min-height: 60px;
+        padding: 0 18px;
+        border: 0;
+        border-radius: 12px;
+        background: #fff;
+        font-size: 17px;
+    }
+
+    .home-newsletter-input:focus {
+        border: 0;
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, .16);
+    }
+
+    .home-newsletter-button {
+        min-height: 60px;
+        padding: 0 24px;
+        border: 1px solid #fff;
+        border-radius: 12px;
+        background: #fff;
+        color: var(--vivalei-purple);
+        font-weight: 700;
+    }
+
+    .home-newsletter-button:hover {
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple-dark);
+    }
+
+    .home-newsletter-note {
+        margin: 9px 0 0;
+        color: rgba(255, 255, 255, .7);
+        font-size: 12px;
+    }
+
+    /* TABLET */
+    @media (max-width: 991.98px) {
+        .home-hero,
+        .home-hero-content,
+        .home-hero-image-wrapper,
+        .home-hero-image {
+            min-height: auto;
+        }
+
+        .home-hero-content {
+            padding-top: 55px;
+            padding-bottom: 45px;
+        }
+
+        .home-hero-image-wrapper,
+        .home-hero-image {
+            height: 480px;
+        }
+
+        .home-benefits { margin-top: 20px; }
+        .home-benefits-box { box-shadow: none; }
+
+        .home-world-tabs {
+            justify-content: flex-start;
+            gap: 44px;
+        }
+
+        .home-vision-content { padding: 40px; }
+    }
+
+    /* MOBILE */
+    @media (max-width: 767.98px) {
+        .home-section { padding: 52px 0; }
+        .home-section-small { padding: 38px 0; }
+
+        .home-title { font-size: 44px; }
+        .home-subtitle { font-size: 18px; }
+
+        .home-hero-content {
+            padding-top: 42px;
+            padding-bottom: 36px;
+        }
+
+        .home-hero-image-wrapper,
+        .home-hero-image {
+            height: 390px;
+        }
+
+        .home-hero-actions {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        .home-hero-actions .btn { width: 100%; }
+
+        .home-benefits-box { padding: 20px; }
+        .home-benefit { padding: 8px 0; }
+
+        .home-worlds { padding: 64px 0; }
+        .home-worlds-heading { margin-bottom: 36px; }
+        .home-worlds-title { font-size: 39px; }
+        .home-worlds-description { font-size: 17px; }
+
+        .home-world-tabs-scroll {
+            width: calc(100% + 24px);
+            margin-right: -12px;
+            margin-left: -12px;
+            padding: 0 12px;
+        }
+
+        .home-world-tabs { gap: 34px; }
+        .home-world-tab { font-size: 20px; }
+
+        .home-world-copy {
+            margin-top: 32px;
+            margin-bottom: 30px;
+        }
+
+        .home-world-copy-title { font-size: 27px; }
+        .home-world-copy-description { font-size: 16px; }
+
+        .home-product-image-wrapper { aspect-ratio: 1; }
+
+        .home-brand-statement { padding: 62px 0; }
+        .home-vision-content { padding: 32px 25px; }
+
+        .home-newsletter { padding: 34px 24px; }
+
+        .home-newsletter::after {
+            top: 20px;
+            right: -15px;
+            transform: none;
+            font-size: 120px;
+        }
+
+        .home-newsletter-title { font-size: 32px; }
+        .home-newsletter-button { width: 100%; }
+    }
+
+    @media (max-width: 575.98px) {
+        .home-title {
+            font-size: 40px;
+            letter-spacing: -1px;
+        }
+
+        .home-hero-image-wrapper,
+        .home-hero-image {
+            height: 340px;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<!-- HERO -->
+<section class="home-hero">
+    <div class="container-fluid px-0">
+        <div class="row g-0 align-items-stretch">
+
+            <div class="col-12 col-lg-6">
+                <div class="home-hero-content px-4 px-md-5 ps-xl-5 ms-xl-auto" style="max-width: 720px;">
+                    <div class="home-hero-kicker">VIVI MEGLIO, A MODO TUO</div>
+
+                    <h1 class="home-title">
+                        Semplifica<br>
+                        ogni giorno.<br>
+                        <span class="home-hero-accent">Vivi meglio.</span>
+                    </h1>
+
+                    <p class="home-subtitle">
+                        Soluzioni semplici, belle e utili per la casa,
+                        il movimento e il tempo che dedichi a te.
+                    </p>
+
+                    <div class="home-hero-actions">
+                        <a href="#mondi" class="btn btn-vivalei">
+                            Scopri VivaLei
+                            <i class="bi bi-arrow-down"></i>
+                        </a>
+
+                        <a href="{% url 'core:chi_siamo' %}" class="btn btn-vivalei-outline">
+                            La nostra idea
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 home-hero-image-wrapper">
+                <img
+                    src="{% static 'images/home/herovivalei.png' %}"
+                    alt="VivaLei, piccoli momenti dedicati a sé"
+                    class="home-hero-image"
+                >
+            </div>
+
+        </div>
+    </div>
+</section>
+
+
+<!-- BENEFIT -->
+<section class="home-benefits">
+    <div class="container">
+        <div class="home-benefits-box">
+            <div class="row g-3">
+
+                <div class="col-12 col-md-4">
+                    <div class="home-benefit">
+                        <div class="home-benefit-icon">
+                            <i class="bi bi-truck"></i>
+                        </div>
+
+                        <div>
+                            <p class="home-benefit-title">Spedizione tracciata</p>
+                            <p class="home-benefit-text">Segui il tuo ordine.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="home-benefit">
+                        <div class="home-benefit-icon">
+                            <i class="bi bi-arrow-repeat"></i>
+                        </div>
+
+                        <div>
+                            <p class="home-benefit-title">Resi semplici</p>
+                            <p class="home-benefit-text">Acquista con tranquillità.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-12 col-md-4">
+                    <div class="home-benefit">
+                        <div class="home-benefit-icon">
+                            <i class="bi bi-headset"></i>
+                        </div>
+
+                        <div>
+                            <p class="home-benefit-title">Assistenza clienti</p>
+                            <p class="home-benefit-text">Siamo qui per te.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- STATEMENT -->
+<section class="home-brand-statement">
+    <div class="container">
+        <div class="home-brand-statement-inner">
+            <div class="home-brand-statement-eyebrow">LA NOSTRA IDEA</div>
+
+            <h2 class="home-brand-statement-title">
+                Non servono grandi cambiamenti.
+                A volte bastano piccole cose
+                che rendono la giornata più semplice.
+            </h2>
+        </div>
+    </div>
+</section>
+
+
+<!-- MONDI -->
+<section id="mondi" class="home-worlds">
+    <div class="container">
+
+        <div class="home-worlds-heading">
+            <div class="home-worlds-eyebrow">I MONDI DI VIVALEI</div>
+
+            <h2 class="home-worlds-title">
+                Cosa può rendere migliore la tua giornata?
+            </h2>
+
+            <p class="home-worlds-description">
+                Abbiamo diviso VivaLei in tre mondi che fanno parte
+                della vita di ogni giorno. Scegli quello che senti più tuo.
+            </p>
+        </div>
+
+        <div class="home-world-tabs-scroll">
+            <div class="home-world-tabs" role="tablist" aria-label="Mondi VivaLei">
+
+                <button
+                    type="button"
+                    class="home-world-tab active"
+                    data-world-tab="casa"
+                    role="tab"
+                    aria-selected="true"
+                >
+                    La mia casa
+                </button>
+
+                <button
+                    type="button"
+                    class="home-world-tab"
+                    data-world-tab="movimento"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    Tenersi in movimento
+                </button>
+
+                <button
+                    type="button"
+                    class="home-world-tab"
+                    data-world-tab="tempo"
+                    role="tab"
+                    aria-selected="false"
+                >
+                    Tempo per me
+                </button>
+
+            </div>
+        </div>
+
+
+        <!-- CASA -->
+        <div class="home-world-panel active" data-world-panel="casa">
+            <div class="home-world-copy">
+                <h3 class="home-world-copy-title">Più ordine, meno fatica.</h3>
+
+                <p class="home-world-copy-description">
+                    Piccoli aiuti per organizzare meglio gli spazi,
+                    semplificare le cose che fai ogni giorno
+                    e vivere la casa con un po' più di leggerezza.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                {% for prodotto in prodotti_casa %}
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <article class="home-product-card">
+                            <a href="{{ prodotto.get_absolute_url }}" class="home-product-link">
+                                <div class="home-product-image-wrapper">
+                                    {% if prodotto.immagine %}
+                                        <img src="{{ prodotto.immagine.url }}" alt="{{ prodotto.nome }}" class="home-product-image">
+                                    {% else %}
+                                        <div class="home-product-placeholder">
+                                            <i class="bi bi-image fs-1"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+
+                            <div class="home-product-body">
+                                {% if prodotto.categoria %}
+                                    <div class="home-product-category">{{ prodotto.categoria.nome }}</div>
+                                {% endif %}
+
+                                <a href="{{ prodotto.get_absolute_url }}" class="home-product-link">
+                                    <h3 class="home-product-title">{{ prodotto.nome }}</h3>
+                                </a>
+
+                                <span class="home-product-price">€ {{ prodotto.prezzo|floatformat:2 }}</span>
+                            </div>
+                        </article>
+                    </div>
+
+                {% empty %}
+                    <div class="col-12">
+                        <div class="home-world-empty">
+                            <p>Le prime proposte per La mia casa arriveranno presto.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="home-world-footer">
+                <a href="{% url 'products:lista_prodotti' %}?mondo=casa" class="home-world-more">
+                    Scopri La mia casa
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+
+        <!-- MOVIMENTO -->
+        <div class="home-world-panel" data-world-panel="movimento">
+            <div class="home-world-copy">
+                <h3 class="home-world-copy-title">Muoversi, a modo tuo.</h3>
+
+                <p class="home-world-copy-description">
+                    Non serve trasformare ogni giornata in una sfida.
+                    Anche piccoli momenti di movimento possono aiutarti
+                    a sentirti bene, seguendo semplicemente il tuo ritmo.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                {% for prodotto in prodotti_movimento %}
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <article class="home-product-card">
+                            <a href="{{ prodotto.get_absolute_url }}" class="home-product-link">
+                                <div class="home-product-image-wrapper">
+                                    {% if prodotto.immagine %}
+                                        <img src="{{ prodotto.immagine.url }}" alt="{{ prodotto.nome }}" class="home-product-image">
+                                    {% else %}
+                                        <div class="home-product-placeholder">
+                                            <i class="bi bi-image fs-1"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+
+                            <div class="home-product-body">
+                                {% if prodotto.categoria %}
+                                    <div class="home-product-category">{{ prodotto.categoria.nome }}</div>
+                                {% endif %}
+
+                                <a href="{{ prodotto.get_absolute_url }}" class="home-product-link">
+                                    <h3 class="home-product-title">{{ prodotto.nome }}</h3>
+                                </a>
+
+                                <span class="home-product-price">€ {{ prodotto.prezzo|floatformat:2 }}</span>
+                            </div>
+                        </article>
+                    </div>
+
+                {% empty %}
+                    <div class="col-12">
+                        <div class="home-world-empty">
+                            <p>Le prime proposte per Tenersi in movimento arriveranno presto.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="home-world-footer">
+                <a href="{% url 'products:lista_prodotti' %}?mondo=movimento" class="home-world-more">
+                    Scopri Tenersi in movimento
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+
+        <!-- TEMPO PER ME -->
+        <div class="home-world-panel" data-world-panel="tempo">
+            <div class="home-world-copy">
+                <h3 class="home-world-copy-title">Un momento tutto per te.</h3>
+
+                <p class="home-world-copy-description">
+                    Comfort, relax e piccoli gesti quotidiani.
+                    Perché anche il tempo che dedichi a te
+                    merita il suo spazio.
+                </p>
+            </div>
+
+            <div class="row g-4">
+                {% for prodotto in prodotti_tempo %}
+                    <div class="col-12 col-sm-6 col-lg-3">
+                        <article class="home-product-card">
+                            <a href="{{ prodotto.get_absolute_url }}" class="home-product-link">
+                                <div class="home-product-image-wrapper">
+                                    {% if prodotto.immagine %}
+                                        <img src="{{ prodotto.immagine.url }}" alt="{{ prodotto.nome }}" class="home-product-image">
+                                    {% else %}
+                                        <div class="home-product-placeholder">
+                                            <i class="bi bi-image fs-1"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+
+                            <div class="home-product-body">
+                                {% if prodotto.categoria %}
+                                    <div class="home-product-category">{{ prodotto.categoria.nome }}</div>
+                                {% endif %}
+
+                                <a href="{{ prodotto.get_absolute_url }}" class="home-product-link">
+                                    <h3 class="home-product-title">{{ prodotto.nome }}</h3>
+                                </a>
+
+                                <span class="home-product-price">€ {{ prodotto.prezzo|floatformat:2 }}</span>
+                            </div>
+                        </article>
+                    </div>
+
+                {% empty %}
+                    <div class="col-12">
+                        <div class="home-world-empty">
+                            <p>Le prime proposte per Tempo per me arriveranno presto.</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="home-world-footer">
+                <a href="{% url 'products:lista_prodotti' %}?mondo=tempo-per-me" class="home-world-more">
+                    Scopri Tempo per me
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+<!-- VISION -->
+<section class="home-section">
+    <div class="container">
+        <div class="home-vision">
+            <div class="row g-0 align-items-stretch">
+
+                <div class="col-12 col-lg-6">
+                    <img
+                        src="{% static 'images/home/vision-vivalei.png' %}"
+                        alt="La quotidianità VivaLei"
+                        class="home-vision-image"
+                    >
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <div class="home-vision-content h-100 d-flex flex-column justify-content-center">
+                        <div class="text-vivalei fw-semibold mb-3">LA NOSTRA IDEA</div>
+
+                        <h2 class="home-vision-title mb-4">
+                            VivaLei è al tuo fianco,
+                            ogni giorno.
+                        </h2>
+
+                        <p class="fs-5 text-vivalei-muted mb-4">
+                            Crediamo nelle piccole cose che rendono la vita
+                            più semplice e piacevole.
+                        </p>
+
+                        <p class="text-vivalei-muted mb-4">
+                            Per questo selezioniamo prodotti utili, intuitivi
+                            e facili da inserire nella tua quotidianità:
+                            per la casa, per continuare a muoverti e per
+                            concederti un po' di tempo per te.
+                        </p>
+
+                        <div>
+                            <a href="{% url 'core:chi_siamo' %}" class="btn btn-vivalei-outline">
+                                Scopri VivaLei
+                                <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<!-- NEWSLETTER -->
+<section class="home-section-small">
+    <div class="container">
+        <div class="home-newsletter">
+
+            <div class="row align-items-center g-4 home-newsletter-content">
+
+                <div class="col-12 col-lg-6">
+                    <div class="home-newsletter-badge">
+                        <i class="bi bi-gift"></i>
+                        REGALO DI BENVENUTO
+                    </div>
+
+                    <h2 class="home-newsletter-title">
+                        Un piccolo regalo per iniziare.
+                    </h2>
+
+                    <p class="home-newsletter-text">
+                        Iscriviti alla newsletter VivaLei e ricevi
+                        il 10% di sconto sul tuo primo ordine.
+                    </p>
+                </div>
+
+                <div class="col-12 col-lg-6">
+                    <form class="home-newsletter-form">
+                        <div class="row g-2">
+
+                            <div class="col-12 col-sm">
+                                <input
+                                    type="email"
+                                    class="form-control home-newsletter-input"
+                                    placeholder="La tua email"
+                                    aria-label="La tua email"
+                                    required
+                                >
+                            </div>
+
+                            <div class="col-12 col-sm-auto">
+                                <button type="submit" class="home-newsletter-button">
+                                    Ricevi il -10%
+                                </button>
+                            </div>
+
+                        </div>
+
+                        <p class="home-newsletter-note">
+                            Ti invieremo il codice sconto direttamente via email.
+                        </p>
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const tabs = document.querySelectorAll("[data-world-tab]");
+        const panels = document.querySelectorAll("[data-world-panel]");
+
+        tabs.forEach(function(tab) {
+            tab.addEventListener("click", function() {
+                const world = tab.dataset.worldTab;
+
+                tabs.forEach(function(currentTab) {
+                    const active = currentTab === tab;
+                    currentTab.classList.toggle("active", active);
+                    currentTab.setAttribute("aria-selected", active ? "true" : "false");
+                });
+
+                panels.forEach(function(panel) {
+                    panel.classList.toggle("active", panel.dataset.worldPanel === world);
+                });
+            });
+        });
+    });
+</script>
+{% endblock %}

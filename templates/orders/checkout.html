@@ -1,0 +1,374 @@
+{% extends "base.html" %}
+
+{% block title %}Checkout | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .checkout-page {
+        padding: 42px 0 72px;
+        background: #fcfbfa;
+    }
+
+    .checkout-header {
+        margin-bottom: 34px;
+    }
+
+    .checkout-eyebrow {
+        margin-bottom: 8px;
+        color: var(--vivalei-purple);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+    }
+
+    .checkout-title {
+        margin-bottom: 10px;
+        font-size: clamp(38px, 4vw, 52px);
+        font-weight: 500;
+    }
+
+    .checkout-description {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 18px;
+    }
+
+    .checkout-card {
+        padding: 30px;
+        background: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+    }
+
+    .checkout-card-title {
+        margin-bottom: 25px;
+        font-size: 27px;
+        font-weight: 500;
+    }
+
+    .checkout-form label {
+        margin-bottom: 7px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .checkout-form input:not([type="checkbox"]):not([type="hidden"]),
+    .checkout-form select,
+    .checkout-form textarea {
+        width: 100%;
+        min-height: 56px;
+        padding: 12px 15px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 17px;
+    }
+
+    .checkout-form textarea {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .checkout-form input:focus,
+    .checkout-form select:focus,
+    .checkout-form textarea:focus {
+        outline: none;
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 4px rgba(134, 22, 125, 0.07);
+    }
+
+    .checkout-summary {
+        position: sticky;
+        top: 125px;
+    }
+
+    .checkout-product {
+        padding: 15px 0;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .checkout-product:first-of-type {
+        padding-top: 0;
+    }
+
+    .checkout-product-name {
+        margin-bottom: 3px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .checkout-product-quantity {
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .checkout-product-price {
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .checkout-totals {
+        margin-top: 22px;
+    }
+
+    .checkout-total-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 11px;
+        color: var(--vivalei-text-muted);
+        font-size: 16px;
+    }
+
+    .checkout-total-final {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding-top: 18px;
+        margin-top: 18px;
+        border-top: 1px solid var(--vivalei-border);
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .checkout-free {
+        color: #52765c;
+        font-weight: 600;
+    }
+
+    .checkout-conditions {
+        padding: 17px;
+        margin-top: 24px;
+        background: #faf8f6;
+        border-radius: 13px;
+        font-size: 14px;
+    }
+
+    .checkout-conditions input {
+        width: 19px;
+        height: 19px;
+        margin-top: 2px;
+        accent-color: var(--vivalei-purple);
+    }
+
+    .checkout-submit {
+        width: 100%;
+        min-height: 60px;
+        margin-top: 22px;
+        border: 0;
+        border-radius: 13px;
+        background: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .checkout-submit:hover {
+        background: var(--vivalei-purple-dark);
+    }
+
+    .checkout-security {
+        margin-top: 18px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+    }
+
+    .checkout-security i {
+        color: var(--vivalei-purple);
+    }
+
+    @media (max-width: 991.98px) {
+        .checkout-summary {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .checkout-page {
+            padding: 28px 0 52px;
+        }
+
+        .checkout-card {
+            padding: 22px;
+        }
+
+        .checkout-title {
+            font-size: 39px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="checkout-page">
+    <div class="container">
+
+        <div class="checkout-header">
+            <div class="checkout-eyebrow">
+                IL TUO ORDINE
+            </div>
+
+            <h1 class="checkout-title">
+                Checkout
+            </h1>
+
+            <p class="checkout-description">
+                Inserisci i dati per la consegna. Al pagamento ci pensa Stripe in modo sicuro.
+            </p>
+        </div>
+
+        <form method="post" class="checkout-form">
+            {% csrf_token %}
+
+            {{ form.checkout_token }}
+
+            <div class="row g-4">
+
+                <div class="col-12 col-lg-8">
+                    <div class="checkout-card">
+
+                        <h2 class="checkout-card-title">
+                            Dove vuoi ricevere il tuo ordine?
+                        </h2>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                {{ form.non_field_errors }}
+                            </div>
+                        {% endif %}
+
+                        <div class="row g-3">
+
+                            {% for campo in form %}
+                                {% if campo.name != "accetta_condizioni" and campo.name != "checkout_token" %}
+                                    <div class="{% if campo.name == 'note' or campo.name == 'indirizzo' %}col-12{% else %}col-12 col-md-6{% endif %}">
+
+                                        <label for="{{ campo.id_for_label }}">
+                                            {{ campo.label }}
+                                        </label>
+
+                                        {{ campo }}
+
+                                        {% for errore in campo.errors %}
+                                            <div class="text-danger small mt-1">
+                                                {{ errore }}
+                                            </div>
+                                        {% endfor %}
+
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+                <div class="col-12 col-lg-4">
+
+                    <aside class="checkout-card checkout-summary">
+
+                        <h2 class="checkout-card-title">
+                            Riepilogo ordine
+                        </h2>
+
+                        {% for voce in righe_carrello %}
+                            <div class="checkout-product d-flex justify-content-between gap-3">
+
+                                <div>
+                                    <div class="checkout-product-name">
+                                        {{ voce.prodotto.nome }}
+                                    </div>
+
+                                    <div class="checkout-product-quantity">
+                                        Quantità: {{ voce.quantita }}
+                                    </div>
+                                </div>
+
+                                <div class="checkout-product-price">
+                                    € {{ voce.prezzo_totale|floatformat:2 }}
+                                </div>
+
+                            </div>
+                        {% endfor %}
+
+
+                        <div class="checkout-totals">
+
+                            <div class="checkout-total-row">
+                                <span>Subtotale</span>
+                                <span>€ {{ subtotale_carrello|floatformat:2 }}</span>
+                            </div>
+
+                            <div class="checkout-total-row">
+                                <span>Spedizione</span>
+
+                                {% if costo_spedizione == 0 %}
+                                    <span class="checkout-free">
+                                        Gratuita
+                                    </span>
+                                {% else %}
+                                    <span>
+                                        € {{ costo_spedizione|floatformat:2 }}
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="checkout-total-final">
+                                <span>Totale</span>
+                                <span>€ {{ totale_carrello|floatformat:2 }}</span>
+                            </div>
+
+                        </div>
+
+
+                        <div class="checkout-conditions">
+
+                            <div class="d-flex align-items-start gap-2">
+                                {{ form.accetta_condizioni }}
+
+                                <label for="{{ form.accetta_condizioni.id_for_label }}" class="mb-0 fw-normal">
+                                    {{ form.accetta_condizioni.label }}
+                                </label>
+                            </div>
+
+                            {% for errore in form.accetta_condizioni.errors %}
+                                <div class="text-danger small mt-2">
+                                    {{ errore }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+
+                        <button type="submit" class="checkout-submit">
+                            Continua al pagamento
+                            <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+
+
+                        <div class="checkout-security">
+                            <i class="bi bi-shield-check"></i>
+                            Pagamento sicuro e protetto
+                        </div>
+
+                    </aside>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+</section>
+
+{% endblock %}

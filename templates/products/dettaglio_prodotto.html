@@ -1,0 +1,1136 @@
+{% extends "base.html" %}
+
+{% block title %}{{ prodotto.nome }} | VivaLei{% endblock %}
+{% block meta_description %}{{ prodotto.descrizione|striptags|truncatechars:155 }}{% endblock %}
+
+{% block extra_css %}
+<style>
+    .product-page {
+        padding: 34px 0 72px;
+    }
+
+    .product-breadcrumb {
+        margin-bottom: 28px;
+        font-size: 15px;
+    }
+
+    .product-breadcrumb .breadcrumb-item,
+    .product-breadcrumb .breadcrumb-item a {
+        color: var(--vivalei-text-muted);
+    }
+
+    .product-breadcrumb .breadcrumb-item a:hover {
+        color: var(--vivalei-purple);
+    }
+
+    /* GALLERIA */
+    .product-gallery {
+        position: sticky;
+        top: 110px;
+    }
+
+    .product-gallery-layout {
+        display: grid;
+        grid-template-columns: 82px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .product-thumbnails {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .product-thumbnail {
+        width: 82px;
+        height: 82px;
+        padding: 0;
+        overflow: hidden;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background: #f8f6f4;
+        cursor: pointer;
+        transition: border-color .2s ease, box-shadow .2s ease;
+    }
+
+    .product-thumbnail:hover,
+    .product-thumbnail.active {
+        border-color: var(--vivalei-purple);
+    }
+
+    .product-thumbnail.active {
+        box-shadow: 0 0 0 2px rgba(134, 22, 125, .1);
+    }
+
+    .product-thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .product-main-image-wrapper {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        overflow: hidden;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 24px;
+        background: #f8f6f4;
+    }
+
+    .product-main-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: opacity .18s ease;
+    }
+
+    .product-main-image.changing {
+        opacity: .3;
+    }
+
+    .product-image-placeholder {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        align-content: center;
+        gap: 12px;
+        color: var(--vivalei-text-muted);
+    }
+
+    .product-image-placeholder i {
+        font-size: 52px;
+    }
+
+    .product-favorite {
+        position: absolute;
+        top: 18px;
+        right: 18px;
+        width: 48px;
+        height: 48px;
+        display: grid;
+        place-items: center;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 50%;
+        background: rgba(255, 255, 255, .94);
+        color: var(--vivalei-purple);
+        font-size: 21px;
+    }
+
+    /* INFO */
+    .product-info {
+        padding-left: 34px;
+    }
+
+    .product-category {
+        min-height: 32px;
+        margin-bottom: 17px;
+        padding: 5px 13px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 30px;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .product-title {
+        margin-bottom: 12px;
+        font-size: clamp(38px, 4vw, 54px);
+        line-height: 1.08;
+        font-weight: 500;
+        letter-spacing: -.025em;
+    }
+
+    .product-code {
+        margin-bottom: 24px;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .product-price {
+        margin-bottom: 22px;
+        font-size: 34px;
+        line-height: 1;
+        font-weight: 700;
+    }
+
+    .product-description {
+        margin-bottom: 25px;
+        color: var(--vivalei-text-muted);
+        font-size: 18px;
+        line-height: 1.7;
+    }
+
+    .product-description h2,
+    .product-description h3 {
+        margin: 24px 0 10px;
+        font-size: 22px;
+    }
+
+    .product-description p:last-child,
+    .product-description ul:last-child {
+        margin-bottom: 0;
+    }
+
+    /* DISPONIBILITÀ */
+    .product-stock,
+    .product-out-stock {
+        margin-bottom: 26px;
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .product-stock {
+        color: #497255;
+    }
+
+    .product-out-stock {
+        color: #a04a4a;
+    }
+
+    .product-stock-dot,
+    .product-out-stock-dot {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+    }
+
+    .product-stock-dot {
+        background: #5b8c67;
+    }
+
+    .product-out-stock-dot {
+        background: #b45a5a;
+    }
+
+    /* ACQUISTO */
+    .product-quantity-label {
+        margin-bottom: 8px;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .product-quantity {
+        width: 100%;
+        min-height: 58px;
+        padding: 10px 14px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background: #fff;
+        font-size: 18px;
+        text-align: center;
+    }
+
+    .product-quantity:focus {
+        border-color: var(--vivalei-purple);
+        outline: 0;
+        box-shadow: 0 0 0 4px rgba(134, 22, 125, .07);
+    }
+
+    .product-add-button {
+        width: 100%;
+        min-height: 60px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 13px;
+        background: var(--vivalei-purple);
+        color: #fff;
+        font-size: 19px;
+        font-weight: 700;
+        transition: .2s ease;
+    }
+
+    .product-add-button:hover:not(:disabled) {
+        border-color: var(--vivalei-purple-dark);
+        background: var(--vivalei-purple-dark);
+        color: #fff;
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(134, 22, 125, .14);
+    }
+
+    .product-add-button:disabled {
+        opacity: .45;
+        cursor: not-allowed;
+    }
+
+    /* BENEFICI */
+    .product-benefits {
+        margin-top: 28px;
+    }
+
+    .product-benefit-card {
+        height: 100%;
+        min-height: 110px;
+        padding: 19px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 15px;
+        background: #fff;
+    }
+
+    .product-benefit-icon,
+    .product-accordion-icon {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+    }
+
+    .product-benefit-icon {
+        width: 42px;
+        height: 42px;
+        font-size: 19px;
+    }
+
+    .product-benefit-title {
+        margin: 0 0 3px;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .product-benefit-description {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+        line-height: 1.45;
+    }
+
+    /* TRUST */
+    .product-trust-bar {
+        margin-top: 26px;
+        padding: 18px;
+        border-radius: 16px;
+        background: #faf8f6;
+    }
+
+    .product-trust-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .product-trust-item i {
+        color: var(--vivalei-purple);
+        font-size: 21px;
+    }
+
+    /* ACCORDION */
+    .product-details-section {
+        padding-top: 62px;
+    }
+
+    .product-accordion {
+        overflow: hidden;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 18px;
+    }
+
+    .product-accordion .accordion-item {
+        border: 0;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .product-accordion .accordion-item:last-child {
+        border-bottom: 0;
+    }
+
+    .product-accordion .accordion-button {
+        min-height: 66px;
+        padding: 18px 22px;
+        background: #fff;
+        color: var(--vivalei-text);
+        font-size: 18px;
+        font-weight: 600;
+        box-shadow: none;
+    }
+
+    .product-accordion .accordion-button:not(.collapsed) {
+        color: var(--vivalei-purple);
+    }
+
+    .product-accordion .accordion-button:focus {
+        box-shadow: none;
+    }
+
+    .product-accordion .accordion-body {
+        padding: 4px 22px 25px;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+        line-height: 1.7;
+    }
+
+    .product-accordion-icon {
+        width: 38px;
+        height: 38px;
+        margin-right: 12px;
+    }
+
+    /* CORRELATI */
+    .related-products {
+        padding: 72px 0 20px;
+    }
+
+    .related-title {
+        margin-bottom: 8px;
+        font-size: clamp(32px, 4vw, 44px);
+        font-weight: 500;
+    }
+
+    .related-subtitle {
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+    }
+
+    .related-card {
+        height: 100%;
+        overflow: hidden;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 18px;
+        background: #fff;
+        transition: .2s ease;
+    }
+
+    .related-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, .05);
+    }
+
+    .related-image-wrapper {
+        aspect-ratio: 1;
+        overflow: hidden;
+        background: #f8f6f4;
+    }
+
+    .related-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .3s ease;
+    }
+
+    .related-card:hover .related-image {
+        transform: scale(1.025);
+    }
+
+    .related-placeholder {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        place-items: center;
+        color: var(--vivalei-text-muted);
+    }
+
+    .related-body {
+        padding: 18px;
+    }
+
+    .related-category {
+        margin-bottom: 5px;
+        color: var(--vivalei-purple);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .related-product-title {
+        min-height: 51px;
+        margin-bottom: 8px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 18px;
+        line-height: 1.4;
+        font-weight: 600;
+    }
+
+    .related-price {
+        margin: 0;
+        font-size: 20px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 991.98px) {
+        .product-gallery {
+            position: static;
+        }
+
+        .product-info {
+            padding: 35px 0 0;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .product-page {
+            padding: 20px 0 50px;
+        }
+
+        .product-breadcrumb {
+            margin-bottom: 18px;
+        }
+
+        .product-gallery-layout {
+            display: flex;
+            flex-direction: column-reverse;
+            gap: 12px;
+        }
+
+        .product-thumbnails {
+            flex-direction: row;
+            overflow-x: auto;
+            padding-bottom: 3px;
+            scrollbar-width: none;
+        }
+
+        .product-thumbnails::-webkit-scrollbar {
+            display: none;
+        }
+
+        .product-thumbnail {
+            width: 70px;
+            height: 70px;
+            flex: 0 0 70px;
+        }
+
+        .product-main-image-wrapper {
+            border-radius: 18px;
+        }
+
+        .product-title {
+            font-size: 37px;
+        }
+
+        .product-price {
+            font-size: 30px;
+        }
+
+        .product-description {
+            font-size: 17px;
+        }
+
+        .product-benefit-card {
+            min-height: auto;
+        }
+
+        .product-details-section {
+            padding-top: 45px;
+        }
+
+        .product-accordion .accordion-button {
+            min-height: 62px;
+            padding: 16px 17px;
+            font-size: 17px;
+        }
+
+        .product-accordion .accordion-body {
+            padding: 2px 17px 22px;
+            font-size: 16px;
+        }
+
+        .related-products {
+            padding-top: 54px;
+        }
+
+        .related-product-title {
+            min-height: auto;
+        }
+    }
+</style>
+{% endblock %}
+
+
+{% block content %}
+<section class="product-page">
+    <div class="container">
+
+        <!-- BREADCRUMB -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb product-breadcrumb">
+                <li class="breadcrumb-item">
+                    <a href="{% url 'core:home' %}">Home</a>
+                </li>
+
+                <li class="breadcrumb-item">
+                    <a href="{% url 'products:lista_prodotti' %}">Prodotti</a>
+                </li>
+
+                {% if prodotto.categoria %}
+                    <li class="breadcrumb-item">
+                        <a href="{% url 'products:lista_prodotti' %}?categoria={{ prodotto.categoria.slug }}">
+                            {{ prodotto.categoria.nome }}
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li class="breadcrumb-item active" aria-current="page">
+                    {{ prodotto.nome }}
+                </li>
+            </ol>
+        </nav>
+
+
+        <!-- PRODOTTO -->
+        <div class="row g-4 g-xl-5 align-items-start">
+
+            <!-- GALLERIA -->
+            <div class="col-12 col-lg-6">
+                <div class="product-gallery">
+
+                    {% if prodotto.immagine %}
+                        <div class="product-gallery-layout">
+
+                            <!-- MINIATURE -->
+                            <div class="product-thumbnails">
+
+                                <button
+                                    type="button"
+                                    class="product-thumbnail active"
+                                    data-product-image="{{ prodotto.immagine.url }}"
+                                    data-product-alt="{{ prodotto.nome }}"
+                                    aria-label="Visualizza immagine principale"
+                                >
+                                    <img src="{{ prodotto.immagine.url }}" alt="{{ prodotto.nome }}">
+                                </button>
+
+                                {% for foto in prodotto.immagini_extra.all %}
+                                    <button
+                                        type="button"
+                                        class="product-thumbnail"
+                                        data-product-image="{{ foto.immagine.url }}"
+                                        data-product-alt="{{ foto.alt_text|default:prodotto.nome }}"
+                                        aria-label="Visualizza altra immagine di {{ prodotto.nome }}"
+                                    >
+                                        <img
+                                            src="{{ foto.immagine.url }}"
+                                            alt="{{ foto.alt_text|default:prodotto.nome }}"
+                                        >
+                                    </button>
+                                {% endfor %}
+
+                            </div>
+
+                            <!-- IMMAGINE GRANDE -->
+                            <div class="product-main-image-wrapper">
+                                <img
+                                    src="{{ prodotto.immagine.url }}"
+                                    alt="{{ prodotto.nome }}"
+                                    class="product-main-image"
+                                    id="productMainImage"
+                                >
+
+                                <button
+                                    type="button"
+                                    class="product-favorite"
+                                    aria-label="Aggiungi ai preferiti"
+                                    title="Preferiti"
+                                >
+                                    <i class="bi bi-heart"></i>
+                                </button>
+                            </div>
+
+                        </div>
+
+                    {% elif prodotto.immagini_extra.exists %}
+
+                        {% with prima=prodotto.immagini_extra.first %}
+                            <div class="product-gallery-layout">
+
+                                <div class="product-thumbnails">
+                                    {% for foto in prodotto.immagini_extra.all %}
+                                        <button
+                                            type="button"
+                                            class="product-thumbnail {% if forloop.first %}active{% endif %}"
+                                            data-product-image="{{ foto.immagine.url }}"
+                                            data-product-alt="{{ foto.alt_text|default:prodotto.nome }}"
+                                        >
+                                            <img
+                                                src="{{ foto.immagine.url }}"
+                                                alt="{{ foto.alt_text|default:prodotto.nome }}"
+                                            >
+                                        </button>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="product-main-image-wrapper">
+                                    <img
+                                        src="{{ prima.immagine.url }}"
+                                        alt="{{ prima.alt_text|default:prodotto.nome }}"
+                                        class="product-main-image"
+                                        id="productMainImage"
+                                    >
+
+                                    <button
+                                        type="button"
+                                        class="product-favorite"
+                                        aria-label="Aggiungi ai preferiti"
+                                    >
+                                        <i class="bi bi-heart"></i>
+                                    </button>
+                                </div>
+
+                            </div>
+                        {% endwith %}
+
+                    {% else %}
+
+                        <div class="product-main-image-wrapper">
+                            <div class="product-image-placeholder">
+                                <i class="bi bi-image"></i>
+                                <span>Immagine non disponibile</span>
+                            </div>
+                        </div>
+
+                    {% endif %}
+
+                </div>
+            </div>
+
+
+            <!-- INFORMAZIONI -->
+            <div class="col-12 col-lg-6">
+                <div class="product-info">
+
+                    {% if prodotto.categoria %}
+                        <div class="product-category">
+                            {{ prodotto.categoria.nome }}
+                        </div>
+                    {% endif %}
+
+                    <h1 class="product-title">{{ prodotto.nome }}</h1>
+
+                    {% if prodotto.sku %}
+                        <div class="product-code">
+                            Codice prodotto: {{ prodotto.sku }}
+                        </div>
+                    {% endif %}
+
+                    <div class="product-price">
+                        € {{ prodotto.prezzo|floatformat:2 }}
+                    </div>
+
+                    {% if prodotto.descrizione %}
+                        <div class="product-description">
+                            {{ prodotto.descrizione|safe }}
+                        </div>
+                    {% endif %}
+
+
+                    <!-- DISPONIBILITÀ / CARRELLO -->
+                    {% if prodotto.quantita_disponibile > 0 %}
+
+                        <div class="product-stock">
+                            <span class="product-stock-dot"></span>
+                            Disponibile
+                        </div>
+
+                        <form
+                            method="post"
+                            action="{% url 'carrello:aggiungi' prodotto.id %}"
+                        >
+                            {% csrf_token %}
+
+                            <div class="row g-3">
+                                <div class="col-4 col-sm-3">
+                                    <label for="quantitaProdotto" class="product-quantity-label">
+                                        Quantità
+                                    </label>
+
+                                    <input
+                                        type="number"
+                                        id="quantitaProdotto"
+                                        name="quantita"
+                                        value="1"
+                                        min="1"
+                                        max="{{ prodotto.quantita_disponibile }}"
+                                        class="product-quantity"
+                                        required
+                                    >
+                                </div>
+
+                                <div class="col-8 col-sm-9 d-flex align-items-end">
+                                    <button type="submit" class="product-add-button">
+                                        <i class="bi bi-bag me-2"></i>
+                                        Aggiungi al carrello
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    {% else %}
+
+                        <div class="product-out-stock">
+                            <span class="product-out-stock-dot"></span>
+                            Momentaneamente non disponibile
+                        </div>
+
+                        <button type="button" class="product-add-button" disabled>
+                            Non disponibile
+                        </button>
+
+                    {% endif %}
+
+
+                    <!-- BENEFICI -->
+                    <div class="product-benefits">
+                        <div class="row g-3">
+
+                            <div class="col-12 col-sm-4">
+                                <div class="product-benefit-card">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="product-benefit-icon">
+                                            <i class="bi bi-heart"></i>
+                                        </div>
+
+                                        <div>
+                                            <p class="product-benefit-title">Scelto per te</p>
+                                            <p class="product-benefit-description">
+                                                Pratico per la vita di ogni giorno.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-4">
+                                <div class="product-benefit-card">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="product-benefit-icon">
+                                            <i class="bi bi-stars"></i>
+                                        </div>
+
+                                        <div>
+                                            <p class="product-benefit-title">Semplice</p>
+                                            <p class="product-benefit-description">
+                                                Intuitivo e facile da utilizzare.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-4">
+                                <div class="product-benefit-card">
+                                    <div class="d-flex align-items-start gap-3">
+                                        <div class="product-benefit-icon">
+                                            <i class="bi bi-house-heart"></i>
+                                        </div>
+
+                                        <div>
+                                            <p class="product-benefit-title">Quotidiano</p>
+                                            <p class="product-benefit-description">
+                                                Pensato per inserirsi nella tua routine.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- TRUST -->
+                    <div class="product-trust-bar">
+                        <div class="row g-3">
+
+                            <div class="col-12 col-sm-4">
+                                <div class="product-trust-item">
+                                    <i class="bi bi-truck"></i>
+                                    <span>Spedizione tracciata</span>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-4">
+                                <div class="product-trust-item">
+                                    <i class="bi bi-arrow-repeat"></i>
+                                    <span>Resi semplici</span>
+                                </div>
+                            </div>
+
+                            <div class="col-12 col-sm-4">
+                                <div class="product-trust-item">
+                                    <i class="bi bi-shield-check"></i>
+                                    <span>Pagamenti sicuri</span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+
+        <!-- DETTAGLI -->
+        <div class="product-details-section">
+            <div class="accordion product-accordion" id="accordionProdotto">
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button
+                            class="accordion-button"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#perchePiacera"
+                        >
+                            <span class="product-accordion-icon">
+                                <i class="bi bi-heart"></i>
+                            </span>
+                            Perché ti piacerà
+                        </button>
+                    </h2>
+
+                    <div
+                        id="perchePiacera"
+                        class="accordion-collapse collapse show"
+                        data-bs-parent="#accordionProdotto"
+                    >
+                        <div class="accordion-body">
+                            {{ prodotto.descrizione|safe }}
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button
+                            class="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#comeSiUsa"
+                        >
+                            <span class="product-accordion-icon">
+                                <i class="bi bi-play-circle"></i>
+                            </span>
+                            Come si usa
+                        </button>
+                    </h2>
+
+                    <div
+                        id="comeSiUsa"
+                        class="accordion-collapse collapse"
+                        data-bs-parent="#accordionProdotto"
+                    >
+                        <div class="accordion-body">
+                            Le istruzioni specifiche per questo prodotto verranno indicate qui.
+                            Nelle prossime fasi potremo aggiungere al prodotto una sezione
+                            dedicata alle modalità di utilizzo.
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button
+                            class="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#dettagliProdotto"
+                        >
+                            <span class="product-accordion-icon">
+                                <i class="bi bi-info-circle"></i>
+                            </span>
+                            Dettagli del prodotto
+                        </button>
+                    </h2>
+
+                    <div
+                        id="dettagliProdotto"
+                        class="accordion-collapse collapse"
+                        data-bs-parent="#accordionProdotto"
+                    >
+                        <div class="accordion-body">
+
+                            {% if prodotto.sku %}
+                                <p>
+                                    <strong>Codice:</strong>
+                                    {{ prodotto.sku }}
+                                </p>
+                            {% endif %}
+
+                            {% if prodotto.categoria %}
+                                <p>
+                                    <strong>Categoria:</strong>
+                                    {{ prodotto.categoria.nome }}
+                                </p>
+                            {% endif %}
+
+                            <div class="mb-0">
+                                {{ prodotto.descrizione|safe }}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button
+                            class="accordion-button collapsed"
+                            type="button"
+                            data-bs-toggle="collapse"
+                            data-bs-target="#spedizioneResi"
+                        >
+                            <span class="product-accordion-icon">
+                                <i class="bi bi-truck"></i>
+                            </span>
+                            Spedizione e resi
+                        </button>
+                    </h2>
+
+                    <div
+                        id="spedizioneResi"
+                        class="accordion-collapse collapse"
+                        data-bs-parent="#accordionProdotto"
+                    >
+                        <div class="accordion-body">
+                            Riceverai le informazioni di tracciamento quando l'ordine verrà
+                            affidato al corriere. Le condizioni definitive di spedizione e
+                            reso saranno consultabili nelle relative pagine informative di VivaLei.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- CORRELATI -->
+        {% if prodotti_correlati %}
+            <section class="related-products">
+
+                <div class="d-flex justify-content-between align-items-end gap-3 mb-4">
+                    <div>
+                        <h2 class="related-title">Potrebbe piacerti anche</h2>
+
+                        {% if prodotto.categoria %}
+                            <p class="related-subtitle mb-0">
+                                Altre soluzioni dal mondo {{ prodotto.categoria.nome }}.
+                            </p>
+                        {% endif %}
+                    </div>
+
+                    {% if prodotto.categoria %}
+                        <a
+                            href="{% url 'products:lista_prodotti' %}?categoria={{ prodotto.categoria.slug }}"
+                            class="text-vivalei fw-semibold d-none d-sm-inline-flex align-items-center gap-2"
+                        >
+                            Vedi tutti
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    {% endif %}
+                </div>
+
+
+                <div class="row g-4">
+                    {% for correlato in prodotti_correlati %}
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <article class="related-card">
+
+                                <a href="{{ correlato.get_absolute_url }}">
+                                    <div class="related-image-wrapper">
+                                        {% if correlato.immagine %}
+                                            <img
+                                                src="{{ correlato.immagine.url }}"
+                                                alt="{{ correlato.nome }}"
+                                                class="related-image"
+                                            >
+                                        {% else %}
+                                            <div class="related-placeholder">
+                                                <i class="bi bi-image fs-1"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </a>
+
+                                <div class="related-body">
+                                    {% if correlato.categoria %}
+                                        <div class="related-category">
+                                            {{ correlato.categoria.nome }}
+                                        </div>
+                                    {% endif %}
+
+                                    <a href="{{ correlato.get_absolute_url }}">
+                                        <h3 class="related-product-title">
+                                            {{ correlato.nome }}
+                                        </h3>
+                                    </a>
+
+                                    <div class="d-flex justify-content-between align-items-center gap-2">
+                                        <p class="related-price">
+                                            € {{ correlato.prezzo|floatformat:2 }}
+                                        </p>
+
+                                        <a
+                                            href="{{ correlato.get_absolute_url }}"
+                                            class="text-vivalei"
+                                            aria-label="Visualizza {{ correlato.nome }}"
+                                        >
+                                            <i class="bi bi-arrow-right fs-5"></i>
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </article>
+                        </div>
+                    {% endfor %}
+                </div>
+
+            </section>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mainImage = document.getElementById("productMainImage");
+        const thumbnails = document.querySelectorAll(".product-thumbnail");
+
+        if (!mainImage || !thumbnails.length) return;
+
+        thumbnails.forEach(function(thumbnail) {
+            thumbnail.addEventListener("click", function() {
+                const imageUrl = thumbnail.dataset.productImage;
+                const altText = thumbnail.dataset.productAlt || "{{ prodotto.nome|escapejs }}";
+
+                if (!imageUrl || mainImage.src === imageUrl) return;
+
+                thumbnails.forEach(function(item) {
+                    item.classList.remove("active");
+                });
+
+                thumbnail.classList.add("active");
+                mainImage.classList.add("changing");
+
+                const preload = new Image();
+
+                preload.onload = function() {
+                    mainImage.src = imageUrl;
+                    mainImage.alt = altText;
+                    mainImage.classList.remove("changing");
+                };
+
+                preload.onerror = function() {
+                    mainImage.classList.remove("changing");
+                };
+
+                preload.src = imageUrl;
+            });
+        });
+    });
+</script>
+{% endblock %}

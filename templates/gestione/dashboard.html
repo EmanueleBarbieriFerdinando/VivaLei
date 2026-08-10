@@ -1,0 +1,268 @@
+{% extends "base.html" %}
+
+{% block title %}Pannello gestione | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .admin-page {
+        padding: 38px 0 64px;
+        background: #fcfbfa;
+    }
+
+    .admin-header {
+        margin-bottom: 26px;
+    }
+
+    .admin-eyebrow {
+        margin-bottom: 5px;
+        color: var(--vivalei-purple);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: .05em;
+        text-transform: uppercase;
+    }
+
+    .admin-title {
+        margin: 0 0 5px;
+        font-size: 38px;
+        font-weight: 500;
+    }
+
+    .admin-subtitle {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 16px;
+    }
+
+    .admin-card {
+        height: 100%;
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        background: #fff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 15px;
+    }
+
+    .admin-card-top {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        margin-bottom: 14px;
+    }
+
+    .admin-card-icon {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 19px;
+    }
+
+    .admin-card-title {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .admin-card-description {
+        margin: 0 0 22px;
+        color: var(--vivalei-text-muted);
+        font-size: 15px;
+        line-height: 1.5;
+    }
+
+    .admin-card-action {
+        margin-top: auto;
+    }
+
+    .admin-btn {
+        min-height: 44px;
+        padding: 9px 15px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 9px;
+        background: var(--vivalei-purple);
+        color: #fff;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .admin-btn:hover {
+        background: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+        color: #fff;
+    }
+
+    .admin-btn-disabled {
+        min-height: 44px;
+        padding: 9px 15px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        border: 1px solid #e1dddf;
+        border-radius: 9px;
+        background: #f4f2f3;
+        color: #918c8f;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 767.98px) {
+        .admin-page {
+            padding: 28px 0 48px;
+        }
+
+        .admin-title {
+            font-size: 32px;
+        }
+
+        .admin-card {
+            padding: 20px;
+        }
+
+        .admin-btn,
+        .admin-btn-disabled {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="admin-page">
+    <div class="container">
+
+        <div class="admin-header">
+
+            <div class="admin-eyebrow">
+                Area amministrativa
+            </div>
+
+            <h1 class="admin-title">
+                Pannello gestione
+            </h1>
+
+            <p class="admin-subtitle">
+                Gestisci le principali funzioni del negozio.
+            </p>
+
+        </div>
+
+        <div class="row g-3">
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <div class="admin-card">
+
+                    <div class="admin-card-top">
+
+                        <div class="admin-card-icon">
+                            <i class="bi bi-box-seam"></i>
+                        </div>
+
+                        <h2 class="admin-card-title">
+                            Prodotti
+                        </h2>
+
+                    </div>
+
+                    <p class="admin-card-description">
+                        Aggiungi e modifica prodotti, categorie, prezzi e disponibilità.
+                    </p>
+
+                    <div class="admin-card-action">
+
+                        <a href="{% url 'gestione:prodotti' %}" class="admin-btn">
+                            Gestisci prodotti
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <div class="admin-card">
+
+                    <div class="admin-card-top">
+
+                        <div class="admin-card-icon">
+                            <i class="bi bi-receipt"></i>
+                        </div>
+
+                        <h2 class="admin-card-title">
+                            Ordini
+                        </h2>
+
+                    </div>
+
+                    <p class="admin-card-description">
+                        Visualizza e gestisci gli ordini ricevuti.
+                    </p>
+
+                    <div class="admin-card-action">
+
+                        <a href="{% url 'gestione:ordini' %}" class="admin-btn">
+                            Gestisci ordini
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+                <div class="admin-card">
+
+                    <div class="admin-card-top">
+
+                        <div class="admin-card-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                        <h2 class="admin-card-title">
+                            Utenti
+                        </h2>
+
+                    </div>
+
+                    <p class="admin-card-description">
+                        Consulta gli utenti registrati e gestisci i loro account.
+                    </p>
+
+                    <div class="admin-card-action">
+
+                        <a href="{% url 'gestione:utenti' %}" class="admin-btn">
+                            Gestisci utenti
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,360 @@
+{% extends "base.html" %}
+
+{% block title %}Ordine {{ ordine.codice }} | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .order-page {
+        padding: 48px 0 72px;
+        background: #fcfbfa;
+    }
+
+    .order-header {
+        margin-bottom: 34px;
+    }
+
+    .order-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 34px;
+        padding: 5px 13px;
+        margin-bottom: 15px;
+        border-radius: 30px;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .order-title {
+        margin-bottom: 9px;
+        font-size: clamp(38px, 4vw, 50px);
+        font-weight: 500;
+    }
+
+    .order-code {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 16px;
+    }
+
+    .order-card {
+        padding: 29px;
+        background: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+    }
+
+    .order-card-title {
+        margin-bottom: 23px;
+        font-size: 26px;
+        font-weight: 500;
+    }
+
+    .order-product {
+        padding: 18px 0;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .order-product:first-of-type {
+        padding-top: 0;
+    }
+
+    .order-product:last-child {
+        padding-bottom: 0;
+        border-bottom: 0;
+    }
+
+    .order-product-name {
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .order-product-info {
+        margin-top: 3px;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .order-product-price {
+        white-space: nowrap;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .order-sidebar {
+        position: sticky;
+        top: 125px;
+    }
+
+    .order-total-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 12px;
+        color: var(--vivalei-text-muted);
+    }
+
+    .order-total-final {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding-top: 19px;
+        margin-top: 19px;
+        border-top: 1px solid var(--vivalei-border);
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .order-payment-success {
+        padding: 19px;
+        margin-top: 24px;
+        border-radius: 14px;
+        background: #f0f7f2;
+        color: #486a50;
+    }
+
+    .order-payment-success-icon {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: #ffffff;
+        color: #52775b;
+        font-size: 21px;
+    }
+
+    .order-alert {
+        margin-top: 22px;
+        border: 0;
+        border-radius: 13px;
+    }
+
+    .order-pay-button {
+        width: 100%;
+        min-height: 60px;
+        margin-top: 22px;
+        border: 0;
+        border-radius: 13px;
+        background: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .order-pay-button:hover {
+        background: var(--vivalei-purple-dark);
+    }
+
+    .order-help {
+        padding: 20px;
+        margin-top: 22px;
+        border-radius: 15px;
+        background: #faf8f6;
+    }
+
+    .order-help-icon {
+        color: var(--vivalei-purple);
+        font-size: 23px;
+    }
+
+    @media (max-width: 991.98px) {
+        .order-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .order-page {
+            padding: 30px 0 52px;
+        }
+
+        .order-card {
+            padding: 22px;
+        }
+
+        .order-title {
+            font-size: 39px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="order-page">
+    <div class="container">
+
+        <div class="order-header">
+
+            <div class="order-status">
+                <i class="bi bi-box-seam"></i>
+                {{ ordine.get_stato_display }}
+            </div>
+
+            <h1 class="order-title">
+                Grazie per il tuo ordine
+            </h1>
+
+            <p class="order-code">
+                Ordine <strong>{{ ordine.codice }}</strong>
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-12 col-lg-8">
+
+                <div class="order-card">
+
+                    <h2 class="order-card-title">
+                        I prodotti del tuo ordine
+                    </h2>
+
+                    {% for riga in ordine.righe.all %}
+                        <div class="order-product d-flex justify-content-between align-items-center gap-4">
+
+                            <div>
+
+                                <div class="order-product-name">
+                                    {{ riga.nome_prodotto }}
+                                </div>
+
+                                <div class="order-product-info">
+                                    {{ riga.sku }} · Quantità: {{ riga.quantita }}
+                                </div>
+
+                            </div>
+
+                            <div class="order-product-price">
+                                € {{ riga.totale|floatformat:2 }}
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+
+                <div class="order-help">
+
+                    <div class="d-flex gap-3 align-items-start">
+
+                        <i class="bi bi-headset order-help-icon"></i>
+
+                        <div>
+                            <strong>Hai bisogno di aiuto?</strong>
+
+                            <p class="text-vivalei-muted mb-0 mt-1">
+                                Conserva il codice ordine {{ ordine.codice }}:
+                                ci aiuterà ad assisterti più velocemente.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-12 col-lg-4">
+
+                <aside class="order-card order-sidebar">
+
+                    <h2 class="order-card-title">
+                        Riepilogo
+                    </h2>
+
+                    <div class="order-total-row">
+                        <span>Subtotale</span>
+                        <span>€ {{ ordine.subtotale|floatformat:2 }}</span>
+                    </div>
+
+                    <div class="order-total-row">
+                        <span>Spedizione</span>
+
+                        {% if ordine.costo_spedizione == 0 %}
+                            <span class="text-success fw-semibold">
+                                Gratuita
+                            </span>
+                        {% else %}
+                            <span>
+                                € {{ ordine.costo_spedizione|floatformat:2 }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="order-total-final">
+                        <span>Totale</span>
+                        <span>€ {{ ordine.totale|floatformat:2 }}</span>
+                    </div>
+
+
+                    {% if ordine.stato_pagamento == "pagato" %}
+
+                        <div class="order-payment-success">
+
+                            <div class="d-flex gap-3 align-items-center">
+
+                                <div class="order-payment-success-icon">
+                                    <i class="bi bi-check-lg"></i>
+                                </div>
+
+                                <div>
+                                    <strong>
+                                        Pagamento completato
+                                    </strong>
+
+                                    <div class="small mt-1">
+                                        Il tuo ordine è stato ricevuto correttamente.
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    {% else %}
+
+                        {% if request.GET.checkout == "cancelled" %}
+                            <div class="alert alert-warning order-alert">
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                Pagamento annullato. Non è stato effettuato alcun addebito.
+                            </div>
+                        {% elif request.GET.checkout == "success" %}
+                            <div class="alert alert-info order-alert">
+                                <i class="bi bi-hourglass-split me-2"></i>
+                                Pagamento inviato. Attendiamo la conferma da Stripe.
+                            </div>
+                        {% endif %}
+
+
+                        <form method="post" action="{% url 'orders:crea_sessione_pagamento' ordine.codice %}">
+                            {% csrf_token %}
+
+                            <button type="submit" class="order-pay-button">
+                                <i class="bi bi-credit-card me-2"></i>
+                                Paga € {{ ordine.totale|floatformat:2 }}
+                            </button>
+                        </form>
+
+                    {% endif %}
+
+                </aside>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,942 @@
+{% extends "base.html" %}
+
+{% block title %}
+    {% if mondo %}
+        {{ mondo.nome }} | VivaLei
+    {% else %}
+        Tutti i prodotti | VivaLei
+    {% endif %}
+{% endblock %}
+
+{% block meta_description %}
+    {% if mondo %}
+        {{ mondo.descrizione }}
+    {% else %}
+        Scopri tutti i prodotti VivaLei per la casa, il movimento e il tempo che dedichi a te.
+    {% endif %}
+{% endblock %}
+
+{% block extra_css %}
+<style>
+
+    .catalog-page {
+        padding: 42px 0 80px;
+    }
+
+    .catalog-hero {
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 42px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 30px;
+        background:
+            radial-gradient(circle at top right, rgba(134, 22, 125, 0.06), transparent 30%),
+            linear-gradient(135deg, #fcf9fb 0%, #ffffff 72%);
+    }
+
+    .catalog-hero-inner {
+        padding: 52px 44px;
+    }
+
+    .catalog-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 16px;
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+    }
+
+    .catalog-main-title {
+        max-width: 760px;
+        margin-bottom: 16px;
+        font-size: clamp(42px, 5vw, 64px);
+        line-height: 1.02;
+        font-weight: 500;
+        letter-spacing: -0.03em;
+    }
+
+    .catalog-main-subtitle {
+        max-width: 760px;
+        margin-bottom: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 19px;
+        line-height: 1.7;
+    }
+
+    .catalog-hero-grid {
+        margin-top: 34px;
+    }
+
+    .catalog-pillars {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin-top: 24px;
+    }
+
+    .catalog-pillar {
+        padding: 10px 14px;
+        border: 1px solid rgba(134, 22, 125, 0.12);
+        border-radius: 999px;
+        background-color: rgba(255, 255, 255, 0.8);
+        color: var(--vivalei-text);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .catalog-side-card {
+        height: 100%;
+        padding: 28px 24px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 22px;
+        background-color: rgba(255, 255, 255, 0.82);
+        backdrop-filter: blur(8px);
+    }
+
+    .catalog-side-label {
+        margin-bottom: 8px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .catalog-side-number {
+        margin-bottom: 10px;
+        font-size: 42px;
+        line-height: 1;
+        font-weight: 600;
+        color: var(--vivalei-text);
+    }
+
+    .catalog-side-text {
+        margin-bottom: 18px;
+        color: var(--vivalei-text-muted);
+        font-size: 15px;
+        line-height: 1.7;
+    }
+
+    .catalog-side-button {
+        min-height: 48px;
+        padding: 0 20px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border-radius: 12px;
+        background-color: var(--vivalei-purple);
+        border: 1px solid var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .catalog-side-button:hover {
+        background-color: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+        color: #ffffff;
+    }
+
+    .catalog-toolbar {
+        margin-bottom: 34px;
+        padding: 20px 22px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+        background-color: #ffffff;
+    }
+
+    .catalog-toolbar-top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+    }
+
+    .catalog-toolbar-title {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .catalog-toolbar-text {
+        margin: 4px 0 0;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .catalog-toggle {
+        padding: 10px 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background-color: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        list-style: none;
+        transition: 0.2s ease;
+    }
+
+    .catalog-toggle:hover {
+        border-color: var(--vivalei-purple);
+        color: var(--vivalei-purple);
+    }
+
+    .catalog-toggle::-webkit-details-marker {
+        display: none;
+    }
+
+    .catalog-toolbar details[open] .catalog-toggle {
+        margin-bottom: 18px;
+    }
+
+    .catalog-filters {
+        margin-top: 18px;
+    }
+
+    .catalog-label {
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .catalog-input,
+    .catalog-select {
+        min-height: 52px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        font-size: 16px;
+    }
+
+    .catalog-input {
+        padding-left: 44px;
+    }
+
+    .catalog-input:focus,
+    .catalog-select:focus {
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 4px rgba(134, 22, 125, 0.07);
+    }
+
+    .catalog-search-wrapper {
+        position: relative;
+    }
+
+    .catalog-search-wrapper i {
+        position: absolute;
+        top: 50%;
+        left: 16px;
+        transform: translateY(-50%);
+        color: var(--vivalei-text-muted);
+        font-size: 18px;
+        z-index: 2;
+    }
+
+    .catalog-filter-button {
+        width: 100%;
+        min-height: 52px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 12px;
+        background-color: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .catalog-filter-button:hover {
+        background-color: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+        color: #ffffff;
+    }
+
+    .catalog-reset {
+        margin-top: 14px;
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .catalog-reset:hover {
+        color: var(--vivalei-purple-dark);
+    }
+
+    .catalog-results-header {
+        margin-bottom: 28px;
+    }
+
+    .catalog-results-title {
+        margin-bottom: 6px;
+        font-size: 38px;
+        line-height: 1.1;
+        font-weight: 500;
+        letter-spacing: -0.02em;
+    }
+
+    .catalog-results-subtitle {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+        line-height: 1.6;
+    }
+
+    .catalog-card {
+        height: 100%;
+        overflow: hidden;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 22px;
+        background-color: #ffffff;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .catalog-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 10px 28px rgba(0, 0, 0, 0.05);
+    }
+
+    .catalog-image-wrapper {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 1 / 1;
+        background-color: #f8f6f4;
+    }
+
+    .catalog-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.35s ease;
+    }
+
+    .catalog-card:hover .catalog-image {
+        transform: scale(1.03);
+    }
+
+    .catalog-placeholder {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        color: var(--vivalei-text-muted);
+    }
+
+    .catalog-placeholder i {
+        font-size: 40px;
+    }
+
+    .catalog-favorite {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 40px;
+        height: 40px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.92);
+        color: var(--vivalei-purple);
+        font-size: 18px;
+    }
+
+    .catalog-body {
+        padding: 20px;
+    }
+
+    .catalog-category {
+        margin-bottom: 6px;
+        color: var(--vivalei-purple);
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .catalog-product-title {
+        margin-bottom: 10px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 22px;
+        line-height: 1.35;
+        font-weight: 600;
+        color: var(--vivalei-text);
+    }
+
+    .catalog-description {
+        margin-bottom: 18px;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+        line-height: 1.6;
+    }
+
+    .catalog-price-row {
+        margin-bottom: 18px;
+    }
+
+    .catalog-price {
+        font-size: 23px;
+        font-weight: 700;
+        color: var(--vivalei-text);
+    }
+
+    .catalog-stock {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #56785f;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .catalog-stock::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #64896e;
+    }
+
+    .catalog-out-stock {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        color: #9d5b5b;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .catalog-out-stock::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background-color: #b56a6a;
+    }
+
+    .catalog-view-button {
+        min-height: 48px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background-color: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 15px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: 0.2s ease;
+    }
+
+    .catalog-view-button:hover {
+        border-color: var(--vivalei-purple);
+        color: var(--vivalei-purple);
+    }
+
+    .catalog-add-button {
+        min-height: 48px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 12px;
+        background-color: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .catalog-add-button:hover {
+        background-color: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+        color: #ffffff;
+    }
+
+    .catalog-disabled-button {
+        min-height: 48px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background-color: #f4f1f2;
+        color: #989296;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .catalog-empty {
+        padding: 65px 25px;
+        text-align: center;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 22px;
+        background-color: #faf8f6;
+    }
+
+    .catalog-empty-icon {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 28px;
+    }
+
+    .catalog-pagination {
+        margin-top: 46px;
+    }
+
+    .catalog-pagination .page-link {
+        min-width: 46px;
+        min-height: 46px;
+        margin: 0 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 10px !important;
+        background-color: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 15px;
+    }
+
+    .catalog-pagination .page-link:hover {
+        border-color: var(--vivalei-purple);
+        color: var(--vivalei-purple);
+    }
+
+    .catalog-pagination .page-item.active .page-link {
+        border-color: var(--vivalei-purple);
+        background-color: var(--vivalei-purple);
+        color: #ffffff;
+    }
+
+    @media (max-width: 991.98px) {
+        .catalog-hero-inner {
+            padding: 36px 24px;
+        }
+
+        .catalog-main-title {
+            font-size: 46px;
+        }
+
+        .catalog-toolbar-top {
+            flex-direction: column;
+            align-items: flex-start;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .catalog-page {
+            padding: 28px 0 56px;
+        }
+
+        .catalog-main-title {
+            font-size: 38px;
+        }
+
+        .catalog-main-subtitle {
+            font-size: 17px;
+        }
+
+        .catalog-results-title {
+            font-size: 31px;
+        }
+
+        .catalog-toolbar {
+            padding: 18px;
+        }
+
+        .catalog-body {
+            padding: 18px;
+        }
+    }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<section class="catalog-page">
+    <div class="container">
+
+        {% if mondo %}
+            <section class="catalog-hero">
+                <div class="catalog-hero-inner">
+                    <div class="row g-4 align-items-end">
+                        <div class="col-12 col-lg-8">
+                            <div class="catalog-eyebrow">
+                                {% if mondo_selezionato == "casa" %}
+                                    <i class="bi bi-house-door"></i>
+                                {% elif mondo_selezionato == "movimento" %}
+                                    <i class="bi bi-person-walking"></i>
+                                {% elif mondo_selezionato == "tempo-per-me" %}
+                                    <i class="bi bi-heart"></i>
+                                {% endif %}
+                                {{ mondo.nome }}
+                            </div>
+
+                            <h1 class="catalog-main-title">
+                                {{ mondo.titolo }}
+                            </h1>
+
+                            <p class="catalog-main-subtitle">
+                                {{ mondo.descrizione }}
+                            </p>
+
+                            <div class="catalog-pillars">
+                                {% if mondo_selezionato == "casa" %}
+                                    <span class="catalog-pillar">Ordine quotidiano</span>
+                                    <span class="catalog-pillar">Piccoli aiuti pratici</span>
+                                    <span class="catalog-pillar">Spazi più piacevoli</span>
+                                {% elif mondo_selezionato == "movimento" %}
+                                    <span class="catalog-pillar">Più energia</span>
+                                    <span class="catalog-pillar">Gesti semplici</span>
+                                    <span class="catalog-pillar">Benessere quotidiano</span>
+                                {% elif mondo_selezionato == "tempo-per-me" %}
+                                    <span class="catalog-pillar">Relax</span>
+                                    <span class="catalog-pillar">Comfort</span>
+                                    <span class="catalog-pillar">Rituali per te</span>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <aside class="catalog-side-card">
+                                <div class="catalog-side-label">
+                                    Collezione selezionata
+                                </div>
+
+                                <div class="catalog-side-number">
+                                    {{ numero_risultati }}
+                                </div>
+
+                                <p class="catalog-side-text">
+                                    {% if numero_risultati == 1 %}
+                                        Un prodotto pensato per questo mondo.
+                                    {% else %}
+                                        Una selezione essenziale di prodotti pensati per questo mondo.
+                                    {% endif %}
+                                </p>
+
+                                <a href="#griglia-prodotti" class="catalog-side-button">
+                                    Scopri i prodotti
+                                    <i class="bi bi-arrow-down"></i>
+                                </a>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% else %}
+            <section class="catalog-hero">
+                <div class="catalog-hero-inner">
+                    <div class="row g-4 align-items-end">
+                        <div class="col-12 col-lg-8">
+                            <div class="catalog-eyebrow">
+                                <i class="bi bi-stars"></i>
+                                Scopri VivaLei
+                            </div>
+
+                            <h1 class="catalog-main-title">
+                                Tutti i prodotti
+                            </h1>
+
+                            <p class="catalog-main-subtitle">
+                                Una selezione di soluzioni semplici, piacevoli e utili per la casa, il movimento e il tempo che dedichi a te.
+                            </p>
+
+                            <div class="catalog-pillars">
+                                <span class="catalog-pillar">La mia casa</span>
+                                <span class="catalog-pillar">Tenersi in movimento</span>
+                                <span class="catalog-pillar">Tempo per me</span>
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-lg-4">
+                            <aside class="catalog-side-card">
+                                <div class="catalog-side-label">
+                                    Catalogo VivaLei
+                                </div>
+
+                                <div class="catalog-side-number">
+                                    {{ numero_risultati }}
+                                </div>
+
+                                <p class="catalog-side-text">
+                                    Prodotti scelti con attenzione, senza eccessi e senza confusione.
+                                </p>
+
+                                <a href="#griglia-prodotti" class="catalog-side-button">
+                                    Esplora ora
+                                    <i class="bi bi-arrow-down"></i>
+                                </a>
+                            </aside>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        {% endif %}
+
+        <section class="catalog-toolbar">
+            <details>
+                <summary class="catalog-toggle">
+                    <i class="bi bi-sliders"></i>
+                    Affina la selezione
+                </summary>
+
+                <div class="catalog-filters">
+                    <form method="get" class="row g-3 align-items-end">
+                        {% if mondo_selezionato %}
+                            <input type="hidden" name="mondo" value="{{ mondo_selezionato }}">
+                        {% endif %}
+
+                        <div class="col-12 col-lg-5">
+                            <label for="ricercaProdotto" class="catalog-label">
+                                Cerca
+                            </label>
+
+                            <div class="catalog-search-wrapper">
+                                <i class="bi bi-search"></i>
+                                <input type="search" id="ricercaProdotto" name="q" value="{{ ricerca }}" class="form-control catalog-input" placeholder="Cerca tra i prodotti VivaLei">
+                            </div>
+                        </div>
+
+                        <div class="col-12 col-md-5 col-lg-3">
+                            <label for="categoriaProdotto" class="catalog-label">
+                                Categoria
+                            </label>
+
+                            <select id="categoriaProdotto" name="categoria" class="form-select catalog-select">
+                                <option value="">Tutte le categorie</option>
+                                {% for categoria in categorie %}
+                                    <option value="{{ categoria.slug }}" {% if categoria_selezionata == categoria.slug %}selected{% endif %}>
+                                        {{ categoria.nome }}
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-4 col-lg-2">
+                            <label for="ordineProdotto" class="catalog-label">
+                                Ordina per
+                            </label>
+
+                            <select id="ordineProdotto" name="ordine" class="form-select catalog-select">
+                                <option value="recenti" {% if ordine == "recenti" %}selected{% endif %}>Più recenti</option>
+                                <option value="nome" {% if ordine == "nome" %}selected{% endif %}>Nome</option>
+                                <option value="prezzo_crescente" {% if ordine == "prezzo_crescente" %}selected{% endif %}>Prezzo crescente</option>
+                                <option value="prezzo_decrescente" {% if ordine == "prezzo_decrescente" %}selected{% endif %}>Prezzo decrescente</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-3 col-lg-2">
+                            <button type="submit" class="catalog-filter-button">
+                                Applica
+                            </button>
+                        </div>
+                    </form>
+
+                    {% if ricerca or categoria_selezionata or ordine != "recenti" %}
+                        {% if mondo_selezionato %}
+                            <a href="{% url 'products:lista_prodotti' %}?mondo={{ mondo_selezionato }}" class="catalog-reset">
+                                <i class="bi bi-x-circle"></i>
+                                Rimuovi filtri
+                            </a>
+                        {% else %}
+                            <a href="{% url 'products:lista_prodotti' %}" class="catalog-reset">
+                                <i class="bi bi-x-circle"></i>
+                                Rimuovi filtri
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </details>
+
+            <div class="mt-3">
+                <h2 class="catalog-toolbar-title">
+                    Una selezione essenziale, pensata per essere chiara.
+                </h2>
+                <p class="catalog-toolbar-text">
+                    Pochi prodotti, scelti con cura: se vuoi, puoi comunque cercare o filtrare.
+                </p>
+            </div>
+        </section>
+
+        <div class="catalog-results-header" id="griglia-prodotti">
+            <h2 class="catalog-results-title">
+                {% if mondo_selezionato == "casa" %}
+                    Per la tua casa
+                {% elif mondo_selezionato == "movimento" %}
+                    Per tenerti in movimento
+                {% elif mondo_selezionato == "tempo-per-me" %}
+                    Per il tuo tempo
+                {% else %}
+                    I prodotti VivaLei
+                {% endif %}
+            </h2>
+
+            <p class="catalog-results-subtitle">
+                {% if numero_risultati == 1 %}
+                    1 prodotto disponibile
+                {% else %}
+                    {{ numero_risultati }} prodotti disponibili
+                {% endif %}
+            </p>
+        </div>
+
+        <div class="row g-4">
+            {% for prodotto in prodotti %}
+                <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+                    <article class="catalog-card">
+                        <div class="catalog-image-wrapper">
+                            <a href="{{ prodotto.get_absolute_url }}">
+                                {% if prodotto.immagine %}
+                                    <img src="{{ prodotto.immagine.url }}" alt="{{ prodotto.nome }}" class="catalog-image">
+                                {% else %}
+                                    <div class="catalog-placeholder">
+                                        <i class="bi bi-image"></i>
+                                        <span>Immagine non disponibile</span>
+                                    </div>
+                                {% endif %}
+                            </a>
+
+                            <button type="button" class="catalog-favorite" aria-label="Aggiungi {{ prodotto.nome }} ai preferiti">
+                                <i class="bi bi-heart"></i>
+                            </button>
+                        </div>
+
+                        <div class="catalog-body">
+                            {% if prodotto.categoria %}
+                                <div class="catalog-category">
+                                    {{ prodotto.categoria.nome }}
+                                </div>
+                            {% endif %}
+
+                            <a href="{{ prodotto.get_absolute_url }}" class="text-decoration-none">
+                                <h3 class="catalog-product-title">
+                                    {{ prodotto.nome }}
+                                </h3>
+                            </a>
+
+                            <p class="catalog-description">
+                                {{ prodotto.descrizione|truncatechars:90 }}
+                            </p>
+
+                            <div class="catalog-price-row d-flex justify-content-between align-items-center gap-2">
+                                <span class="catalog-price">
+                                    € {{ prodotto.prezzo|floatformat:2 }}
+                                </span>
+
+                                {% if prodotto.quantita_disponibile > 0 %}
+                                    <span class="catalog-stock">
+                                        Disponibile
+                                    </span>
+                                {% else %}
+                                    <span class="catalog-out-stock">
+                                        Esaurito
+                                    </span>
+                                {% endif %}
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <a href="{{ prodotto.get_absolute_url }}" class="catalog-view-button w-100">
+                                        Dettagli
+                                    </a>
+                                </div>
+
+                                <div class="col-6">
+                                    {% if prodotto.quantita_disponibile > 0 %}
+                                        <form method="post" action="{% url 'carrello:aggiungi' prodotto.id %}" class="h-100">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="quantita" value="1">
+                                            <input type="hidden" name="next" value="{{ request.get_full_path }}">
+                                            <button type="submit" class="catalog-add-button w-100 h-100">
+                                                <i class="bi bi-bag-plus me-1"></i>
+                                                Aggiungi
+                                            </button>
+                                        </form>
+                                    {% else %}
+                                        <button type="button" class="catalog-disabled-button w-100" disabled>
+                                            Esaurito
+                                        </button>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            {% empty %}
+                <div class="col-12">
+                    <div class="catalog-empty">
+                        <div class="catalog-empty-icon">
+                            <i class="bi bi-search"></i>
+                        </div>
+
+                        <h2 class="h3 mb-2">
+                            Nessun prodotto trovato
+                        </h2>
+
+                        <p class="text-vivalei-muted mb-4">
+                            Prova a modificare la ricerca o i filtri selezionati.
+                        </p>
+
+                        {% if mondo_selezionato %}
+                            <a href="{% url 'products:lista_prodotti' %}?mondo={{ mondo_selezionato }}" class="btn btn-vivalei-outline">
+                                Rimuovi tutti i filtri
+                            </a>
+                        {% else %}
+                            <a href="{% url 'products:lista_prodotti' %}" class="btn btn-vivalei-outline">
+                                Rimuovi tutti i filtri
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if pagina.has_other_pages %}
+            <nav class="catalog-pagination" aria-label="Navigazione prodotti">
+                <ul class="pagination justify-content-center mb-0">
+                    {% if pagina.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pagina.previous_page_number }}&q={{ ricerca }}&categoria={{ categoria_selezionata }}&ordine={{ ordine }}{% if mondo_selezionato %}&mondo={{ mondo_selezionato }}{% endif %}" aria-label="Pagina precedente">
+                                <i class="bi bi-chevron-left"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            {{ pagina.number }} di {{ pagina.paginator.num_pages }}
+                        </span>
+                    </li>
+
+                    {% if pagina.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ pagina.next_page_number }}&q={{ ricerca }}&categoria={{ categoria_selezionata }}&ordine={{ ordine }}{% if mondo_selezionato %}&mondo={{ mondo_selezionato }}{% endif %}" aria-label="Pagina successiva">
+                                <i class="bi bi-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        {% endif %}
+
+    </div>
+</section>
+{% endblock %}

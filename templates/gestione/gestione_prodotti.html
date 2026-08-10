@@ -1,0 +1,2217 @@
+{% extends "base.html" %}
+{% load l10n %}
+
+{% block title %}Gestione prodotti | VivaLei{% endblock %}
+
+
+{% block extra_css %}
+<style>
+
+    .admin-products-page {
+        padding: 34px 0 60px;
+        background: #fcfbfa;
+    }
+
+    .admin-products-header {
+        margin-bottom: 24px;
+    }
+
+    .admin-products-title {
+        margin: 0 0 4px;
+        font-size: 36px;
+        font-weight: 500;
+    }
+
+    .admin-products-count {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 15px;
+    }
+
+    .admin-actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .admin-button {
+        min-height: 44px;
+        padding: 9px 14px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        border-radius: 9px;
+        font-size: 14px;
+        font-weight: 700;
+        transition: .2s ease;
+    }
+
+    .admin-button-primary {
+        border: 1px solid var(--vivalei-purple);
+        background: var(--vivalei-purple);
+        color: #fff;
+    }
+
+    .admin-button-primary:hover {
+        border-color: var(--vivalei-purple-dark);
+        background: var(--vivalei-purple-dark);
+        color: #fff;
+    }
+
+    .admin-button-outline {
+        border: 1px solid var(--vivalei-purple);
+        background: #fff;
+        color: var(--vivalei-purple);
+    }
+
+    .admin-button-outline:hover {
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple-dark);
+    }
+
+    .admin-button-neutral {
+        border: 1px solid var(--vivalei-border);
+        background: #fff;
+        color: var(--vivalei-text);
+    }
+
+    .admin-button-neutral:hover {
+        border-color: #ccc5c9;
+        background: #f9f7f8;
+        color: var(--vivalei-text);
+    }
+
+    .admin-section {
+        margin-bottom: 20px;
+        background: #fff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 14px;
+    }
+
+    .admin-section-body {
+        padding: 20px;
+    }
+
+    .admin-section-title {
+        margin: 0 0 14px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .admin-category {
+        min-height: 34px;
+        padding: 6px 11px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 999px;
+        background: #faf9f9;
+        color: var(--vivalei-text);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .admin-category-world {
+        color: var(--vivalei-purple);
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .admin-category-count {
+        color: var(--vivalei-text-muted);
+        font-weight: 500;
+    }
+
+    .admin-filter label {
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .admin-filter .form-control,
+    .admin-filter .form-select {
+        min-height: 46px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 9px;
+        font-size: 14px;
+    }
+
+    .admin-filter .form-control:focus,
+    .admin-filter .form-select:focus {
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 3px rgba(134, 22, 125, .06);
+    }
+
+    .admin-search-button {
+        width: 100%;
+        min-height: 46px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 9px;
+        background: var(--vivalei-purple);
+        color: white;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .admin-search-button:hover {
+        background: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+    }
+
+
+    /* =========================
+       TABELLA
+    ========================= */
+
+    .admin-table-wrapper {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 14px;
+    }
+
+    .admin-table {
+        margin: 0;
+        font-size: 14px;
+    }
+
+    .admin-table thead th {
+        padding: 13px 14px;
+        border: 0;
+        background: #f4f1f3;
+        color: var(--vivalei-text);
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .02em;
+        white-space: nowrap;
+    }
+
+    .admin-table tbody td {
+        padding: 12px 14px;
+        border-color: var(--vivalei-border);
+        vertical-align: middle;
+    }
+
+    .admin-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .admin-product-image {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        object-fit: cover;
+        border-radius: 8px;
+        background: #f5f3f4;
+    }
+
+    .admin-product-placeholder {
+        width: 52px;
+        height: 52px;
+        flex: 0 0 52px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 8px;
+        background: #f5f3f4;
+        color: #969094;
+        font-size: 11px;
+    }
+
+    .admin-product-name {
+        margin-bottom: 2px;
+        font-weight: 700;
+    }
+
+    .admin-product-description {
+        max-width: 280px;
+        color: var(--vivalei-text-muted);
+        font-size: 12px;
+    }
+
+    .admin-sku {
+        color: var(--vivalei-purple);
+        font-family: monospace;
+        font-size: 13px;
+    }
+
+    .admin-status {
+        padding: 5px 9px;
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .admin-status-active {
+        background: #edf7f0;
+        color: #397047;
+    }
+
+    .admin-status-disabled {
+        background: #f0eeee;
+        color: #6f6a6d;
+    }
+
+    .admin-out-of-stock {
+        color: #a04d4d;
+        font-weight: 700;
+    }
+
+    .admin-edit {
+        min-height: 36px;
+        padding: 6px 11px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 8px;
+        background: #fff;
+        color: var(--vivalei-purple);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .admin-edit:hover {
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple-dark);
+    }
+
+    .admin-pagination .page-link {
+        border-color: var(--vivalei-border);
+        color: var(--vivalei-purple);
+        font-size: 14px;
+    }
+
+    .admin-pagination .page-item.active .page-link {
+        background: var(--vivalei-purple);
+        border-color: var(--vivalei-purple);
+        color: #fff;
+    }
+
+
+    /* =========================
+       MODAL
+    ========================= */
+
+    .admin-modal .modal-content {
+        border: 0;
+        border-radius: 15px;
+        overflow: hidden;
+    }
+
+    .admin-modal .modal-header {
+        padding: 19px 22px;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .admin-modal .modal-body {
+        padding: 22px;
+    }
+
+    .admin-modal .modal-footer {
+        padding: 16px 22px;
+        border-top: 1px solid var(--vivalei-border);
+    }
+
+    .admin-modal .modal-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+    }
+
+    .admin-modal .form-label {
+        margin-bottom: 6px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .admin-modal .form-control,
+    .admin-modal .form-select {
+        min-height: 46px;
+        border-color: var(--vivalei-border);
+        border-radius: 9px;
+    }
+
+    .admin-modal .form-control:focus,
+    .admin-modal .form-select:focus {
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 3px rgba(134, 22, 125, .06);
+    }
+
+    .admin-modal .form-check-input:checked {
+        background-color: var(--vivalei-purple);
+        border-color: var(--vivalei-purple);
+    }
+
+    #nuovoProdottoModal .modal-dialog,
+    #modificaProdottoModal .modal-dialog {
+        height: calc(100dvh - 2rem);
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    #nuovoProdottoModal .modal-content,
+    #modificaProdottoModal .modal-content {
+        height: 100%;
+        min-height: 0;
+        overflow: hidden;
+    }
+
+    #nuovoProdottoModal .modal-header,
+    #nuovoProdottoModal .modal-footer,
+    #modificaProdottoModal .modal-header,
+    #modificaProdottoModal .modal-footer {
+        flex-shrink: 0;
+    }
+
+    #nuovoProdottoModal .modal-body,
+    #modificaProdottoModal .modal-body {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow-y: auto !important;
+        overscroll-behavior: contain;
+        touch-action: pan-y;
+    }
+
+
+    /* =========================
+       IMMAGINI
+    ========================= */
+
+    .admin-image-section {
+        padding: 18px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 13px;
+        background: #faf9f9;
+    }
+
+    .admin-image-section-title {
+        margin: 0 0 5px;
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .admin-image-section-text {
+        margin: 0 0 16px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+    }
+
+    .admin-main-image-preview {
+        width: 140px;
+        height: 140px;
+        object-fit: cover;
+        display: block;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background: #f5f3f4;
+    }
+
+    .admin-gallery {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 12px;
+    }
+
+    .admin-gallery-item {
+        position: relative;
+        overflow: hidden;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background: #fff;
+    }
+
+    .admin-gallery-image {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        display: block;
+        object-fit: cover;
+        background: #f5f3f4;
+    }
+
+    .admin-gallery-info {
+        padding: 10px;
+    }
+
+    .admin-gallery-delete {
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        margin: 0;
+        color: #9b4545;
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+    }
+
+    .admin-upload-box {
+        padding: 18px;
+        border: 1px dashed #cfc6cc;
+        border-radius: 12px;
+        background: #fff;
+    }
+
+    .admin-upload-title {
+        margin-bottom: 4px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .admin-upload-text {
+        margin-bottom: 12px;
+        color: var(--vivalei-text-muted);
+        font-size: 12px;
+    }
+
+    .admin-new-images-preview {
+        margin-top: 14px;
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        gap: 10px;
+    }
+
+    .admin-new-images-preview img {
+        width: 100%;
+        aspect-ratio: 1 / 1;
+        object-fit: cover;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 9px;
+    }
+
+
+    /* =========================
+       TINYMCE
+    ========================= */
+
+    .tox-tinymce {
+        border: 1px solid var(--vivalei-border) !important;
+        border-radius: 10px !important;
+    }
+
+    .admin-editor-help {
+        margin-top: 7px;
+        color: var(--vivalei-text-muted);
+        font-size: 12px;
+    }
+
+
+    @media (max-width: 767.98px) {
+        .admin-products-page {
+            padding: 25px 0 45px;
+        }
+
+        .admin-products-title {
+            font-size: 31px;
+        }
+
+        .admin-actions {
+            width: 100%;
+        }
+
+        .admin-actions .admin-button {
+            flex: 1;
+        }
+
+        .admin-section-body {
+            padding: 16px;
+        }
+
+        .admin-table {
+            min-width: 900px;
+        }
+
+        .admin-gallery {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .admin-new-images-preview {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+    }
+
+
+    @media (max-width: 575.98px) {
+        .admin-actions .admin-button-neutral {
+            flex-basis: 100%;
+        }
+
+        .admin-actions .admin-button-outline,
+        .admin-actions .admin-button-primary {
+            flex: 1 1 calc(50% - 4px);
+        }
+    }
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+
+<section class="admin-products-page">
+
+    <div class="container">
+
+
+        <!-- ========================================
+             HEADER
+        ========================================= -->
+
+        <div class="admin-products-header d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-3">
+
+            <div>
+
+                <h1 class="admin-products-title">
+                    Gestione prodotti
+                </h1>
+
+                <p class="admin-products-count">
+                    {{ numero_risultati }} prodotti trovati
+                </p>
+
+            </div>
+
+
+            <div class="admin-actions">
+
+                <a
+                    href="{% url 'gestione:dashboard' %}"
+                    class="admin-button admin-button-neutral"
+                >
+                    <i class="bi bi-arrow-left"></i>
+                    Pannello
+                </a>
+
+
+                <button
+                    type="button"
+                    class="admin-button admin-button-outline"
+                    data-bs-toggle="modal"
+                    data-bs-target="#nuovaCategoriaModal"
+                >
+                    <i class="bi bi-folder-plus"></i>
+                    Nuova categoria
+                </button>
+
+
+                <button
+                    type="button"
+                    class="admin-button admin-button-primary"
+                    data-bs-toggle="modal"
+                    data-bs-target="#nuovoProdottoModal"
+                >
+                    <i class="bi bi-plus-lg"></i>
+                    Nuovo prodotto
+                </button>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ========================================
+             CATEGORIE
+        ========================================= -->
+
+        <div class="admin-section">
+
+            <div class="admin-section-body">
+
+                <h2 class="admin-section-title">
+                    Categorie
+                </h2>
+
+
+                <div class="d-flex flex-wrap gap-2">
+
+                    {% for categoria in categorie %}
+
+                        <span class="admin-category">
+
+                            {{ categoria.nome }}
+
+                            {% if categoria.mondo %}
+                                <span class="admin-category-world">
+                                    {{ categoria.get_mondo_display }}
+                                </span>
+                            {% endif %}
+
+                            <span class="admin-category-count">
+                                {{ categoria.prodotti.count }}
+                            </span>
+
+                        </span>
+
+                    {% empty %}
+
+                        <span class="text-vivalei-muted small">
+                            Nessuna categoria presente.
+                        </span>
+
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ========================================
+             FILTRI
+        ========================================= -->
+
+        <div class="admin-section">
+
+            <div class="admin-section-body">
+
+                <form method="get" class="row g-3 admin-filter">
+
+                    <div class="col-12 col-lg-5">
+
+                        <label for="ricercaProdotto">
+                            Cerca prodotto
+                        </label>
+
+                        <input
+                            type="search"
+                            id="ricercaProdotto"
+                            name="q"
+                            value="{{ ricerca }}"
+                            class="form-control"
+                            placeholder="Nome, SKU o descrizione"
+                        >
+
+                    </div>
+
+
+                    <div class="col-12 col-md-5 col-lg-3">
+
+                        <label for="filtroCategoria">
+                            Categoria
+                        </label>
+
+                        <select
+                            id="filtroCategoria"
+                            name="categoria"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Tutte le categorie
+                            </option>
+
+                            {% for categoria in categorie %}
+
+                                <option
+                                    value="{{ categoria.id }}"
+                                    {% if categoria_selezionata == categoria.id|stringformat:"s" %}selected{% endif %}
+                                >
+                                    {{ categoria.nome }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-12 col-md-4 col-lg-2">
+
+                        <label for="filtroStato">
+                            Stato
+                        </label>
+
+                        <select
+                            id="filtroStato"
+                            name="stato"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Tutti
+                            </option>
+
+                            <option value="attivi" {% if stato == "attivi" %}selected{% endif %}>
+                                Attivi
+                            </option>
+
+                            <option value="disattivati" {% if stato == "disattivati" %}selected{% endif %}>
+                                Disattivati
+                            </option>
+
+                            <option value="esauriti" {% if stato == "esauriti" %}selected{% endif %}>
+                                Esauriti
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="col-12 col-md-3 col-lg-2 d-flex align-items-end">
+
+                        <button
+                            type="submit"
+                            class="admin-search-button"
+                        >
+                            <i class="bi bi-search me-1"></i>
+                            Cerca
+                        </button>
+
+                    </div>
+
+                </form>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ========================================
+             TABELLA
+        ========================================= -->
+
+        <div class="admin-table-wrapper">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle admin-table">
+
+                    <thead>
+
+                        <tr>
+                            <th>Prodotto</th>
+                            <th>SKU</th>
+                            <th>Categoria</th>
+                            <th>Prezzo</th>
+                            <th>Quantità</th>
+                            <th>Stato</th>
+                            <th class="text-end">Azioni</th>
+                        </tr>
+
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for prodotto in pagina %}
+
+                            <tr>
+
+                                <td>
+
+                                    <div class="d-flex align-items-center gap-3">
+
+                                        {% if prodotto.immagine %}
+
+                                            <img
+                                                src="{{ prodotto.immagine.url }}"
+                                                alt="{{ prodotto.nome }}"
+                                                class="admin-product-image"
+                                            >
+
+                                        {% else %}
+
+                                            <div class="admin-product-placeholder">
+                                                N/D
+                                            </div>
+
+                                        {% endif %}
+
+
+                                        <div>
+
+                                            <div class="admin-product-name">
+                                                {{ prodotto.nome }}
+                                            </div>
+
+                                            <div class="admin-product-description">
+                                                {{ prodotto.descrizione|striptags|truncatechars:45 }}
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+                                </td>
+
+
+                                <td>
+                                    <span class="admin-sku">
+                                        {{ prodotto.sku }}
+                                    </span>
+                                </td>
+
+
+                                <td>
+                                    {{ prodotto.categoria.nome|default:"—" }}
+                                </td>
+
+
+                                <td class="fw-semibold">
+                                    € {{ prodotto.prezzo|floatformat:2 }}
+                                </td>
+
+
+                                <td>
+
+                                    {% if prodotto.quantita_disponibile > 0 %}
+                                        {{ prodotto.quantita_disponibile }}
+                                    {% else %}
+                                        <span class="admin-out-of-stock">
+                                            Esaurito
+                                        </span>
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if prodotto.attivo %}
+
+                                        <span class="admin-status admin-status-active">
+                                            Attivo
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="admin-status admin-status-disabled">
+                                            Disattivato
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    <button
+                                        type="button"
+                                        class="admin-edit"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modificaProdottoModal"
+                                        data-id="{{ prodotto.id }}"
+                                        data-url="{% url 'gestione:modifica_prodotto' prodotto.id %}"
+                                        data-nome="{{ prodotto.nome|escape }}"
+                                        data-sku="{{ prodotto.sku|escape }}"
+                                        data-categoria="{{ prodotto.categoria_id|default:'' }}"
+                                        data-prezzo="{{ prodotto.prezzo|unlocalize }}"
+                                        data-quantita="{{ prodotto.quantita_disponibile }}"
+                                        data-attivo="{{ prodotto.attivo|yesno:'true,false' }}"
+                                        {% if prodotto.immagine %}
+                                            data-immagine="{{ prodotto.immagine.url }}"
+                                        {% endif %}
+                                    >
+                                        <i class="bi bi-pencil"></i>
+                                        Modifica
+                                    </button>
+
+
+                                    <!--
+                                        Salviamo la descrizione in una textarea nascosta.
+                                        In questo modo possiamo conservare anche l'HTML di TinyMCE
+                                        senza inserirlo dentro un attributo data-*.
+                                    -->
+
+                                    <textarea
+                                        id="descrizioneProdotto{{ prodotto.id }}"
+                                        class="d-none"
+                                    >{{ prodotto.descrizione }}</textarea>
+
+
+                                    <!--
+                                        Galleria nascosta usata per popolare il modal.
+                                    -->
+
+                                    <div
+                                        id="galleriaProdotto{{ prodotto.id }}"
+                                        class="d-none"
+                                    >
+
+                                        {% for immagine in prodotto.immagini_extra.all %}
+
+                                            <div class="admin-gallery-item">
+
+                                                <img
+                                                    src="{{ immagine.immagine.url }}"
+                                                    alt="{{ immagine.alt_text|default:prodotto.nome }}"
+                                                    class="admin-gallery-image"
+                                                >
+
+                                                <div class="admin-gallery-info">
+
+                                                    <label class="admin-gallery-delete">
+
+                                                        <input
+                                                            type="checkbox"
+                                                            class="form-check-input"
+                                                            name="elimina_immagini"
+                                                            value="{{ immagine.id }}"
+                                                        >
+
+                                                        Elimina immagine
+
+                                                    </label>
+
+                                                </div>
+
+                                            </div>
+
+                                        {% empty %}
+
+                                            <p
+                                                class="text-muted small mb-0"
+                                                data-empty-gallery
+                                            >
+                                                Nessuna immagine aggiuntiva.
+                                            </p>
+
+                                        {% endfor %}
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+
+                        {% empty %}
+
+                            <tr>
+
+                                <td
+                                    colspan="7"
+                                    class="text-center text-vivalei-muted py-5"
+                                >
+                                    Nessun prodotto trovato.
+                                </td>
+
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- ========================================
+             PAGINAZIONE
+        ========================================= -->
+
+        {% if pagina.has_other_pages %}
+
+            <nav
+                class="mt-4"
+                aria-label="Paginazione prodotti"
+            >
+
+                <ul class="pagination justify-content-center admin-pagination">
+
+                    {% if pagina.has_previous %}
+
+                        <li class="page-item">
+
+                            <a
+                                class="page-link"
+                                href="?page={{ pagina.previous_page_number }}&q={{ ricerca }}&categoria={{ categoria_selezionata }}&stato={{ stato }}"
+                            >
+                                Precedente
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+
+                    <li class="page-item active">
+
+                        <span class="page-link">
+                            {{ pagina.number }} di {{ pagina.paginator.num_pages }}
+                        </span>
+
+                    </li>
+
+
+                    {% if pagina.has_next %}
+
+                        <li class="page-item">
+
+                            <a
+                                class="page-link"
+                                href="?page={{ pagina.next_page_number }}&q={{ ricerca }}&categoria={{ categoria_selezionata }}&stato={{ stato }}"
+                            >
+                                Successiva
+                            </a>
+
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+        {% endif %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     NUOVO PRODOTTO
+===================================================== -->
+
+<div
+    class="modal fade admin-modal"
+    id="nuovoProdottoModal"
+    tabindex="-1"
+    aria-labelledby="nuovoProdottoModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <form
+                method="post"
+                action="{% url 'gestione:inserisci_prodotto' %}"
+                enctype="multipart/form-data"
+            >
+
+                {% csrf_token %}
+
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <h2
+                            class="modal-title fs-5"
+                            id="nuovoProdottoModalLabel"
+                        >
+                            Nuovo prodotto
+                        </h2>
+
+                        <p class="text-muted small mb-0 mt-1">
+                            Inserisci le informazioni e le immagini del prodotto.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Chiudi"
+                    ></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <div class="row g-4">
+
+
+                        <!-- INFORMAZIONI -->
+
+                        <div class="col-12 col-xl-7">
+
+                            <div class="row g-3">
+
+                                <div class="col-12">
+
+                                    <label
+                                        for="{{ form_prodotto.nome.id_for_label }}"
+                                        class="form-label"
+                                    >
+                                        {{ form_prodotto.nome.label }}
+                                    </label>
+
+                                    {{ form_prodotto.nome }}
+
+                                </div>
+
+
+                                <div class="col-12 col-md-6">
+
+                                    <label
+                                        for="{{ form_prodotto.categoria.id_for_label }}"
+                                        class="form-label"
+                                    >
+                                        {{ form_prodotto.categoria.label }}
+                                    </label>
+
+                                    {{ form_prodotto.categoria }}
+
+                                </div>
+
+
+                                <div class="col-6 col-md-3">
+
+                                    <label
+                                        for="{{ form_prodotto.prezzo.id_for_label }}"
+                                        class="form-label"
+                                    >
+                                        {{ form_prodotto.prezzo.label }}
+                                    </label>
+
+                                    {{ form_prodotto.prezzo }}
+
+                                </div>
+
+
+                                <div class="col-6 col-md-3">
+
+                                    <label
+                                        for="{{ form_prodotto.quantita_disponibile.id_for_label }}"
+                                        class="form-label"
+                                    >
+                                        {{ form_prodotto.quantita_disponibile.label }}
+                                    </label>
+
+                                    {{ form_prodotto.quantita_disponibile }}
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <label
+                                        for="{{ form_prodotto.descrizione.id_for_label }}"
+                                        class="form-label"
+                                    >
+                                        {{ form_prodotto.descrizione.label }}
+                                    </label>
+
+                                    {{ form_prodotto.descrizione }}
+
+                                    <div class="admin-editor-help">
+                                        Puoi usare titoli, sottotitoli, grassetto,
+                                        corsivo, elenchi e link.
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-12">
+
+                                    <div class="form-check form-switch">
+
+                                        {{ form_prodotto.attivo }}
+
+                                        <label
+                                            for="{{ form_prodotto.attivo.id_for_label }}"
+                                            class="form-check-label"
+                                        >
+                                            {{ form_prodotto.attivo.label }}
+                                        </label>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- IMMAGINI -->
+
+                        <div class="col-12 col-xl-5">
+
+                            <div class="admin-image-section">
+
+                                <h3 class="admin-image-section-title">
+                                    Immagini prodotto
+                                </h3>
+
+                                <p class="admin-image-section-text">
+                                    Scegli una foto principale e aggiungi
+                                    tutte le altre immagini della galleria.
+                                </p>
+
+
+                                <div class="mb-4">
+
+                                    <label
+                                        for="{{ form_prodotto.immagine.id_for_label }}"
+                                        class="form-label"
+                                    >
+                                        Immagine principale
+                                    </label>
+
+                                    {{ form_prodotto.immagine }}
+
+                                    <div
+                                        id="previewPrincipaleNuovo"
+                                        class="mt-3 d-none"
+                                    >
+                                        <img
+                                            src=""
+                                            alt="Anteprima immagine principale"
+                                            class="admin-main-image-preview"
+                                        >
+                                    </div>
+
+                                </div>
+
+
+                                <div class="admin-upload-box">
+
+                                    <div class="admin-upload-title">
+                                        Galleria prodotto
+                                    </div>
+
+                                    <div class="admin-upload-text">
+                                        Puoi selezionare più fotografie
+                                        contemporaneamente.
+                                    </div>
+
+
+                                    <input
+                                        type="file"
+                                        class="form-control"
+                                        id="nuoveImmaginiExtra"
+                                        name="immagini_extra"
+                                        accept="image/*"
+                                        multiple
+                                    >
+
+
+                                    <div
+                                        id="previewImmaginiExtraNuovo"
+                                        class="admin-new-images-preview"
+                                    ></div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                    </div>
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="admin-button admin-button-neutral"
+                        data-bs-dismiss="modal"
+                    >
+                        Annulla
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="admin-button admin-button-primary"
+                    >
+                        Inserisci prodotto
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     NUOVA CATEGORIA
+===================================================== -->
+
+<div
+    class="modal fade admin-modal"
+    id="nuovaCategoriaModal"
+    tabindex="-1"
+    aria-labelledby="nuovaCategoriaModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form
+                method="post"
+                action="{% url 'gestione:inserisci_categoria' %}"
+            >
+
+                {% csrf_token %}
+
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <h2
+                            class="modal-title fs-5"
+                            id="nuovaCategoriaModalLabel"
+                        >
+                            Nuova categoria
+                        </h2>
+
+                        <p class="text-muted small mb-0 mt-1">
+                            Crea una categoria e collegala a uno dei mondi VivaLei.
+                        </p>
+
+                    </div>
+
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Chiudi"
+                    ></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+
+                    <div class="mb-3">
+
+                        <label
+                            for="{{ form_categoria.nome.id_for_label }}"
+                            class="form-label"
+                        >
+                            {{ form_categoria.nome.label }}
+                        </label>
+
+                        {{ form_categoria.nome }}
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label
+                            for="{{ form_categoria.mondo.id_for_label }}"
+                            class="form-label"
+                        >
+                            {{ form_categoria.mondo.label }}
+                        </label>
+
+                        {{ form_categoria.mondo }}
+
+                        <div class="form-text">
+                            Indica in quale area del sito verranno mostrati
+                            i prodotti di questa categoria.
+                        </div>
+
+                    </div>
+
+
+                    <div>
+
+                        <label
+                            for="{{ form_categoria.prefisso_sku.id_for_label }}"
+                            class="form-label"
+                        >
+                            {{ form_categoria.prefisso_sku.label }}
+                        </label>
+
+                        {{ form_categoria.prefisso_sku }}
+
+                        <div class="form-text">
+                            Verrà utilizzato per generare codici come CASA-0001.
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="admin-button admin-button-neutral"
+                        data-bs-dismiss="modal"
+                    >
+                        Annulla
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="admin-button admin-button-primary"
+                    >
+                        Crea categoria
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     MODIFICA PRODOTTO
+===================================================== -->
+
+<div
+    class="modal fade admin-modal"
+    id="modificaProdottoModal"
+    tabindex="-1"
+    aria-labelledby="modificaProdottoModalLabel"
+    aria-hidden="true"
+>
+
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
+
+        <form
+            method="post"
+            id="modificaProdottoForm"
+            class="modal-content"
+            enctype="multipart/form-data"
+        >
+
+            {% csrf_token %}
+
+
+            <div class="modal-header">
+
+                <div>
+
+                    <h2
+                        class="modal-title fs-5"
+                        id="modificaProdottoModalLabel"
+                    >
+                        Modifica prodotto
+                    </h2>
+
+                    <p
+                        class="text-muted small mb-0 mt-1"
+                        id="nomeProdottoModal"
+                    ></p>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Chiudi"
+                ></button>
+
+            </div>
+
+
+            <div class="modal-body">
+
+                <div class="row g-4">
+
+
+                    <!-- ========================================
+                         DATI
+                    ========================================= -->
+
+                    <div class="col-12 col-xl-7">
+
+                        <div class="row g-3">
+
+
+                            <div class="col-12 col-md-8">
+
+                                <label
+                                    for="modificaProdottoNome"
+                                    class="form-label"
+                                >
+                                    Nome prodotto
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control"
+                                    id="modificaProdottoNome"
+                                    name="nome"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="col-12 col-md-4">
+
+                                <label
+                                    for="modificaProdottoSku"
+                                    class="form-label"
+                                >
+                                    Codice SKU
+                                </label>
+
+                                <input
+                                    type="text"
+                                    class="form-control bg-light"
+                                    id="modificaProdottoSku"
+                                    readonly
+                                >
+
+                                <div class="form-text">
+                                    Lo SKU non può essere modificato.
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-12 col-md-6">
+
+                                <label
+                                    for="modificaProdottoCategoria"
+                                    class="form-label"
+                                >
+                                    Categoria
+                                </label>
+
+                                <select
+                                    class="form-select"
+                                    id="modificaProdottoCategoria"
+                                    name="categoria"
+                                    required
+                                >
+
+                                    <option value="">
+                                        Seleziona una categoria
+                                    </option>
+
+                                    {% for categoria in categorie %}
+
+                                        <option value="{{ categoria.id }}">
+                                            {{ categoria.nome }}
+                                        </option>
+
+                                    {% endfor %}
+
+                                </select>
+
+                            </div>
+
+
+                            <div class="col-6 col-md-3">
+
+                                <label
+                                    for="modificaProdottoPrezzo"
+                                    class="form-label"
+                                >
+                                    Prezzo
+                                </label>
+
+                                <div class="input-group">
+
+                                    <span class="input-group-text">
+                                        €
+                                    </span>
+
+                                    <input
+                                        type="number"
+                                        class="form-control"
+                                        id="modificaProdottoPrezzo"
+                                        name="prezzo"
+                                        min="0.01"
+                                        step="0.01"
+                                        required
+                                    >
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-6 col-md-3">
+
+                                <label
+                                    for="modificaProdottoQuantita"
+                                    class="form-label"
+                                >
+                                    Quantità
+                                </label>
+
+                                <input
+                                    type="number"
+                                    class="form-control"
+                                    id="modificaProdottoQuantita"
+                                    name="quantita_disponibile"
+                                    min="0"
+                                    required
+                                >
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <label
+                                    for="modificaProdottoDescrizione"
+                                    class="form-label"
+                                >
+                                    Descrizione
+                                </label>
+
+                                <textarea
+                                    class="form-control"
+                                    id="modificaProdottoDescrizione"
+                                    name="descrizione"
+                                    rows="15"
+                                ></textarea>
+
+                                <div class="admin-editor-help">
+                                    Puoi usare titoli, sottotitoli, grassetto,
+                                    corsivo, elenchi e link.
+                                </div>
+
+                            </div>
+
+
+                            <div class="col-12">
+
+                                <div class="form-check form-switch">
+
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        id="modificaProdottoAttivo"
+                                        name="attivo"
+                                    >
+
+                                    <label
+                                        for="modificaProdottoAttivo"
+                                        class="form-check-label"
+                                    >
+                                        Prodotto attivo
+                                    </label>
+
+                                </div>
+
+                                <div class="form-text">
+                                    I prodotti disattivati non vengono mostrati nel catalogo.
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- ========================================
+                         IMMAGINI
+                    ========================================= -->
+
+                    <div class="col-12 col-xl-5">
+
+                        <div class="admin-image-section">
+
+                            <h3 class="admin-image-section-title">
+                                Immagini prodotto
+                            </h3>
+
+                            <p class="admin-image-section-text">
+                                Gestisci la copertina e le fotografie
+                                mostrate nella pagina prodotto.
+                            </p>
+
+
+                            <!-- PRINCIPALE -->
+
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Immagine principale
+                                </label>
+
+
+                                <div
+                                    id="contenitoreImmagineProdotto"
+                                    class="mb-3"
+                                >
+
+                                    <img
+                                        id="immagineProdottoAttuale"
+                                        src=""
+                                        alt="Immagine prodotto"
+                                        class="admin-main-image-preview d-none"
+                                    >
+
+                                    <p
+                                        id="nessunaImmagineProdotto"
+                                        class="text-muted small mb-0"
+                                    >
+                                        Nessuna immagine principale.
+                                    </p>
+
+                                </div>
+
+
+                                <label
+                                    for="modificaProdottoImmagine"
+                                    class="form-label"
+                                >
+                                    Cambia immagine principale
+                                </label>
+
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    id="modificaProdottoImmagine"
+                                    name="immagine"
+                                    accept="image/*"
+                                >
+
+                                <div class="form-text">
+                                    Se non scegli un file, resterà quella attuale.
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- GALLERIA ATTUALE -->
+
+                            <div class="mb-4">
+
+                                <label class="form-label">
+                                    Galleria attuale
+                                </label>
+
+                                <div
+                                    id="galleriaProdottoModal"
+                                    class="admin-gallery"
+                                ></div>
+
+                            </div>
+
+
+
+                            <!-- NUOVE IMMAGINI -->
+
+                            <div class="admin-upload-box">
+
+                                <div class="admin-upload-title">
+                                    Aggiungi altre immagini
+                                </div>
+
+                                <div class="admin-upload-text">
+                                    Seleziona una o più fotografie.
+                                    Verranno aggiunte alla galleria esistente.
+                                </div>
+
+
+                                <input
+                                    type="file"
+                                    class="form-control"
+                                    id="modificaImmaginiExtra"
+                                    name="immagini_extra"
+                                    accept="image/*"
+                                    multiple
+                                >
+
+
+                                <div
+                                    id="previewImmaginiExtraModifica"
+                                    class="admin-new-images-preview"
+                                ></div>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-footer">
+
+                <button
+                    type="button"
+                    class="admin-button admin-button-neutral"
+                    data-bs-dismiss="modal"
+                >
+                    Annulla
+                </button>
+
+                <button
+                    type="submit"
+                    class="admin-button admin-button-primary"
+                >
+                    Salva modifiche
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+{{ form_prodotto.media }}
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        const modificaProdottoModal = document.getElementById("modificaProdottoModal");
+
+        const inputPrincipaleNuovo = document.getElementById(
+            "{{ form_prodotto.immagine.id_for_label }}"
+        );
+
+        const previewPrincipaleNuovo = document.getElementById(
+            "previewPrincipaleNuovo"
+        );
+
+        const nuoveImmaginiExtra = document.getElementById(
+            "nuoveImmaginiExtra"
+        );
+
+        const previewImmaginiExtraNuovo = document.getElementById(
+            "previewImmaginiExtraNuovo"
+        );
+
+        const modificaImmaginePrincipale = document.getElementById(
+            "modificaProdottoImmagine"
+        );
+
+        const modificaImmaginiExtra = document.getElementById(
+            "modificaImmaginiExtra"
+        );
+
+        const previewImmaginiExtraModifica = document.getElementById(
+            "previewImmaginiExtraModifica"
+        );
+
+
+        function creaAnteprime(input, contenitore) {
+            contenitore.innerHTML = "";
+
+            Array.from(input.files).forEach(function(file) {
+                if (!file.type.startsWith("image/")) {
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const immagine = document.createElement("img");
+
+                    immagine.src = event.target.result;
+                    immagine.alt = file.name;
+
+                    contenitore.appendChild(immagine);
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+
+        if (inputPrincipaleNuovo) {
+            inputPrincipaleNuovo.addEventListener("change", function() {
+                const file = inputPrincipaleNuovo.files[0];
+
+                if (!file) {
+                    previewPrincipaleNuovo.classList.add("d-none");
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const immagine = previewPrincipaleNuovo.querySelector("img");
+
+                    immagine.src = event.target.result;
+                    previewPrincipaleNuovo.classList.remove("d-none");
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+
+        if (nuoveImmaginiExtra) {
+            nuoveImmaginiExtra.addEventListener("change", function() {
+                creaAnteprime(
+                    nuoveImmaginiExtra,
+                    previewImmaginiExtraNuovo
+                );
+            });
+        }
+
+
+        if (modificaImmaginiExtra) {
+            modificaImmaginiExtra.addEventListener("change", function() {
+                creaAnteprime(
+                    modificaImmaginiExtra,
+                    previewImmaginiExtraModifica
+                );
+            });
+        }
+
+
+        if (modificaImmaginePrincipale) {
+            modificaImmaginePrincipale.addEventListener("change", function() {
+                const file = modificaImmaginePrincipale.files[0];
+
+                if (!file) {
+                    return;
+                }
+
+                const reader = new FileReader();
+
+                reader.onload = function(event) {
+                    const immagine = document.getElementById(
+                        "immagineProdottoAttuale"
+                    );
+
+                    const nessunaImmagine = document.getElementById(
+                        "nessunaImmagineProdotto"
+                    );
+
+                    immagine.src = event.target.result;
+                    immagine.classList.remove("d-none");
+                    nessunaImmagine.classList.add("d-none");
+                };
+
+                reader.readAsDataURL(file);
+            });
+        }
+
+
+        /*
+         * TinyMCE per la textarea manuale del modal modifica.
+         * Il campo del modal nuovo viene inizializzato dal widget Django.
+         */
+
+        if (window.tinymce) {
+            tinymce.init({
+                selector: "#modificaProdottoDescrizione",
+                height: 420,
+                menubar: false,
+                plugins: "lists link",
+                toolbar:
+                    "undo redo | " +
+                    "blocks | " +
+                    "bold italic | " +
+                    "bullist numlist | " +
+                    "link | " +
+                    "removeformat",
+                block_formats:
+                    "Paragrafo=p;" +
+                    "Titolo=h2;" +
+                    "Sottotitolo=h3",
+            });
+        }
+
+
+        if (modificaProdottoModal) {
+            modificaProdottoModal.addEventListener(
+                "show.bs.modal",
+                function(event) {
+                    const pulsante = event.relatedTarget;
+
+                    const prodottoId = pulsante.dataset.id;
+
+                    const form = document.getElementById(
+                        "modificaProdottoForm"
+                    );
+
+                    const immagine = document.getElementById(
+                        "immagineProdottoAttuale"
+                    );
+
+                    const nessunaImmagine = document.getElementById(
+                        "nessunaImmagineProdotto"
+                    );
+
+                    const galleriaModal = document.getElementById(
+                        "galleriaProdottoModal"
+                    );
+
+                    const descrizioneSalvata = document.getElementById(
+                        "descrizioneProdotto" + prodottoId
+                    );
+
+                    const galleriaSalvata = document.getElementById(
+                        "galleriaProdotto" + prodottoId
+                    );
+
+
+                    form.action = pulsante.dataset.url;
+
+
+                    document.getElementById(
+                        "modificaProdottoNome"
+                    ).value = pulsante.dataset.nome;
+
+
+                    document.getElementById(
+                        "modificaProdottoSku"
+                    ).value = pulsante.dataset.sku;
+
+
+                    document.getElementById(
+                        "modificaProdottoCategoria"
+                    ).value = pulsante.dataset.categoria;
+
+
+                    document.getElementById(
+                        "modificaProdottoPrezzo"
+                    ).value = pulsante.dataset.prezzo;
+
+
+                    document.getElementById(
+                        "modificaProdottoQuantita"
+                    ).value = pulsante.dataset.quantita;
+
+
+                    document.getElementById(
+                        "modificaProdottoAttivo"
+                    ).checked = pulsante.dataset.attivo === "true";
+
+
+                    document.getElementById(
+                        "modificaProdottoImmagine"
+                    ).value = "";
+
+
+                    document.getElementById(
+                        "modificaImmaginiExtra"
+                    ).value = "";
+
+
+                    document.getElementById(
+                        "previewImmaginiExtraModifica"
+                    ).innerHTML = "";
+
+
+                    document.getElementById(
+                        "nomeProdottoModal"
+                    ).textContent = pulsante.dataset.nome;
+
+
+                    const descrizione = descrizioneSalvata
+                        ? descrizioneSalvata.value
+                        : "";
+
+
+                    const textareaDescrizione = document.getElementById(
+                        "modificaProdottoDescrizione"
+                    );
+
+
+                    textareaDescrizione.value = descrizione;
+
+
+                    if (window.tinymce) {
+                        const editor = tinymce.get(
+                            "modificaProdottoDescrizione"
+                        );
+
+                        if (editor) {
+                            editor.setContent(descrizione);
+                        }
+                    }
+
+
+                    if (pulsante.dataset.immagine) {
+                        immagine.src = pulsante.dataset.immagine;
+                        immagine.classList.remove("d-none");
+                        nessunaImmagine.classList.add("d-none");
+                    } else {
+                        immagine.src = "";
+                        immagine.classList.add("d-none");
+                        nessunaImmagine.classList.remove("d-none");
+                    }
+
+
+                    if (galleriaSalvata) {
+                        galleriaModal.innerHTML = galleriaSalvata.innerHTML;
+                    } else {
+                        galleriaModal.innerHTML =
+                            '<p class="text-muted small mb-0">Nessuna immagine aggiuntiva.</p>';
+                    }
+                }
+            );
+        }
+
+
+        const modificaProdottoForm = document.getElementById(
+            "modificaProdottoForm"
+        );
+
+
+        if (modificaProdottoForm) {
+            modificaProdottoForm.addEventListener("submit", function() {
+                if (!window.tinymce) {
+                    return;
+                }
+
+                const editor = tinymce.get(
+                    "modificaProdottoDescrizione"
+                );
+
+                if (editor) {
+                    editor.save();
+                }
+            });
+        }
+
+    });
+
+</script>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="720"
+   height="720"
+   viewBox="0 0 720 720"
+   version="1.1"
+   id="svg1"
+   inkscape:version="1.4.3 (0d15f75, 2025-12-25)"
+   sodipodi:docname="cuore1.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="px"
+     inkscape:zoom="0.52938359"
+     inkscape:cx="364.57496"
+     inkscape:cy="527.97254"
+     inkscape:window-width="1440"
+     inkscape:window-height="900"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       d="M 128.4104,21.072199 C 81.204415,42.992325 26.850951,107.80159 13.88591,186.57003 c -35.818221,263.8593 156.15264,517.7739 176.14106,524.87255 20.7263,0.27661 150.01362,-32.94425 295.83067,-149.23941 C 605.45052,467.62155 725.76695,333.21867 711.666,231.33604 681.59023,14.032592 451.85476,58.657636 353.88671,169.54345 342.8476,45.270061 220.36099,-20.894533 128.4104,21.255071 Z M 324.51263,268.9479 c 76.92685,-55.38382 129.02925,-86.80256 202.36267,-44.18128 96.68663,81.4188 -30.71555,218.01315 -94.09146,269.74686 -50.46788,38.67754 -183.37456,129.0834 -214.69327,120.72411 -30.05505,-8.02183 -98.40296,-146.17564 -112.56058,-270.36963 -22.886479,-122.70009 24.18808,-206.51684 76.68729,-213.02383 62.41323,-7.73656 111.85208,49.35529 142.29535,137.10377 z"
+       style="fill:#c914bf;fill-rule:evenodd;stroke:#c914bf;stroke-width:13.9401;stroke-linejoin:round"
+       id="path1"
+       sodipodi:nodetypes="ccccsccccccsccc" />
+  </g>
+</svg>

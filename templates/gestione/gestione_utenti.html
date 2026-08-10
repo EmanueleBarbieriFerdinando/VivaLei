@@ -1,0 +1,850 @@
+{% extends "base.html" %}
+
+{% block title %}Gestione utenti | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .management-page {
+        padding: 38px 0 70px;
+        background-color: #fcfbfa;
+    }
+
+    .management-header {
+        margin-bottom: 28px;
+    }
+
+    .management-eyebrow {
+        margin-bottom: 6px;
+        color: var(--vivalei-purple);
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+    }
+
+    .management-title {
+        margin-bottom: 6px;
+        font-size: clamp(34px, 4vw, 44px);
+        font-weight: 500;
+    }
+
+    .management-subtitle {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 16px;
+    }
+
+    .management-back-button {
+        min-height: 46px;
+        padding: 10px 16px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 10px;
+        background-color: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 15px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .management-back-button:hover {
+        border-color: var(--vivalei-purple);
+        color: var(--vivalei-purple);
+        background-color: var(--vivalei-purple-light);
+    }
+
+    .management-filter-card {
+        padding: 22px;
+        margin-bottom: 24px;
+        background-color: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 16px;
+    }
+
+    .management-filter-card .form-label {
+        margin-bottom: 7px;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .management-filter-card .form-control,
+    .management-filter-card .form-select {
+        min-height: 48px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 10px;
+        font-size: 15px;
+    }
+
+    .management-filter-card .form-control:focus,
+    .management-filter-card .form-select:focus {
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 4px rgba(134, 22, 125, 0.06);
+    }
+
+    .management-search-button {
+        min-height: 48px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 10px;
+        background-color: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 15px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .management-search-button:hover {
+        background-color: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+        color: #ffffff;
+    }
+
+    .management-table-card {
+        overflow: hidden;
+        background-color: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 16px;
+    }
+
+    .management-table {
+        margin-bottom: 0;
+        font-size: 15px;
+    }
+
+    .management-table thead th {
+        padding: 15px 14px;
+        border: 0;
+        background-color: #f6f3f5;
+        color: var(--vivalei-text);
+        font-size: 13px;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .management-table tbody td {
+        padding: 15px 14px;
+        border-color: var(--vivalei-border);
+        vertical-align: middle;
+    }
+
+    .management-table tbody tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .management-user-name {
+        font-weight: 700;
+    }
+
+    .management-user-email {
+        color: var(--vivalei-text-muted);
+    }
+
+    .management-badge {
+        padding: 6px 9px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+    }
+
+    .management-badge-active {
+        background-color: #edf7f0;
+        color: #397047;
+    }
+
+    .management-badge-disabled {
+        background-color: #f1eff0;
+        color: #777174;
+    }
+
+    .management-badge-customer {
+        background-color: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+    }
+
+    .management-badge-staff {
+        background-color: #fff7df;
+        color: #8b681e;
+    }
+
+    .management-badge-superuser {
+        background-color: #fff0f0;
+        color: #a04343;
+    }
+
+    .management-edit-button {
+        min-height: 38px;
+        padding: 7px 12px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 9px;
+        background-color: #ffffff;
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .management-edit-button:hover {
+        background-color: var(--vivalei-purple-light);
+        color: var(--vivalei-purple-dark);
+    }
+
+    .management-empty {
+        padding: 50px 20px !important;
+        text-align: center;
+        color: var(--vivalei-text-muted);
+    }
+
+    .management-pagination .page-link {
+        border-color: var(--vivalei-border);
+        color: var(--vivalei-purple);
+    }
+
+    .management-pagination .page-item.active .page-link {
+        background-color: var(--vivalei-purple);
+        border-color: var(--vivalei-purple);
+        color: #ffffff;
+    }
+
+    .management-modal .modal-content {
+        border: 0;
+        border-radius: 18px;
+        overflow: hidden;
+    }
+
+    .management-modal .modal-header {
+        padding: 22px;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .management-modal .modal-body {
+        padding: 22px;
+    }
+
+    .management-modal .modal-footer {
+        padding: 18px 22px;
+        border-top: 1px solid var(--vivalei-border);
+    }
+
+    .management-modal .modal-title {
+        font-family: Arial, Helvetica, sans-serif;
+        font-weight: 700;
+    }
+
+    .management-modal .form-label {
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .management-modal .form-control {
+        min-height: 48px;
+        border-radius: 10px;
+        border-color: var(--vivalei-border);
+    }
+
+    .management-modal .form-control:focus {
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 4px rgba(134, 22, 125, 0.06);
+    }
+
+    .management-modal .form-check-input:checked {
+        background-color: var(--vivalei-purple);
+        border-color: var(--vivalei-purple);
+    }
+
+    .management-save-button {
+        min-height: 44px;
+        padding: 9px 16px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 10px;
+        background-color: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .management-save-button:hover {
+        background-color: var(--vivalei-purple-dark);
+        border-color: var(--vivalei-purple-dark);
+        color: #ffffff;
+    }
+
+    .management-cancel-button {
+        min-height: 44px;
+        padding: 9px 16px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 10px;
+        background-color: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    @media (max-width: 767.98px) {
+        .management-page {
+            padding: 28px 0 50px;
+        }
+
+        .management-title {
+            font-size: 34px;
+        }
+
+        .management-back-button {
+            width: 100%;
+        }
+
+        .management-filter-card {
+            padding: 18px;
+        }
+
+        .management-table {
+            min-width: 900px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="management-page">
+    <div class="container">
+
+        <div class="management-header d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+
+            <div>
+                <div class="management-eyebrow">
+                    Area amministrativa
+                </div>
+
+                <h1 class="management-title">
+                    Gestione utenti
+                </h1>
+
+                <p class="management-subtitle">
+                    {{ numero_risultati }} utenti trovati
+                </p>
+            </div>
+
+            <a href="{% url 'gestione:dashboard' %}" class="management-back-button">
+                <i class="bi bi-arrow-left"></i>
+                Torna al pannello
+            </a>
+
+        </div>
+
+
+        <div class="management-filter-card">
+
+            <form method="get" class="row g-3">
+
+                <div class="col-12 col-md-7">
+
+                    <label for="ricercaUtente" class="form-label">
+                        Cerca utente
+                    </label>
+
+                    <input
+                        type="search"
+                        id="ricercaUtente"
+                        name="q"
+                        value="{{ ricerca }}"
+                        class="form-control"
+                        placeholder="Email, nome, cognome o telefono"
+                    >
+
+                </div>
+
+
+                <div class="col-12 col-md-3">
+
+                    <label for="filtroStato" class="form-label">
+                        Stato
+                    </label>
+
+                    <select
+                        id="filtroStato"
+                        name="stato"
+                        class="form-select"
+                    >
+                        <option value="">Tutti gli utenti</option>
+
+                        <option value="attivi" {% if stato == "attivi" %}selected{% endif %}>
+                            Attivi
+                        </option>
+
+                        <option value="disattivati" {% if stato == "disattivati" %}selected{% endif %}>
+                            Disattivati
+                        </option>
+
+                        <option value="staff" {% if stato == "staff" %}selected{% endif %}>
+                            Staff
+                        </option>
+                    </select>
+
+                </div>
+
+
+                <div class="col-12 col-md-2 d-flex align-items-end">
+
+                    <button type="submit" class="management-search-button w-100">
+                        <i class="bi bi-search me-1"></i>
+                        Cerca
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+
+        <div class="management-table-card">
+
+            <div class="table-responsive">
+
+                <table class="table table-hover align-middle management-table">
+
+                    <thead>
+                        <tr>
+                            <th>Utente</th>
+                            <th>Email</th>
+                            <th>Telefono</th>
+                            <th>Registrazione</th>
+                            <th>Ruolo</th>
+                            <th>Stato</th>
+                            <th class="text-end">Azioni</th>
+                        </tr>
+                    </thead>
+
+
+                    <tbody>
+
+                        {% for utente in pagina %}
+
+                            <tr>
+
+                                <td>
+                                    <div class="management-user-name">
+                                        {{ utente.first_name|default:"Nome non inserito" }}
+                                        {{ utente.last_name }}
+                                    </div>
+                                </td>
+
+
+                                <td class="management-user-email">
+                                    {{ utente.email }}
+                                </td>
+
+
+                                <td>
+                                    {{ utente.telefono|default:"—" }}
+                                </td>
+
+
+                                <td>
+                                    {{ utente.date_joined|date:"d/m/Y" }}
+                                </td>
+
+
+                                <td>
+
+                                    {% if utente.is_superuser %}
+
+                                        <span class="management-badge management-badge-superuser">
+                                            Superutente
+                                        </span>
+
+                                    {% elif utente.is_staff %}
+
+                                        <span class="management-badge management-badge-staff">
+                                            Staff
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="management-badge management-badge-customer">
+                                            Cliente
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td>
+
+                                    {% if utente.is_active %}
+
+                                        <span class="management-badge management-badge-active">
+                                            Attivo
+                                        </span>
+
+                                    {% else %}
+
+                                        <span class="management-badge management-badge-disabled">
+                                            Disattivato
+                                        </span>
+
+                                    {% endif %}
+
+                                </td>
+
+
+                                <td class="text-end">
+
+                                    <button
+                                        type="button"
+                                        class="management-edit-button"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modificaUtenteModal"
+                                        data-url="{% url 'gestione:modifica_utente' utente.id %}"
+                                        data-nome="{{ utente.first_name|escape }}"
+                                        data-cognome="{{ utente.last_name|escape }}"
+                                        data-email="{{ utente.email|escape }}"
+                                        data-telefono="{{ utente.telefono|escape }}"
+                                        data-attivo="{{ utente.is_active|yesno:'true,false' }}"
+                                        data-staff="{{ utente.is_staff|yesno:'true,false' }}"
+                                        data-superuser="{{ utente.is_superuser|yesno:'true,false' }}"
+                                    >
+                                        <i class="bi bi-pencil me-1"></i>
+                                        Modifica
+                                    </button>
+
+                                </td>
+
+                            </tr>
+
+                        {% empty %}
+
+                            <tr>
+                                <td colspan="7" class="management-empty">
+                                    Nessun utente trovato.
+                                </td>
+                            </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+
+        {% if pagina.has_other_pages %}
+
+            <nav class="mt-4" aria-label="Paginazione utenti">
+
+                <ul class="pagination justify-content-center management-pagination">
+
+                    {% if pagina.has_previous %}
+
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="?page={{ pagina.previous_page_number }}&q={{ ricerca }}&stato={{ stato }}"
+                            >
+                                Precedente
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+
+                    <li class="page-item active">
+                        <span class="page-link">
+                            {{ pagina.number }} di {{ pagina.paginator.num_pages }}
+                        </span>
+                    </li>
+
+
+                    {% if pagina.has_next %}
+
+                        <li class="page-item">
+                            <a
+                                class="page-link"
+                                href="?page={{ pagina.next_page_number }}&q={{ ricerca }}&stato={{ stato }}"
+                            >
+                                Successiva
+                            </a>
+                        </li>
+
+                    {% endif %}
+
+                </ul>
+
+            </nav>
+
+        {% endif %}
+
+    </div>
+</section>
+
+
+<div
+    class="modal fade management-modal"
+    id="modificaUtenteModal"
+    tabindex="-1"
+    aria-labelledby="modificaUtenteModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered">
+
+        <div class="modal-content">
+
+            <form method="post" id="modificaUtenteForm">
+
+                {% csrf_token %}
+
+                <div class="modal-header">
+
+                    <div>
+
+                        <h2
+                            class="modal-title fs-5"
+                            id="modificaUtenteModalLabel"
+                        >
+                            Modifica utente
+                        </h2>
+
+                        <p
+                            class="text-muted small mb-0 mt-1"
+                            id="emailUtenteModal"
+                        ></p>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"
+                        aria-label="Chiudi"
+                    ></button>
+
+                </div>
+
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+
+                        <label for="modificaNome" class="form-label">
+                            Nome
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="modificaNome"
+                            name="first_name"
+                        >
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label for="modificaCognome" class="form-label">
+                            Cognome
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="modificaCognome"
+                            name="last_name"
+                        >
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label for="modificaEmail" class="form-label">
+                            Email
+                        </label>
+
+                        <input
+                            type="email"
+                            class="form-control"
+                            id="modificaEmail"
+                            name="email"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="mb-3">
+
+                        <label for="modificaTelefono" class="form-label">
+                            Telefono
+                        </label>
+
+                        <input
+                            type="text"
+                            class="form-control"
+                            id="modificaTelefono"
+                            name="telefono"
+                        >
+
+                    </div>
+
+
+                    <div class="form-check form-switch">
+
+                        <input
+                            type="checkbox"
+                            class="form-check-input"
+                            id="modificaAttivo"
+                            name="is_active"
+                        >
+
+                        <label
+                            for="modificaAttivo"
+                            class="form-check-label"
+                        >
+                            Account attivo
+                        </label>
+
+                    </div>
+
+
+                    {% if user.is_superuser %}
+
+                        <hr class="my-4">
+
+                        <h3 class="h6 mb-3">
+                            Ruolo e permessi
+                        </h3>
+
+
+                        <div class="form-check form-switch mb-3">
+
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="modificaStaff"
+                                name="is_staff"
+                            >
+
+                            <label
+                                for="modificaStaff"
+                                class="form-check-label"
+                            >
+                                Membro dello staff
+                            </label>
+
+                            <div class="form-text">
+                                Può accedere al pannello di gestione.
+                            </div>
+
+                        </div>
+
+
+                        <div class="form-check form-switch">
+
+                            <input
+                                type="checkbox"
+                                class="form-check-input"
+                                id="modificaSuperuser"
+                                name="is_superuser"
+                            >
+
+                            <label
+                                for="modificaSuperuser"
+                                class="form-check-label"
+                            >
+                                Superutente
+                            </label>
+
+                            <div class="form-text text-danger">
+                                Ha tutti i permessi e può modificare i ruoli degli altri utenti.
+                            </div>
+
+                        </div>
+
+                    {% endif %}
+
+                </div>
+
+
+                <div class="modal-footer">
+
+                    <button
+                        type="button"
+                        class="management-cancel-button"
+                        data-bs-dismiss="modal"
+                    >
+                        Annulla
+                    </button>
+
+                    <button
+                        type="submit"
+                        class="management-save-button"
+                    >
+                        Salva modifiche
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+
+
+{% block extra_js %}
+
+<script>
+    const modificaUtenteModal = document.getElementById("modificaUtenteModal");
+    const staffInput = document.getElementById("modificaStaff");
+    const superuserInput = document.getElementById("modificaSuperuser");
+
+    if (modificaUtenteModal) {
+        modificaUtenteModal.addEventListener("show.bs.modal", function (event) {
+            const pulsante = event.relatedTarget;
+            const form = document.getElementById("modificaUtenteForm");
+
+            form.action = pulsante.dataset.url;
+
+            document.getElementById("modificaNome").value = pulsante.dataset.nome;
+            document.getElementById("modificaCognome").value = pulsante.dataset.cognome;
+            document.getElementById("modificaEmail").value = pulsante.dataset.email;
+            document.getElementById("modificaTelefono").value = pulsante.dataset.telefono;
+            document.getElementById("modificaAttivo").checked = pulsante.dataset.attivo === "true";
+            document.getElementById("emailUtenteModal").textContent = pulsante.dataset.email;
+
+            if (staffInput) {
+                staffInput.checked = pulsante.dataset.staff === "true";
+            }
+
+            if (superuserInput) {
+                superuserInput.checked = pulsante.dataset.superuser === "true";
+            }
+        });
+    }
+
+    if (superuserInput && staffInput) {
+        superuserInput.addEventListener("change", function () {
+            if (superuserInput.checked) {
+                staffInput.checked = true;
+            }
+        });
+
+        staffInput.addEventListener("change", function () {
+            if (!staffInput.checked) {
+                superuserInput.checked = false;
+            }
+        });
+    }
+</script>
+
+{% endblock %}

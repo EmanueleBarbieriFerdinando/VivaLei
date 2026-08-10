@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}Riepilogo checkout | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .summary-page {
+        padding: 48px 0 72px;
+        background: #fcfbfa;
+    }
+
+    .summary-header {
+        margin-bottom: 34px;
+    }
+
+    .summary-status {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        min-height: 34px;
+        padding: 5px 13px;
+        margin-bottom: 15px;
+        border-radius: 30px;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 700;
+    }
+
+    .summary-title {
+        margin-bottom: 8px;
+        font-size: clamp(38px, 4vw, 50px);
+        font-weight: 500;
+    }
+
+    .summary-session {
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .summary-card {
+        padding: 29px;
+        background: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+    }
+
+    .summary-card-title {
+        margin-bottom: 23px;
+        font-size: 26px;
+        font-weight: 500;
+    }
+
+    .summary-product {
+        padding: 18px 0;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .summary-product:first-of-type {
+        padding-top: 0;
+    }
+
+    .summary-product:last-child {
+        border-bottom: 0;
+        padding-bottom: 0;
+    }
+
+    .summary-product-name {
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .summary-product-info {
+        margin-top: 3px;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .summary-product-price {
+        white-space: nowrap;
+        font-size: 17px;
+        font-weight: 700;
+    }
+
+    .summary-sidebar {
+        position: sticky;
+        top: 125px;
+    }
+
+    .summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        margin-bottom: 12px;
+        color: var(--vivalei-text-muted);
+    }
+
+    .summary-final {
+        display: flex;
+        justify-content: space-between;
+        gap: 18px;
+        padding-top: 19px;
+        margin-top: 19px;
+        border-top: 1px solid var(--vivalei-border);
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .summary-pay-button {
+        width: 100%;
+        min-height: 60px;
+        margin-top: 24px;
+        border: 0;
+        border-radius: 13px;
+        background: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .summary-pay-button:hover {
+        background: var(--vivalei-purple-dark);
+    }
+
+    .summary-secure {
+        margin-top: 17px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 7px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+    }
+
+    .summary-secure i {
+        color: var(--vivalei-purple);
+    }
+
+    .summary-alert {
+        margin-top: 22px;
+        border: 0;
+        border-radius: 13px;
+    }
+
+    @media (max-width: 991.98px) {
+        .summary-sidebar {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .summary-page {
+            padding: 30px 0 52px;
+        }
+
+        .summary-card {
+            padding: 22px;
+        }
+
+        .summary-title {
+            font-size: 39px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="summary-page">
+    <div class="container">
+
+        <div class="summary-header">
+
+            <div class="summary-status">
+                <i class="bi bi-clock"></i>
+                {{ sessione.get_stato_display }}
+            </div>
+
+            <h1 class="summary-title">
+                Controlla il tuo ordine
+            </h1>
+
+            <p class="summary-session mb-0">
+                Sessione {{ sessione.token }}
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-12 col-lg-8">
+
+                <div class="summary-card">
+
+                    <h2 class="summary-card-title">
+                        I tuoi prodotti
+                    </h2>
+
+                    {% for riga in sessione.righe.all %}
+                        <div class="summary-product d-flex justify-content-between align-items-center gap-4">
+
+                            <div>
+
+                                <div class="summary-product-name">
+                                    {{ riga.nome_prodotto }}
+                                </div>
+
+                                <div class="summary-product-info">
+                                    {{ riga.sku }} · Quantità: {{ riga.quantita }}
+                                </div>
+
+                            </div>
+
+                            <div class="summary-product-price">
+                                € {{ riga.totale|floatformat:2 }}
+                            </div>
+
+                        </div>
+                    {% endfor %}
+
+                </div>
+
+            </div>
+
+
+            <div class="col-12 col-lg-4">
+
+                <aside class="summary-card summary-sidebar">
+
+                    <h2 class="summary-card-title">
+                        Totale
+                    </h2>
+
+                    <div class="summary-row">
+                        <span>Subtotale</span>
+                        <span>€ {{ sessione.subtotale|floatformat:2 }}</span>
+                    </div>
+
+                    <div class="summary-row">
+                        <span>Spedizione</span>
+
+                        {% if sessione.costo_spedizione == 0 %}
+                            <span class="text-success fw-semibold">
+                                Gratuita
+                            </span>
+                        {% else %}
+                            <span>
+                                € {{ sessione.costo_spedizione|floatformat:2 }}
+                            </span>
+                        {% endif %}
+                    </div>
+
+                    <div class="summary-final">
+                        <span>Totale</span>
+                        <span>€ {{ sessione.totale|floatformat:2 }}</span>
+                    </div>
+
+
+                    {% if request.GET.checkout == "cancelled" %}
+                        <div class="alert alert-warning summary-alert">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            Pagamento annullato. Non è stato effettuato alcun addebito.
+                        </div>
+                    {% elif request.GET.checkout == "success" %}
+                        <div class="alert alert-info summary-alert">
+                            <i class="bi bi-hourglass-split me-2"></i>
+                            Pagamento ricevuto. Attendiamo la conferma da Stripe.
+                        </div>
+
+                        <script>
+                            window.setTimeout(function () {
+                                window.location.reload();
+                            }, 1500);
+                        </script>
+                    {% endif %}
+
+
+                    <form method="post" action="{% url 'orders:crea_pagamento_checkout' sessione.token %}">
+                        {% csrf_token %}
+
+                        <button type="submit" class="summary-pay-button">
+                            <i class="bi bi-credit-card me-2"></i>
+                            Paga € {{ sessione.totale|floatformat:2 }}
+                        </button>
+                    </form>
+
+
+                    <div class="summary-secure">
+                        <i class="bi bi-shield-lock"></i>
+                        Pagamento gestito in sicurezza da Stripe
+                    </div>
+
+                </aside>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

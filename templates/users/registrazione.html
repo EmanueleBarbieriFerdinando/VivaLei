@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}Registrati | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .register-page {
+        padding: 55px 0 75px;
+        background:
+            radial-gradient(circle at 90% 10%, rgba(134, 22, 125, 0.045), transparent 28%),
+            #fcfbfa;
+    }
+
+    .register-wrapper {
+        max-width: 620px;
+        margin: 0 auto;
+    }
+
+    .register-intro {
+        margin-bottom: 28px;
+        text-align: center;
+    }
+
+    .register-eyebrow {
+        margin-bottom: 9px;
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .register-title {
+        margin-bottom: 10px;
+        font-size: clamp(38px, 5vw, 48px);
+        font-weight: 500;
+    }
+
+    .register-subtitle {
+        max-width: 470px;
+        margin: 0 auto;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+        line-height: 1.6;
+    }
+
+    .register-card {
+        padding: 34px;
+        background: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 22px;
+    }
+
+    .register-field {
+        margin-bottom: 20px;
+    }
+
+    .register-label {
+        display: block;
+        margin-bottom: 8px;
+        color: var(--vivalei-text);
+        font-size: 15px;
+        font-weight: 700;
+    }
+
+    .register-card input[type="text"],
+    .register-card input[type="email"],
+    .register-card input[type="password"],
+    .register-card select,
+    .register-card textarea {
+        width: 100%;
+        min-height: 56px;
+        padding: 13px 15px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 17px;
+        transition: 0.2s ease;
+    }
+
+    .register-card input:focus,
+    .register-card select:focus,
+    .register-card textarea:focus {
+        outline: none;
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 4px rgba(134, 22, 125, 0.07);
+    }
+
+    .register-help {
+        margin-top: 7px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .register-help ul {
+        padding-left: 19px;
+        margin: 7px 0 0;
+    }
+
+    .register-help li {
+        margin-bottom: 3px;
+    }
+
+    .register-error {
+        margin-top: 6px;
+        color: #a34b4b;
+        font-size: 13px;
+    }
+
+    .register-non-field-errors {
+        padding: 14px 16px;
+        margin-bottom: 22px;
+        border: 1px solid #efd8d8;
+        border-radius: 12px;
+        background: #fff7f7;
+        color: #8d4747;
+        font-size: 14px;
+    }
+
+    .register-submit {
+        width: 100%;
+        min-height: 58px;
+        margin-top: 8px;
+        border: 0;
+        border-radius: 13px;
+        background: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 17px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .register-submit:hover {
+        background: var(--vivalei-purple-dark);
+    }
+
+    .register-divider {
+        position: relative;
+        margin: 29px 0;
+        text-align: center;
+    }
+
+    .register-divider::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: var(--vivalei-border);
+    }
+
+    .register-divider span {
+        position: relative;
+        padding: 0 13px;
+        background: #ffffff;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+    }
+
+    .register-login-text {
+        margin-bottom: 13px;
+        text-align: center;
+        color: var(--vivalei-text-muted);
+        font-size: 15px;
+    }
+
+    .register-login-button {
+        width: 100%;
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 13px;
+        background: #ffffff;
+        color: var(--vivalei-purple);
+        font-size: 16px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .register-login-button:hover {
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple-dark);
+    }
+
+    .register-note {
+        margin-top: 21px;
+        text-align: center;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+        line-height: 1.5;
+    }
+
+    .register-note i {
+        margin-right: 4px;
+        color: var(--vivalei-purple);
+    }
+
+    @media (max-width: 575.98px) {
+        .register-page {
+            padding: 34px 0 55px;
+        }
+
+        .register-card {
+            padding: 25px 20px;
+            border-radius: 18px;
+        }
+
+        .register-title {
+            font-size: 38px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="register-page">
+    <div class="container">
+
+        <div class="register-wrapper">
+
+            <div class="register-intro">
+
+                <div class="register-eyebrow">
+                    BENVENUTA IN VIVALEI
+                </div>
+
+                <h1 class="register-title">
+                    Crea il tuo account
+                </h1>
+
+                <p class="register-subtitle">
+                    Registrati per gestire più facilmente i tuoi acquisti e tenere sotto controllo i tuoi ordini.
+                </p>
+
+            </div>
+
+
+            <div class="register-card">
+
+                {% if form.non_field_errors %}
+                    <div class="register-non-field-errors">
+
+                        {% for error in form.non_field_errors %}
+                            <div>
+                                <i class="bi bi-exclamation-circle me-2"></i>
+                                {{ error }}
+                            </div>
+                        {% endfor %}
+
+                    </div>
+                {% endif %}
+
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+
+                    {% for field in form %}
+
+                        <div class="register-field">
+
+                            <label for="{{ field.id_for_label }}" class="register-label">
+                                {{ field.label }}
+                            </label>
+
+                            {{ field }}
+
+
+                            {% if field.help_text %}
+                                <div class="register-help">
+                                    {{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+
+
+                            {% for error in field.errors %}
+                                <div class="register-error">
+                                    {{ error }}
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
+                    {% endfor %}
+
+
+                    <button type="submit" class="register-submit">
+                        Crea il mio account
+                        <i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+
+                </form>
+
+
+                <div class="register-divider">
+                    <span>oppure</span>
+                </div>
+
+
+                <p class="register-login-text">
+                    Hai già un account?
+                </p>
+
+                <a href="{% url 'users:login' %}" class="register-login-button">
+                    Accedi
+                </a>
+
+
+                <div class="register-note">
+                    <i class="bi bi-shield-check"></i>
+                    I tuoi dati vengono utilizzati esclusivamente per gestire il tuo account e i tuoi ordini.
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

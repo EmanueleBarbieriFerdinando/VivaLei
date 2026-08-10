@@ -1,0 +1,410 @@
+{% extends "base.html" %}
+
+{% block title %}Il mio account | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .account-page {
+        padding: 48px 0 75px;
+        background: #fcfbfa;
+    }
+
+    .account-header {
+        margin-bottom: 34px;
+    }
+
+    .account-eyebrow {
+        margin-bottom: 8px;
+        color: var(--vivalei-purple);
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+    }
+
+    .account-title {
+        margin-bottom: 8px;
+        font-size: clamp(40px, 5vw, 52px);
+        font-weight: 500;
+    }
+
+    .account-subtitle {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+    }
+
+    .account-card {
+        height: 100%;
+        padding: 28px;
+        background: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+    }
+
+    .account-card-header {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 25px;
+    }
+
+    .account-card-icon {
+        width: 48px;
+        height: 48px;
+        flex: 0 0 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 21px;
+    }
+
+    .account-card-title {
+        margin: 0;
+        font-size: 23px;
+        font-weight: 600;
+    }
+
+    .account-data-row {
+        padding: 15px 0;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .account-data-row:last-child {
+        border-bottom: 0;
+    }
+
+    .account-data-label {
+        margin-bottom: 3px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .account-data-value {
+        color: var(--vivalei-text);
+        font-size: 16px;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .account-action {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        padding: 17px;
+        margin-bottom: 12px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 14px;
+        background: #ffffff;
+        color: var(--vivalei-text);
+        transition: 0.2s ease;
+    }
+
+    .account-action:last-child {
+        margin-bottom: 0;
+    }
+
+    .account-action:hover {
+        border-color: rgba(134, 22, 125, 0.35);
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+    }
+
+    .account-action-icon {
+        width: 42px;
+        height: 42px;
+        flex: 0 0 42px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 19px;
+    }
+
+    .account-action-content {
+        flex: 1;
+    }
+
+    .account-action-title {
+        margin-bottom: 2px;
+        font-size: 16px;
+        font-weight: 700;
+    }
+
+    .account-action-description {
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+    }
+
+    .account-action-arrow {
+        color: var(--vivalei-text-muted);
+        font-size: 18px;
+    }
+
+    .account-logout {
+        width: 100%;
+        min-height: 54px;
+        margin-top: 23px;
+        border: 1px solid #ead5d5;
+        border-radius: 13px;
+        background: #ffffff;
+        color: #965050;
+        font-size: 16px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .account-logout:hover {
+        background: #fff7f7;
+        border-color: #d9b8b8;
+    }
+
+    .account-welcome {
+        padding: 25px 28px;
+        margin-bottom: 25px;
+        border-radius: 20px;
+        background: var(--vivalei-purple-light);
+    }
+
+    .account-welcome-title {
+        margin-bottom: 6px;
+        color: var(--vivalei-purple-dark);
+        font-size: 22px;
+        font-weight: 700;
+    }
+
+    .account-welcome-text {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        line-height: 1.6;
+    }
+
+    @media (max-width: 767.98px) {
+        .account-page {
+            padding: 30px 0 55px;
+        }
+
+        .account-title {
+            font-size: 40px;
+        }
+
+        .account-card {
+            padding: 22px;
+        }
+
+        .account-welcome {
+            padding: 22px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="account-page">
+    <div class="container">
+
+        <div class="account-header">
+
+            <div class="account-eyebrow">
+                IL MIO ACCOUNT
+            </div>
+
+            <h1 class="account-title">
+                Ciao{% if user.first_name %}, {{ user.first_name }}{% endif %}
+            </h1>
+
+            <p class="account-subtitle">
+                Qui puoi trovare le informazioni del tuo account e gestire i tuoi acquisti.
+            </p>
+
+        </div>
+
+
+        <div class="account-welcome">
+
+            <div class="account-welcome-title">
+                Bentornata su VivaLei
+            </div>
+
+            <p class="account-welcome-text">
+                Da questa pagina puoi controllare i tuoi dati e accedere rapidamente alle principali funzioni del tuo account.
+            </p>
+
+        </div>
+
+
+        <div class="row g-4">
+
+            <div class="col-12 col-lg-6">
+
+                <div class="account-card">
+
+                    <div class="account-card-header">
+
+                        <div class="account-card-icon">
+                            <i class="bi bi-person"></i>
+                        </div>
+
+                        <h2 class="account-card-title">
+                            I tuoi dati
+                        </h2>
+
+                    </div>
+
+
+                    <div class="account-data-row">
+
+                        <div class="account-data-label">
+                            Nome
+                        </div>
+
+                        <div class="account-data-value">
+                            {% if user.first_name %}
+                                {{ user.first_name }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+
+                    <div class="account-data-row">
+
+                        <div class="account-data-label">
+                            Cognome
+                        </div>
+
+                        <div class="account-data-value">
+                            {% if user.last_name %}
+                                {{ user.last_name }}
+                            {% else %}
+                                —
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+
+                    <div class="account-data-row">
+
+                        <div class="account-data-label">
+                            Email
+                        </div>
+
+                        <div class="account-data-value">
+                            {{ user.email }}
+                        </div>
+
+                    </div>
+
+
+                    <div class="account-data-row">
+
+                        <div class="account-data-label">
+                            Telefono
+                        </div>
+
+                        <div class="account-data-value">
+                            {% if user.telefono %}
+                                {{ user.telefono }}
+                            {% else %}
+                                Non inserito
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="col-12 col-lg-6">
+
+                <div class="account-card">
+
+                    <div class="account-card-header">
+
+                        <div class="account-card-icon">
+                            <i class="bi bi-grid"></i>
+                        </div>
+
+                        <h2 class="account-card-title">
+                            Il tuo spazio
+                        </h2>
+
+                    </div>
+
+
+                    <a href="{% url 'products:lista_prodotti' %}" class="account-action">
+
+                        <div class="account-action-icon">
+                            <i class="bi bi-bag"></i>
+                        </div>
+
+                        <div class="account-action-content">
+
+                            <div class="account-action-title">
+                                Continua gli acquisti
+                            </div>
+
+                            <div class="account-action-description">
+                                Scopri tutti i prodotti VivaLei.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right account-action-arrow"></i>
+
+                    </a>
+
+
+                    <a href="{% url 'carrello:dettaglio' %}" class="account-action">
+
+                        <div class="account-action-icon">
+                            <i class="bi bi-cart3"></i>
+                        </div>
+
+                        <div class="account-action-content">
+
+                            <div class="account-action-title">
+                                Il mio carrello
+                            </div>
+
+                            <div class="account-action-description">
+                                Controlla i prodotti che hai scelto.
+                            </div>
+
+                        </div>
+
+                        <i class="bi bi-chevron-right account-action-arrow"></i>
+
+                    </a>
+
+
+                    <form method="post" action="{% url 'users:logout' %}">
+                        {% csrf_token %}
+
+                        <button type="submit" class="account-logout">
+                            <i class="bi bi-box-arrow-right me-2"></i>
+                            Esci dal tuo account
+                        </button>
+                    </form>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

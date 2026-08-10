@@ -1,0 +1,754 @@
+{% extends "base.html" %}
+
+{% block title %}Carrello | VivaLei{% endblock %}
+
+{% block extra_css %}
+<style>
+    .cart-page {
+        padding: 42px 0 72px;
+        background-color: #fcfbfa;
+    }
+
+    .cart-header {
+        margin-bottom: 34px;
+    }
+
+    .cart-eyebrow {
+        margin-bottom: 8px;
+        color: var(--vivalei-purple);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+    }
+
+    .cart-title {
+        margin-bottom: 8px;
+        font-size: clamp(40px, 5vw, 54px);
+        font-weight: 500;
+    }
+
+    .cart-subtitle {
+        margin: 0;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+    }
+
+    .cart-continue {
+        min-height: 50px;
+        padding: 12px 18px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 12px;
+        background-color: #ffffff;
+        color: var(--vivalei-text);
+        font-size: 16px;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .cart-continue:hover {
+        border-color: var(--vivalei-purple);
+        color: var(--vivalei-purple);
+    }
+
+    /* =========================
+       LISTA PRODOTTI
+    ========================= */
+
+    .cart-products {
+        background-color: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+        overflow: hidden;
+    }
+
+    .cart-item {
+        padding: 22px;
+        border-bottom: 1px solid var(--vivalei-border);
+    }
+
+    .cart-item:last-child {
+        border-bottom: 0;
+    }
+
+    .cart-product-image {
+        width: 105px;
+        height: 105px;
+        flex: 0 0 105px;
+        object-fit: cover;
+        border-radius: 15px;
+        background-color: #f7f5f3;
+    }
+
+    .cart-product-placeholder {
+        width: 105px;
+        height: 105px;
+        flex: 0 0 105px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 15px;
+        background-color: #f7f5f3;
+        color: var(--vivalei-text-muted);
+        font-size: 28px;
+    }
+
+    .cart-product-name {
+        margin-bottom: 6px;
+        font-size: 19px;
+        font-weight: 700;
+    }
+
+    .cart-product-name:hover {
+        color: var(--vivalei-purple);
+    }
+
+    .cart-product-sku {
+        margin-bottom: 12px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+    }
+
+    .cart-unit-price {
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .cart-quantity-label {
+        margin-bottom: 7px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+    .quantita-carrello {
+        width: 88px;
+        min-height: 48px;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 11px;
+        text-align: center;
+        font-size: 17px;
+    }
+
+    .quantita-carrello:focus {
+        border-color: var(--vivalei-purple);
+        box-shadow: 0 0 0 4px rgba(134, 22, 125, 0.07);
+    }
+
+    .cart-line-total {
+        min-width: 105px;
+        font-size: 19px;
+        font-weight: 700;
+        text-align: right;
+    }
+
+    .cart-remove {
+        padding: 8px 0;
+        border: 0;
+        background: transparent;
+        color: #9b5c5c;
+        font-size: 14px;
+        font-weight: 600;
+    }
+
+    .cart-remove:hover {
+        color: #7a3f3f;
+    }
+
+    /* =========================
+       RIEPILOGO
+    ========================= */
+
+    .cart-summary {
+        position: sticky;
+        top: 125px;
+        padding: 28px;
+        background-color: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 20px;
+    }
+
+    .cart-summary-title {
+        margin-bottom: 25px;
+        font-size: 27px;
+        font-weight: 500;
+    }
+
+    .cart-summary-row {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        margin-bottom: 13px;
+        color: var(--vivalei-text-muted);
+        font-size: 16px;
+    }
+
+    .cart-summary-final {
+        display: flex;
+        justify-content: space-between;
+        gap: 20px;
+        padding-top: 19px;
+        margin-top: 19px;
+        border-top: 1px solid var(--vivalei-border);
+        font-size: 23px;
+        font-weight: 700;
+    }
+
+    .cart-checkout-button {
+        width: 100%;
+        min-height: 60px;
+        margin-top: 25px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        border: 0;
+        border-radius: 13px;
+        background-color: var(--vivalei-purple);
+        color: #ffffff;
+        font-size: 18px;
+        font-weight: 700;
+        transition: 0.2s ease;
+    }
+
+    .cart-checkout-button:hover {
+        background-color: var(--vivalei-purple-dark);
+        color: #ffffff;
+    }
+
+    .cart-login-button {
+        width: 100%;
+        min-height: 60px;
+        margin-top: 25px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        border: 1px solid var(--vivalei-purple);
+        border-radius: 13px;
+        background-color: #ffffff;
+        color: var(--vivalei-purple);
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    .cart-login-button:hover {
+        background-color: var(--vivalei-purple-light);
+        color: var(--vivalei-purple-dark);
+    }
+
+    .cart-security {
+        margin-top: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 7px;
+        color: var(--vivalei-text-muted);
+        font-size: 13px;
+    }
+
+    .cart-security i {
+        color: var(--vivalei-purple);
+    }
+
+    .cart-benefits {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid var(--vivalei-border);
+    }
+
+    .cart-benefit {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 12px;
+        color: var(--vivalei-text-muted);
+        font-size: 14px;
+    }
+
+    .cart-benefit:last-child {
+        margin-bottom: 0;
+    }
+
+    .cart-benefit i {
+        width: 30px;
+        color: var(--vivalei-purple);
+        font-size: 19px;
+    }
+
+    /* =========================
+       CARRELLO VUOTO
+    ========================= */
+
+    .cart-empty {
+        padding: 75px 25px;
+        text-align: center;
+        background-color: #ffffff;
+        border: 1px solid var(--vivalei-border);
+        border-radius: 22px;
+    }
+
+    .cart-empty-icon {
+        width: 78px;
+        height: 78px;
+        margin: 0 auto 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        background-color: var(--vivalei-purple-light);
+        color: var(--vivalei-purple);
+        font-size: 34px;
+    }
+
+    .cart-empty-title {
+        margin-bottom: 8px;
+        font-size: 30px;
+        font-weight: 500;
+    }
+
+    .cart-empty-text {
+        margin-bottom: 24px;
+        color: var(--vivalei-text-muted);
+        font-size: 17px;
+    }
+
+    @media (max-width: 991.98px) {
+        .cart-summary {
+            position: static;
+        }
+    }
+
+    @media (max-width: 767.98px) {
+        .cart-page {
+            padding: 28px 0 52px;
+        }
+
+        .cart-title {
+            font-size: 40px;
+        }
+
+        .cart-item {
+            padding: 18px;
+        }
+
+        .cart-product-image,
+        .cart-product-placeholder {
+            width: 88px;
+            height: 88px;
+            flex-basis: 88px;
+        }
+
+        .cart-product-name {
+            font-size: 17px;
+        }
+
+        .cart-line-total {
+            min-width: 0;
+            text-align: left;
+        }
+
+        .cart-summary {
+            padding: 22px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<section class="cart-page">
+    <div class="container">
+
+        <div class="cart-header d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3">
+
+            <div>
+                <div class="cart-eyebrow">
+                    IL TUO CARRELLO
+                </div>
+
+                <h1 class="cart-title">
+                    Le tue scelte
+                </h1>
+
+                <p class="cart-subtitle">
+                    <span id="numeroProdottiPagina">{{ carrello|length }}</span>
+                    prodotti nel carrello
+                </p>
+            </div>
+
+            <a href="{% url 'products:lista_prodotti' %}" class="cart-continue">
+                <i class="bi bi-arrow-left"></i>
+                Continua gli acquisti
+            </a>
+
+        </div>
+
+
+        {% if carrello|length > 0 %}
+
+            <div class="row g-4">
+
+                <div class="col-12 col-lg-8">
+
+                    <div class="cart-products">
+
+                        {% for elemento in carrello %}
+
+                            <div class="cart-item" id="riga-prodotto-{{ elemento.prodotto.id }}">
+
+                                <div class="row g-3 align-items-center">
+
+                                    <div class="col-12 col-md">
+
+                                        <div class="d-flex align-items-center gap-3">
+
+                                            {% if elemento.prodotto.immagine %}
+
+                                                <img
+                                                    src="{{ elemento.prodotto.immagine.url }}"
+                                                    alt="{{ elemento.prodotto.nome }}"
+                                                    class="cart-product-image"
+                                                >
+
+                                            {% else %}
+
+                                                <div class="cart-product-placeholder">
+                                                    <i class="bi bi-image"></i>
+                                                </div>
+
+                                            {% endif %}
+
+                                            <div>
+
+                                                <a
+                                                    href="{{ elemento.prodotto.get_absolute_url }}"
+                                                    class="cart-product-name d-block"
+                                                >
+                                                    {{ elemento.prodotto.nome }}
+                                                </a>
+
+                                                {% if elemento.prodotto.sku %}
+                                                    <div class="cart-product-sku">
+                                                        Codice {{ elemento.prodotto.sku }}
+                                                    </div>
+                                                {% endif %}
+
+                                                <div class="cart-unit-price">
+                                                    € {{ elemento.prezzo|floatformat:2 }} cad.
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-6 col-md-auto">
+
+                                        <div class="cart-quantity-label">
+                                            Quantità
+                                        </div>
+
+                                        <input
+                                            type="number"
+                                            value="{{ elemento.quantita }}"
+                                            min="1"
+                                            max="{{ elemento.prodotto.quantita_disponibile }}"
+                                            class="form-control quantita-carrello"
+                                            data-url="{% url 'carrello:aggiorna' elemento.prodotto.id %}"
+                                            data-prodotto-id="{{ elemento.prodotto.id }}"
+                                            aria-label="Quantità di {{ elemento.prodotto.nome }}"
+                                        >
+
+                                        <div
+                                            id="stato-prodotto-{{ elemento.prodotto.id }}"
+                                            class="small mt-1"
+                                        ></div>
+
+                                    </div>
+
+
+                                    <div class="col-6 col-md-auto">
+
+                                        <div class="cart-quantity-label">
+                                            Totale
+                                        </div>
+
+                                        <div
+                                            class="cart-line-total"
+                                            id="totale-prodotto-{{ elemento.prodotto.id }}"
+                                        >
+                                            € {{ elemento.totale|floatformat:2 }}
+                                        </div>
+
+                                    </div>
+
+
+                                    <div class="col-12 col-md-auto">
+
+                                        <form
+                                            method="post"
+                                            action="{% url 'carrello:rimuovi' elemento.prodotto.id %}"
+                                        >
+                                            {% csrf_token %}
+
+                                            <button type="submit" class="cart-remove">
+                                                <i class="bi bi-trash3 me-1"></i>
+                                                Rimuovi
+                                            </button>
+
+                                        </form>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
+
+                </div>
+
+
+                <div class="col-12 col-lg-4">
+
+                    <aside class="cart-summary">
+
+                        <h2 class="cart-summary-title">
+                            Riepilogo
+                        </h2>
+
+                        <div class="cart-summary-row">
+                            <span>Subtotale</span>
+
+                            <span id="subtotaleCarrello">
+                                € {{ carrello.totale|floatformat:2 }}
+                            </span>
+                        </div>
+
+
+                        <div class="cart-summary-row">
+                            <span>Spedizione</span>
+                            <span>Da calcolare</span>
+                        </div>
+
+
+                        <div class="cart-summary-final">
+                            <span>Totale</span>
+
+                            <span id="totaleCarrello">
+                                € {{ carrello.totale|floatformat:2 }}
+                            </span>
+                        </div>
+
+
+                        {% if numero_prodotti_carrello > 0 %}
+
+                            {% if user.is_authenticated %}
+
+                                <a
+                                    href="{% url 'orders:checkout' %}"
+                                    class="cart-checkout-button"
+                                >
+                                    Procedi al checkout
+                                    <i class="bi bi-arrow-right"></i>
+                                </a>
+
+                            {% else %}
+
+                                <a
+                                    href="{% url 'users:login' %}?next={% url 'orders:checkout' %}"
+                                    class="cart-login-button"
+                                >
+                                    <i class="bi bi-person"></i>
+                                    Accedi per continuare
+                                </a>
+
+                            {% endif %}
+
+                        {% endif %}
+
+
+                        <div class="cart-security">
+                            <i class="bi bi-shield-check"></i>
+                            Pagamento sicuro
+                        </div>
+
+
+                        <div class="cart-benefits">
+
+                            <div class="cart-benefit">
+                                <i class="bi bi-truck"></i>
+                                <span>Spedizione tracciata</span>
+                            </div>
+
+                            <div class="cart-benefit">
+                                <i class="bi bi-arrow-repeat"></i>
+                                <span>Resi semplici</span>
+                            </div>
+
+                            <div class="cart-benefit">
+                                <i class="bi bi-headset"></i>
+                                <span>Assistenza clienti</span>
+                            </div>
+
+                        </div>
+
+                    </aside>
+
+                </div>
+
+            </div>
+
+
+        {% else %}
+
+            <div class="cart-empty">
+
+                <div class="cart-empty-icon">
+                    <i class="bi bi-bag"></i>
+                </div>
+
+                <h2 class="cart-empty-title">
+                    Il tuo carrello è vuoto
+                </h2>
+
+                <p class="cart-empty-text">
+                    Scopri i mondi VivaLei e trova qualcosa pensato per rendere più piacevole la tua quotidianità.
+                </p>
+
+                <a
+                    href="{% url 'products:lista_prodotti' %}"
+                    class="btn btn-vivalei"
+                >
+                    Esplora i prodotti
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+
+            </div>
+
+        {% endif %}
+
+        <input type="hidden" id="csrfTokenCarrello" value="{{ csrf_token }}">
+
+    </div>
+</section>
+
+{% endblock %}
+
+
+{% block extra_js %}
+<script>
+    const timerAggiornamento = new Map();
+    const csrfToken = document.getElementById("csrfTokenCarrello").value;
+
+    const formattatorePrezzo = new Intl.NumberFormat("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+    });
+
+    function formattaPrezzo(valore) {
+        return `€ ${formattatorePrezzo.format(Number(valore))}`;
+    }
+
+    function aggiornaBadge(numeroProdotti) {
+        const badge = document.getElementById("numeroProdottiCarrello");
+        const contatorePagina = document.getElementById("numeroProdottiPagina");
+
+        if (badge) {
+            badge.textContent = numeroProdotti;
+
+            if (numeroProdotti > 0) {
+                badge.classList.remove("d-none");
+            } else {
+                badge.classList.add("d-none");
+            }
+        }
+
+        if (contatorePagina) {
+            contatorePagina.textContent = numeroProdotti;
+        }
+    }
+
+    async function aggiornaQuantita(input) {
+        const prodottoId = input.dataset.prodottoId;
+        const url = input.dataset.url;
+        const quantita = Number(input.value);
+        const stato = document.getElementById(`stato-prodotto-${prodottoId}`);
+
+        if (!Number.isInteger(quantita) || quantita < 1) {
+            stato.textContent = "Inserisci una quantità valida.";
+            stato.className = "small mt-1 text-danger";
+            return;
+        }
+
+        stato.textContent = "Aggiornamento...";
+        stato.className = "small mt-1 text-vivalei-muted";
+
+        input.disabled = true;
+
+        try {
+            const datiForm = new URLSearchParams();
+            datiForm.append("quantita", quantita);
+
+            const risposta = await fetch(url, {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": csrfToken,
+                    "X-Requested-With": "XMLHttpRequest",
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: datiForm.toString(),
+            });
+
+            const dati = await risposta.json();
+
+            if (!risposta.ok || !dati.ok) {
+                throw new Error(dati.messaggio || "Impossibile aggiornare il carrello.");
+            }
+
+            input.value = dati.quantita;
+
+            document.getElementById(`totale-prodotto-${prodottoId}`).textContent = formattaPrezzo(dati.totale_riga);
+            document.getElementById("subtotaleCarrello").textContent = formattaPrezzo(dati.totale_carrello);
+            document.getElementById("totaleCarrello").textContent = formattaPrezzo(dati.totale_carrello);
+
+            aggiornaBadge(dati.numero_prodotti);
+
+            if (dati.quantita < quantita) {
+                stato.textContent = "Quantità adattata alla disponibilità.";
+                stato.className = "small mt-1 text-warning";
+            } else {
+                stato.textContent = "Aggiornato";
+                stato.className = "small mt-1 text-success";
+            }
+        } catch (errore) {
+            stato.textContent = errore.message;
+            stato.className = "small mt-1 text-danger";
+        } finally {
+            input.disabled = false;
+        }
+    }
+
+    document.querySelectorAll(".quantita-carrello").forEach(function (input) {
+        input.addEventListener("input", function () {
+            const prodottoId = input.dataset.prodottoId;
+
+            clearTimeout(timerAggiornamento.get(prodottoId));
+
+            const timer = setTimeout(function () {
+                aggiornaQuantita(input);
+            }, 500);
+
+            timerAggiornamento.set(prodottoId, timer);
+        });
+    });
+</script>
+{% endblock %}

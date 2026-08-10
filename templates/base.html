@@ -1,0 +1,1575 @@
+{% load static %}
+<!doctype html>
+<html lang="it">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}VivaLei{% endblock %}</title>
+
+    <meta
+        name="description"
+        content="{% block meta_description %}VivaLei - Soluzioni semplici per la casa, il movimento e il tempo che dedichi a te.{% endblock %}"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <style>
+        :root {
+            --vivalei-purple: #86167d;
+            --vivalei-purple-dark: #68115f;
+            --vivalei-purple-light: #f7f1f6;
+            --vivalei-cream: #faf9f7;
+            --vivalei-text: #29272a;
+            --vivalei-text-muted: #6d686c;
+            --vivalei-border: #ebe7e8;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: #fff;
+            color: var(--vivalei-text);
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 18px;
+            line-height: 1.55;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            color: var(--vivalei-text);
+            font-family: Georgia, "Times New Roman", serif;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        .text-vivalei {
+            color: var(--vivalei-purple) !important;
+        }
+
+        .text-vivalei-muted {
+            color: var(--vivalei-text-muted) !important;
+        }
+
+        .bg-vivalei-light {
+            background: var(--vivalei-purple-light) !important;
+        }
+
+
+        /* BUTTONS */
+
+        .btn-vivalei,
+        .btn-vivalei-outline {
+            min-height: 54px;
+            padding: 14px 28px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .btn-vivalei {
+            border: 1px solid var(--vivalei-purple);
+            background: var(--vivalei-purple);
+            color: #fff;
+        }
+
+        .btn-vivalei:hover {
+            border-color: var(--vivalei-purple-dark);
+            background: var(--vivalei-purple-dark);
+            color: #fff;
+        }
+
+        .btn-vivalei-outline {
+            border: 1px solid var(--vivalei-purple);
+            background: #fff;
+            color: var(--vivalei-purple);
+        }
+
+        .btn-vivalei-outline:hover {
+            background: var(--vivalei-purple-light);
+            color: var(--vivalei-purple-dark);
+        }
+
+
+        /* TOPBAR */
+
+        .vivalei-topbar {
+            min-height: 38px;
+            display: flex;
+            align-items: center;
+            background: var(--vivalei-cream);
+            border-bottom: 1px solid var(--vivalei-border);
+            color: var(--vivalei-text-muted);
+            font-size: 14px;
+        }
+
+        .vivalei-topbar-item {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 7px;
+            white-space: nowrap;
+        }
+
+        .vivalei-topbar i {
+            color: var(--vivalei-purple);
+        }
+
+
+        /* HEADER */
+
+        .vivalei-header {
+            height: 88px;
+            position: sticky;
+            top: 0;
+            z-index: 1030;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, .97);
+            border-bottom: 1px solid var(--vivalei-border);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .vivalei-header .container,
+        .vivalei-header-inner {
+            height: 100%;
+        }
+
+        .vivalei-header-logo-link {
+            display: inline-flex;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .vivalei-logo {
+            width: 190px;
+            height: auto;
+            max-width: none;
+            object-fit: contain;
+        }
+
+        .vivalei-nav-link {
+            padding: 14px !important;
+            border-radius: 10px;
+            color: var(--vivalei-text) !important;
+            font-size: 16px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .vivalei-nav-link:hover {
+            background: var(--vivalei-purple-light);
+            color: var(--vivalei-purple) !important;
+        }
+
+        .vivalei-header-icon,
+        .vivalei-menu-button {
+            width: 50px;
+            height: 50px;
+            padding: 0;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--vivalei-text);
+        }
+
+        .vivalei-header-icon {
+            font-size: 24px;
+        }
+
+        .vivalei-menu-button {
+            font-size: 28px;
+        }
+
+        .vivalei-header-icon:hover,
+        .vivalei-menu-button:hover {
+            background: var(--vivalei-purple-light);
+            color: var(--vivalei-purple);
+        }
+
+        .vivalei-cart-badge {
+            min-width: 21px;
+            height: 21px;
+            padding: 0 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--vivalei-purple) !important;
+            border: 2px solid #fff;
+            font-size: 12px;
+        }
+
+
+        /* SEARCH */
+
+        .vivalei-search-offcanvas {
+            --search-top: 88px;
+            top: var(--search-top) !important;
+            bottom: auto !important;
+            height: auto !important;
+            max-height: calc(100dvh - var(--search-top));
+            overflow-y: auto;
+            border: 0 !important;
+            border-bottom: 1px solid var(--vivalei-border);
+            background: #fff;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, .08);
+        }
+
+        .vivalei-search-inner {
+            width: min(calc(100% - 40px), 1120px);
+            margin: auto;
+            padding: 38px 0 46px;
+        }
+
+        .vivalei-search-header {
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .vivalei-search-title {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 500;
+        }
+
+        .vivalei-search-close {
+            width: 42px;
+            height: 42px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border: 0;
+            border-radius: 50%;
+            background: transparent;
+            color: var(--vivalei-text);
+            font-size: 20px;
+        }
+
+        .vivalei-search-close:hover {
+            background: var(--vivalei-purple-light);
+            color: var(--vivalei-purple);
+        }
+
+        .vivalei-live-search-wrapper {
+            position: relative;
+            border-bottom: 1px solid #d8d1d6;
+        }
+
+        .vivalei-live-search-wrapper > i {
+            position: absolute;
+            top: 50%;
+            left: 2px;
+            transform: translateY(-50%);
+            font-size: 23px;
+        }
+
+        .vivalei-live-search-input {
+            width: 100%;
+            height: 68px;
+            padding: 0 10px 0 43px;
+            border: 0;
+            outline: 0;
+            background: transparent;
+            color: var(--vivalei-text);
+            font-size: 30px;
+        }
+
+        .vivalei-live-search-input::placeholder {
+            color: #aaa3a7;
+        }
+
+        .vivalei-live-search-wrapper:focus-within {
+            border-bottom-color: var(--vivalei-purple);
+        }
+
+        .vivalei-search-worlds {
+            margin-top: 18px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 9px;
+        }
+
+        .vivalei-search-world {
+            padding: 7px 14px;
+            border: 1px solid var(--vivalei-border);
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .vivalei-search-world:hover {
+            border-color: rgba(134, 22, 125, .3);
+            background: var(--vivalei-purple-light);
+            color: var(--vivalei-purple);
+        }
+
+        .vivalei-search-results-section {
+            margin-top: 32px;
+        }
+
+        .vivalei-search-results-header {
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .vivalei-search-results-title {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+        }
+
+        .vivalei-search-products {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 30px 38px;
+        }
+
+        .vivalei-live-product {
+            min-width: 0;
+            display: grid;
+            grid-template-columns: 130px minmax(0, 1fr);
+            align-items: center;
+            gap: 17px;
+        }
+
+        .vivalei-live-product-image {
+            width: 130px;
+            height: 130px;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #f6f3f5;
+        }
+
+        .vivalei-live-product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform .25s ease;
+        }
+
+        .vivalei-live-product:hover .vivalei-live-product-image img {
+            transform: scale(1.035);
+        }
+
+        .vivalei-live-product-placeholder {
+            width: 100%;
+            height: 100%;
+            display: grid;
+            place-items: center;
+            color: #aaa4a7;
+            font-size: 26px;
+        }
+
+        .vivalei-live-product-category {
+            margin-bottom: 5px;
+            color: var(--vivalei-purple);
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .vivalei-live-product-name {
+            margin-bottom: 6px;
+            font-size: 18px;
+            line-height: 1.3;
+            font-weight: 600;
+        }
+
+        .vivalei-live-product-price {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .vivalei-search-empty {
+            padding: 28px 0;
+            text-align: center;
+            color: var(--vivalei-text-muted);
+        }
+
+
+        /* MOBILE MENU */
+
+        .vivalei-offcanvas {
+            width: min(88vw, 420px) !important;
+        }
+
+        .vivalei-mobile-logo {
+            width: 165px;
+            height: auto;
+            max-width: none;
+            object-fit: contain;
+        }
+
+        .vivalei-mobile-menu-link {
+            min-height: 58px;
+            padding: 14px 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--vivalei-border);
+            font-size: 19px;
+            font-weight: 500;
+        }
+
+        .vivalei-mobile-menu-link i,
+        .vivalei-mobile-menu-link:hover {
+            color: var(--vivalei-purple);
+        }
+
+        .vivalei-mobile-world {
+            padding: 17px;
+            border: 1px solid var(--vivalei-border);
+            border-radius: 15px;
+            background: var(--vivalei-cream);
+        }
+
+        .vivalei-mobile-world-icon {
+            width: 44px;
+            height: 44px;
+            display: grid;
+            place-items: center;
+            flex-shrink: 0;
+            border-radius: 50%;
+            background: #fff;
+            color: var(--vivalei-purple);
+            font-size: 21px;
+        }
+
+
+        /* ACCOUNT */
+
+        .vivalei-account-menu {
+            min-width: 265px;
+            padding: 10px;
+            border: 1px solid var(--vivalei-border);
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, .08);
+        }
+
+        .vivalei-account-menu .dropdown-item {
+            min-height: 45px;
+            padding: 10px 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-radius: 9px;
+        }
+
+        .vivalei-account-menu .dropdown-item:hover {
+            background: var(--vivalei-purple-light);
+            color: var(--vivalei-purple);
+        }
+
+        .vivalei-account-email {
+            max-width: 220px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .vivalei-main {
+            width: 100%;
+        }
+
+
+        /* FOOTER */
+
+        .vivalei-footer {
+            margin-top: auto;
+            background: var(--vivalei-purple);
+            color: #fff;
+        }
+
+        .vivalei-footer-main {
+            padding: 64px 0 0;
+        }
+
+        .vivalei-footer-heart {
+            width: 76px;
+            height: auto;
+            margin-bottom: 26px;
+            filter: brightness(0) invert(1);
+        }
+
+        .vivalei-footer-intro {
+            max-width: 300px;
+            margin: 0;
+            color: rgba(255, 255, 255, .76);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        .vivalei-footer-title {
+            margin-bottom: 20px;
+            color: #fff;
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: .08em;
+            text-transform: uppercase;
+        }
+
+        .vivalei-footer-links {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .vivalei-footer-links a {
+            color: rgba(255, 255, 255, .78);
+            font-size: 15px;
+            transition: color .2s ease, transform .2s ease;
+        }
+
+        .vivalei-footer-links a:hover {
+            color: #fff;
+            transform: translateX(2px);
+        }
+
+        .vivalei-footer-divider {
+            margin: 52px 0 0;
+            border: 0;
+            border-top: 1px solid rgba(255, 255, 255, .18);
+            opacity: 1;
+        }
+
+        .vivalei-footer-bottom {
+            padding: 24px 0 28px;
+            color: rgba(255, 255, 255, .7);
+            font-size: 13px;
+        }
+
+        .vivalei-footer-bottom-info {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+            gap: 22px;
+        }
+
+        .vivalei-footer-bottom-info span {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .vivalei-footer-bottom-info i {
+            color: #fff;
+        }
+
+
+        /* RESPONSIVE */
+
+        @media (max-width: 1199.98px) {
+            .vivalei-logo {
+                width: 175px;
+            }
+
+            .vivalei-nav-link {
+                padding-left: 9px !important;
+                padding-right: 9px !important;
+                font-size: 15px;
+            }
+        }
+
+        @media (max-width: 991.98px) {
+            .vivalei-header {
+                height: 76px;
+            }
+
+            .vivalei-logo {
+                width: 165px;
+            }
+
+            .vivalei-footer-main {
+                padding-top: 52px;
+            }
+        }
+
+        @media (max-width: 767.98px) {
+            .vivalei-search-offcanvas {
+                transition: transform .45s cubic-bezier(.22, 1, .36, 1) !important;
+            }
+
+            .vivalei-search-inner {
+                width: calc(100% - 28px);
+                padding: 23px 0 30px;
+            }
+
+            .vivalei-search-title {
+                font-size: 22px;
+            }
+
+            .vivalei-live-search-input {
+                height: 58px;
+                padding-left: 35px;
+                font-size: 23px;
+            }
+
+            .vivalei-live-search-wrapper > i {
+                font-size: 19px;
+            }
+
+            .vivalei-search-world {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+
+            .vivalei-search-products {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 24px 12px;
+            }
+
+            .vivalei-live-product {
+                display: block;
+            }
+
+            .vivalei-live-product-image {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1;
+                margin-bottom: 9px;
+            }
+
+            .vivalei-live-product-category {
+                font-size: 9px;
+            }
+
+            .vivalei-live-product-name,
+            .vivalei-live-product-price {
+                font-size: 14px;
+            }
+
+            .vivalei-footer-main {
+                padding-top: 44px;
+            }
+
+            .vivalei-footer-bottom-info {
+                justify-content: flex-start;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            body {
+                font-size: 17px;
+            }
+
+            .vivalei-logo {
+                width: 145px;
+            }
+
+            .vivalei-mobile-logo {
+                width: 150px;
+            }
+
+            .vivalei-header-icon,
+            .vivalei-menu-button {
+                width: 46px;
+                height: 46px;
+                font-size: 23px;
+            }
+
+            .vivalei-footer-heart {
+                width: 64px;
+            }
+
+            .vivalei-footer-divider {
+                margin-top: 38px;
+            }
+
+            .vivalei-footer-bottom-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 7px;
+            }
+        }
+    </style>
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+
+<body class="d-flex flex-column min-vh-100">
+
+    <!-- TOPBAR -->
+    <div class="vivalei-topbar d-none d-md-flex">
+        <div class="container">
+            <div class="row w-100 g-0">
+
+                <div class="col-4">
+                    <div class="vivalei-topbar-item">
+                        <i class="bi bi-truck"></i>
+                        <span>Spedizione tracciata</span>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="vivalei-topbar-item">
+                        <i class="bi bi-arrow-repeat"></i>
+                        <span>Resi facili entro 30 giorni</span>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    <div class="vivalei-topbar-item">
+                        <i class="bi bi-headset"></i>
+                        <span>Assistenza clienti</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- HEADER -->
+    <header class="vivalei-header">
+        <div class="container">
+            <div class="vivalei-header-inner d-flex align-items-center justify-content-between">
+
+                <button
+                    class="vivalei-menu-button d-lg-none"
+                    type="button"
+                    data-bs-toggle="offcanvas"
+                    data-bs-target="#menuMobile"
+                    aria-label="Apri menu"
+                >
+                    <i class="bi bi-list"></i>
+                </button>
+
+                <a
+                    href="{% url 'core:home' %}"
+                    class="vivalei-header-logo-link"
+                    aria-label="Vai alla home VivaLei"
+                >
+                    <img
+                        src="{% static 'images/brand/logo1-cropped.svg' %}"
+                        alt="VivaLei"
+                        class="vivalei-logo"
+                    >
+                </a>
+
+                <nav class="d-none d-lg-block mx-auto">
+                    <ul class="nav align-items-center">
+
+                        <li>
+                            <a
+                                href="{% url 'products:lista_prodotti' %}?mondo=casa"
+                                class="nav-link vivalei-nav-link"
+                            >
+                                La mia casa
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="{% url 'products:lista_prodotti' %}?mondo=movimento"
+                                class="nav-link vivalei-nav-link"
+                            >
+                                Tenersi in movimento
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="{% url 'products:lista_prodotti' %}?mondo=tempo-per-me"
+                                class="nav-link vivalei-nav-link"
+                            >
+                                Tempo per me
+                            </a>
+                        </li>
+
+                        <li>
+                            <a
+                                href="{% url 'products:lista_prodotti' %}"
+                                class="nav-link vivalei-nav-link"
+                            >
+                                Tutti i prodotti
+                            </a>
+                        </li>
+
+                    </ul>
+                </nav>
+
+                <div class="d-flex align-items-center gap-1">
+
+                    <button
+                        class="vivalei-header-icon"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#ricercaVivaLei"
+                        aria-label="Cerca"
+                    >
+                        <i class="bi bi-search"></i>
+                    </button>
+
+                    <div class="dropdown d-none d-lg-block">
+
+                        <button
+                            class="vivalei-header-icon"
+                            type="button"
+                            data-bs-toggle="dropdown"
+                            aria-label="Account"
+                        >
+                            <i class="bi bi-person"></i>
+                        </button>
+
+                        <div class="dropdown-menu dropdown-menu-end vivalei-account-menu">
+
+                            {% if user.is_authenticated %}
+
+                                <div class="px-3 py-2">
+                                    <div class="fw-semibold">
+                                        {% if user.first_name %}
+                                            Ciao, {{ user.first_name }}
+                                        {% else %}
+                                            Il mio account
+                                        {% endif %}
+                                    </div>
+
+                                    <div class="small text-vivalei-muted vivalei-account-email">
+                                        {{ user.email }}
+                                    </div>
+                                </div>
+
+                                <div class="dropdown-divider"></div>
+
+                                <a href="{% url 'users:account' %}" class="dropdown-item">
+                                    <i class="bi bi-person-circle"></i>
+                                    Il mio account
+                                </a>
+
+                                <a href="{% url 'carrello:dettaglio' %}" class="dropdown-item">
+                                    <i class="bi bi-bag"></i>
+                                    Il mio carrello
+                                </a>
+
+                                {% if user.is_staff %}
+                                    <a href="{% url 'gestione:dashboard' %}" class="dropdown-item">
+                                        <i class="bi bi-speedometer2"></i>
+                                        Pannello gestione
+                                    </a>
+                                {% endif %}
+
+                                <div class="dropdown-divider"></div>
+
+                                <form method="post" action="{% url 'users:logout' %}">
+                                    {% csrf_token %}
+
+                                    <button type="submit" class="dropdown-item">
+                                        <i class="bi bi-box-arrow-right"></i>
+                                        Esci
+                                    </button>
+                                </form>
+
+                            {% else %}
+
+                                <a href="{% url 'users:login' %}" class="dropdown-item">
+                                    <i class="bi bi-person-check"></i>
+                                    Accedi
+                                </a>
+
+                                <a href="{% url 'users:registrazione' %}" class="dropdown-item">
+                                    <i class="bi bi-person-plus"></i>
+                                    Registrati
+                                </a>
+
+                            {% endif %}
+
+                        </div>
+                    </div>
+
+                    <a
+                        href="{% url 'carrello:dettaglio' %}"
+                        class="vivalei-header-icon position-relative"
+                        aria-label="Carrello"
+                    >
+                        <i class="bi bi-bag"></i>
+
+                        <span
+                            id="numeroProdottiCarrello"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill vivalei-cart-badge {% if numero_prodotti_carrello == 0 %}d-none{% endif %}"
+                        >
+                            {{ numero_prodotti_carrello }}
+                        </span>
+                    </a>
+
+                </div>
+            </div>
+        </div>
+    </header>
+
+
+    <!-- MENU MOBILE -->
+    <div
+        class="offcanvas offcanvas-start vivalei-offcanvas"
+        tabindex="-1"
+        id="menuMobile"
+    >
+
+        <div class="offcanvas-header px-4 pt-4 pb-3">
+
+            <a href="{% url 'core:home' %}">
+                <img
+                    src="{% static 'images/brand/logo1-cropped.svg' %}"
+                    alt="VivaLei"
+                    class="vivalei-mobile-logo"
+                >
+            </a>
+
+            <button
+                type="button"
+                class="btn-close shadow-none"
+                data-bs-dismiss="offcanvas"
+                aria-label="Chiudi"
+            ></button>
+
+        </div>
+
+        <div class="offcanvas-body px-4">
+
+            <a href="{% url 'core:home' %}" class="vivalei-mobile-menu-link">
+                <span>Home</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+            <a
+                href="{% url 'products:lista_prodotti' %}"
+                class="vivalei-mobile-menu-link"
+            >
+                <span>Tutti i prodotti</span>
+                <i class="bi bi-chevron-right"></i>
+            </a>
+
+            <h5 class="mt-4 mb-3">
+                I mondi di VivaLei
+            </h5>
+
+            <div class="d-grid gap-3">
+
+                <a
+                    href="{% url 'products:lista_prodotti' %}?mondo=casa"
+                    class="vivalei-mobile-world d-flex align-items-center gap-3"
+                >
+                    <span class="vivalei-mobile-world-icon">
+                        <i class="bi bi-house"></i>
+                    </span>
+
+                    <div>
+                        <strong>La mia casa</strong>
+                        <div class="small text-vivalei-muted">
+                            Più ordine, meno fatica.
+                        </div>
+                    </div>
+                </a>
+
+                <a
+                    href="{% url 'products:lista_prodotti' %}?mondo=movimento"
+                    class="vivalei-mobile-world d-flex align-items-center gap-3"
+                >
+                    <span class="vivalei-mobile-world-icon">
+                        <i class="bi bi-person-walking"></i>
+                    </span>
+
+                    <div>
+                        <strong>Tenersi in movimento</strong>
+                        <div class="small text-vivalei-muted">
+                            Un po' di movimento, a modo tuo.
+                        </div>
+                    </div>
+                </a>
+
+                <a
+                    href="{% url 'products:lista_prodotti' %}?mondo=tempo-per-me"
+                    class="vivalei-mobile-world d-flex align-items-center gap-3"
+                >
+                    <span class="vivalei-mobile-world-icon">
+                        <i class="bi bi-heart"></i>
+                    </span>
+
+                    <div>
+                        <strong>Tempo per me</strong>
+                        <div class="small text-vivalei-muted">
+                            Ogni tanto, anche tu.
+                        </div>
+                    </div>
+                </a>
+
+            </div>
+
+            <hr class="my-4">
+
+            {% if user.is_authenticated %}
+
+                <strong>
+                    {% if user.first_name %}
+                        Ciao, {{ user.first_name }}
+                    {% else %}
+                        Il mio account
+                    {% endif %}
+                </strong>
+
+                <div class="small text-vivalei-muted mb-3">
+                    {{ user.email }}
+                </div>
+
+                <a href="{% url 'users:account' %}" class="vivalei-mobile-menu-link">
+                    <span>Il mio account</span>
+                    <i class="bi bi-person-circle"></i>
+                </a>
+
+                <a href="{% url 'carrello:dettaglio' %}" class="vivalei-mobile-menu-link">
+                    <span>Il mio carrello</span>
+                    <i class="bi bi-bag"></i>
+                </a>
+
+                {% if user.is_staff %}
+                    <a
+                        href="{% url 'gestione:dashboard' %}"
+                        class="vivalei-mobile-menu-link"
+                    >
+                        <span>Pannello gestione</span>
+                        <i class="bi bi-speedometer2"></i>
+                    </a>
+                {% endif %}
+
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+
+                    <button class="btn btn-vivalei-outline w-100 mt-4">
+                        <i class="bi bi-box-arrow-right"></i>
+                        Esci
+                    </button>
+                </form>
+
+            {% else %}
+
+                <div class="d-grid gap-3">
+                    <a
+                        href="{% url 'users:login' %}"
+                        class="btn btn-vivalei-outline"
+                    >
+                        Accedi
+                    </a>
+
+                    <a
+                        href="{% url 'users:registrazione' %}"
+                        class="btn btn-vivalei"
+                    >
+                        Registrati
+                    </a>
+                </div>
+
+            {% endif %}
+
+        </div>
+    </div>
+
+
+    <!-- SEARCH -->
+    <div
+        class="offcanvas offcanvas-top vivalei-search-offcanvas"
+        tabindex="-1"
+        id="ricercaVivaLei"
+        data-bs-backdrop="false"
+    >
+
+        <div class="vivalei-search-inner">
+
+            <div class="vivalei-search-header">
+
+                <h2 class="vivalei-search-title">
+                    Cosa stai cercando?
+                </h2>
+
+                <button
+                    class="vivalei-search-close"
+                    type="button"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Chiudi"
+                >
+                    <i class="bi bi-x-lg"></i>
+                </button>
+
+            </div>
+
+            <form
+                method="get"
+                action="{% url 'products:lista_prodotti' %}"
+            >
+                <div class="vivalei-live-search-wrapper">
+
+                    <i class="bi bi-search"></i>
+
+                    <input
+                        type="search"
+                        id="vivaleiLiveSearch"
+                        name="q"
+                        class="vivalei-live-search-input"
+                        placeholder="Cerca..."
+                        autocomplete="off"
+                    >
+
+                </div>
+            </form>
+
+            <div class="vivalei-search-worlds">
+
+                <a
+                    href="{% url 'products:lista_prodotti' %}?mondo=casa"
+                    class="vivalei-search-world"
+                >
+                    La mia casa
+                </a>
+
+                <a
+                    href="{% url 'products:lista_prodotti' %}?mondo=movimento"
+                    class="vivalei-search-world"
+                >
+                    Tenersi in movimento
+                </a>
+
+                <a
+                    href="{% url 'products:lista_prodotti' %}?mondo=tempo-per-me"
+                    class="vivalei-search-world"
+                >
+                    Tempo per me
+                </a>
+
+            </div>
+
+            <div class="vivalei-search-results-section">
+
+                <div class="vivalei-search-results-header">
+
+                    <h3
+                        class="vivalei-search-results-title"
+                        id="vivaleiSearchResultsTitle"
+                    >
+                        Prodotti da scoprire
+                    </h3>
+
+                    <div
+                        id="vivaleiSearchLoader"
+                        class="spinner-border spinner-border-sm text-vivalei d-none"
+                    ></div>
+
+                </div>
+
+                <div
+                    id="vivaleiSearchResults"
+                    class="vivalei-search-products"
+                ></div>
+
+                <div
+                    id="vivaleiSearchEmpty"
+                    class="vivalei-search-empty d-none"
+                >
+                    <i class="bi bi-search"></i>
+                    <p class="mb-0">
+                        Nessun prodotto trovato.
+                    </p>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- MESSAGES -->
+    {% if messages %}
+        <div class="container mt-3">
+
+            {% for message in messages %}
+                <div
+                    class="alert alert-{{ message.tags|default:'info' }} alert-dismissible fade show"
+                >
+                    {{ message }}
+
+                    <button
+                        type="button"
+                        class="btn-close"
+                        data-bs-dismiss="alert"
+                        aria-label="Chiudi"
+                    ></button>
+                </div>
+            {% endfor %}
+
+        </div>
+    {% endif %}
+
+
+    <!-- PAGE CONTENT -->
+    <main class="flex-grow-1 vivalei-main">
+        {% block content %}{% endblock %}
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer class="vivalei-footer">
+        <div class="container">
+
+            <div class="vivalei-footer-main">
+
+                <div class="row g-5">
+
+                    <div class="col-12 col-lg-4">
+
+                        <img
+                            src="{% static 'images/brand/cuore1.svg' %}"
+                            alt=""
+                            class="vivalei-footer-heart"
+                        >
+
+                        <p class="vivalei-footer-intro">
+                            Piccole cose pensate per rendere più semplici,
+                            piacevoli e leggere le tue giornate.
+                        </p>
+
+                    </div>
+
+                    <div class="col-6 col-md-4 col-lg-2">
+
+                        <h2 class="vivalei-footer-title">
+                            I nostri mondi
+                        </h2>
+
+                        <nav class="vivalei-footer-links">
+                            <a href="{% url 'products:lista_prodotti' %}">
+                                Tutti i prodotti
+                            </a>
+
+                            <a href="{% url 'products:lista_prodotti' %}?mondo=casa">
+                                La mia casa
+                            </a>
+
+                            <a href="{% url 'products:lista_prodotti' %}?mondo=movimento">
+                                Tenersi in movimento
+                            </a>
+
+                            <a href="{% url 'products:lista_prodotti' %}?mondo=tempo-per-me">
+                                Tempo per me
+                            </a>
+                        </nav>
+
+                    </div>
+
+                    <div class="col-6 col-md-4 col-lg-2">
+
+                        <h2 class="vivalei-footer-title">
+                            Assistenza
+                        </h2>
+
+                        <nav class="vivalei-footer-links">
+                            <a href="#">Contattaci</a>
+                            <a href="#">FAQ</a>
+                            <a href="#">Spedizioni</a>
+                            <a href="#">Resi e rimborsi</a>
+                            <a href="#">Traccia il tuo ordine</a>
+                        </nav>
+
+                    </div>
+
+                    <div class="col-6 col-md-4 col-lg-2">
+
+                        <h2 class="vivalei-footer-title">
+                            VivaLei
+                        </h2>
+
+                        <nav class="vivalei-footer-links">
+
+                            <a href="{% url 'core:chi_siamo' %}">
+                                Chi siamo
+                            </a>
+
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'users:account' %}">
+                                    Il mio account
+                                </a>
+                            {% else %}
+                                <a href="{% url 'users:login' %}">
+                                    Accedi
+                                </a>
+
+                                <a href="{% url 'users:registrazione' %}">
+                                    Registrati
+                                </a>
+                            {% endif %}
+
+                            <a href="#">
+                                I miei ordini
+                            </a>
+
+                        </nav>
+
+                    </div>
+
+                    <div class="col-6 col-md-4 col-lg-2">
+
+                        <h2 class="vivalei-footer-title">
+                            Informazioni
+                        </h2>
+
+                        <nav class="vivalei-footer-links">
+                            <a href="#">Privacy Policy</a>
+                            <a href="#">Cookie Policy</a>
+                            <a href="#">Termini e condizioni</a>
+                            <a href="#">Condizioni di vendita</a>
+                            <a href="#">Preferenze cookie</a>
+                        </nav>
+
+                    </div>
+
+                </div>
+
+                <hr class="vivalei-footer-divider">
+
+                <div class="vivalei-footer-bottom">
+
+                    <div class="row align-items-center g-3">
+
+                        <div class="col-12 col-md-6">
+                            <p class="mb-0">
+                                &copy; 2026 VivaLei. Tutti i diritti riservati.
+                            </p>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+
+                            <div class="vivalei-footer-bottom-info">
+
+                                <span>
+                                    <i class="bi bi-lock"></i>
+                                    Pagamenti protetti
+                                </span>
+
+                                <span>
+                                    <i class="bi bi-box-seam"></i>
+                                    Ordini tracciabili
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{% static 'js/main.js' %}"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const panel = document.getElementById("ricercaVivaLei");
+            const header = document.querySelector(".vivalei-header");
+            const input = document.getElementById("vivaleiLiveSearch");
+            const results = document.getElementById("vivaleiSearchResults");
+            const empty = document.getElementById("vivaleiSearchEmpty");
+            const title = document.getElementById("vivaleiSearchResultsTitle");
+            const loader = document.getElementById("vivaleiSearchLoader");
+
+            let timer = null;
+            let controller = null;
+
+            function setSearchTop() {
+                if (panel && header) {
+                    panel.style.setProperty(
+                        "--search-top",
+                        `${Math.round(header.getBoundingClientRect().bottom)}px`
+                    );
+                }
+            }
+
+            function escapeHtml(value) {
+                const element = document.createElement("div");
+                element.textContent = value || "";
+                return element.innerHTML;
+            }
+
+            function productHtml(product) {
+                const image = product.immagine
+                    ? `<img src="${escapeHtml(product.immagine)}" alt="${escapeHtml(product.nome)}">`
+                    : `<div class="vivalei-live-product-placeholder"><i class="bi bi-image"></i></div>`;
+
+                const category = product.categoria
+                    ? `<div class="vivalei-live-product-category">${escapeHtml(product.categoria)}</div>`
+                    : "";
+
+                return `
+                    <a href="${escapeHtml(product.url)}" class="vivalei-live-product">
+                        <div class="vivalei-live-product-image">
+                            ${image}
+                        </div>
+
+                        <div>
+                            ${category}
+
+                            <div class="vivalei-live-product-name">
+                                ${escapeHtml(product.nome)}
+                            </div>
+
+                            <div class="vivalei-live-product-price">
+                                € ${escapeHtml(product.prezzo)}
+                            </div>
+                        </div>
+                    </a>
+                `;
+            }
+
+            function showProducts(products) {
+                results.innerHTML = products.map(productHtml).join("");
+                empty.classList.toggle(
+                    "d-none",
+                    products.length > 0
+                );
+            }
+
+            async function search(query = "") {
+                if (controller) {
+                    controller.abort();
+                }
+
+                controller = new AbortController();
+                loader.classList.remove("d-none");
+
+                try {
+                    const url = new URL(
+                        "{% url 'products:ricerca_live' %}",
+                        window.location.origin
+                    );
+
+                    if (query) {
+                        url.searchParams.set(
+                            "q",
+                            query
+                        );
+                    }
+
+                    const response = await fetch(
+                        url,
+                        {
+                            signal: controller.signal,
+                        }
+                    );
+
+                    if (!response.ok) {
+                        throw new Error();
+                    }
+
+                    const data = await response.json();
+
+                    title.textContent = query
+                        ? "Risultati"
+                        : "Prodotti da scoprire";
+
+                    showProducts(data.prodotti);
+
+                } catch (error) {
+                    if (error.name !== "AbortError") {
+                        results.innerHTML = "";
+                        empty.classList.remove("d-none");
+                    }
+
+                } finally {
+                    loader.classList.add("d-none");
+                }
+            }
+
+            input?.addEventListener(
+                "input",
+                function() {
+                    clearTimeout(timer);
+
+                    timer = setTimeout(
+                        function() {
+                            search(input.value.trim());
+                        },
+                        250
+                    );
+                }
+            );
+
+            panel?.addEventListener(
+                "show.bs.offcanvas",
+                setSearchTop
+            );
+
+            panel?.addEventListener(
+                "shown.bs.offcanvas",
+                function() {
+                    setSearchTop();
+                    input?.focus();
+
+                    if (!results.children.length) {
+                        search();
+                    }
+                }
+            );
+
+            panel?.addEventListener(
+                "hidden.bs.offcanvas",
+                function() {
+                    input.value = "";
+                    results.innerHTML = "";
+                    title.textContent = "Prodotti da scoprire";
+                }
+            );
+
+            window.addEventListener(
+                "resize",
+                setSearchTop
+            );
+        });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
