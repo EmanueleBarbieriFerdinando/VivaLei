@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="it">
+<body style="margin:0;background:#fcfbfa;color:#332d32;font-family:Arial,sans-serif;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="padding:32px 16px;">
+    <tr><td align="center">
+      <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;background:#ffffff;border:1px solid #eee3eb;border-radius:18px;overflow:hidden;">
+        <tr><td style="padding:30px 32px;background:#f7edf6;color:#86167d;">
+          <div style="font-size:13px;font-weight:bold;letter-spacing:1.4px;">VIVALEI</div>
+          <h1 style="margin:10px 0 0;font-size:28px;font-weight:600;">Ordine ricevuto</h1>
+        </td></tr>
+        <tr><td style="padding:30px 32px;">
+          <p style="margin:0 0 14px;font-size:16px;line-height:1.55;">Ciao {{ ordine.nome_cliente }},</p>
+          <p style="margin:0 0 24px;font-size:16px;line-height:1.55;">grazie per il tuo acquisto. Il pagamento e' stato confermato e abbiamo ricevuto il tuo ordine.</p>
+
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-bottom:24px;background:#fcfbfa;border-radius:12px;">
+            <tr><td style="padding:16px 18px;font-size:14px;line-height:1.65;">
+              <strong>Ordine {{ ordine.codice }}</strong><br>
+              Ricevuto il {{ ordine.data_creazione|date:"d/m/Y alle H:i" }}<br>
+              Stato: <strong style="color:#86167d;">Pagato - in preparazione</strong>
+            </td></tr>
+          </table>
+
+          <h2 style="margin:0 0 12px;font-size:18px;">I prodotti scelti</h2>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;font-size:14px;">
+            {% for riga in ordine.righe.all %}
+            <tr>
+              <td style="padding:12px 0;border-bottom:1px solid #eee3eb;line-height:1.45;"><strong>{{ riga.nome_prodotto }}</strong><br><span style="color:#746b72;">SKU {{ riga.sku }} · {{ riga.quantita }} x EUR {{ riga.prezzo_unitario|floatformat:2 }}</span></td>
+              <td align="right" style="padding:12px 0;border-bottom:1px solid #eee3eb;font-weight:bold;white-space:nowrap;">EUR {{ riga.totale|floatformat:2 }}</td>
+            </tr>
+            {% endfor %}
+          </table>
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin-top:14px;font-size:14px;line-height:1.8;">
+            <tr><td>Subtotale</td><td align="right">EUR {{ ordine.subtotale|floatformat:2 }}</td></tr>
+            <tr><td>Spedizione</td><td align="right">EUR {{ ordine.costo_spedizione|floatformat:2 }}</td></tr>
+            <tr><td style="padding-top:8px;font-size:17px;font-weight:bold;">Totale</td><td align="right" style="padding-top:8px;font-size:17px;font-weight:bold;color:#86167d;">EUR {{ ordine.totale|floatformat:2 }}</td></tr>
+          </table>
+
+          <div style="margin-top:26px;padding:18px;background:#fcfbfa;border-radius:12px;font-size:14px;line-height:1.55;">
+            <strong>Spedizione a</strong><br>
+            {{ ordine.nome_cliente }}<br>
+            {{ ordine.indirizzo_completo }}
+            {% if ordine.telefono %}<br>Tel. {{ ordine.telefono }}{% endif %}
+          </div>
+          {% if ordine.note %}<p style="margin:20px 0 0;font-size:14px;line-height:1.5;"><strong>Note per l'ordine:</strong> {{ ordine.note }}</p>{% endif %}
+          <p style="margin:26px 0 0;font-size:15px;line-height:1.55;">Ti aggiorneremo non appena il tuo ordine verra' spedito.</p>
+        </td></tr>
+        <tr><td style="padding:20px 32px;background:#332d32;color:#ffffff;font-size:13px;">Grazie,<br>il team VivaLei</td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>

@@ -1,0 +1,28 @@
+Ciao {{ ordine.nome_cliente }},
+
+grazie per il tuo acquisto su VivaLei. Abbiamo ricevuto il tuo ordine e il pagamento e' stato confermato.
+
+RIEPILOGO ORDINE
+Numero ordine: {{ ordine.codice }}
+Data: {{ ordine.data_creazione|date:"d/m/Y H:i" }}
+Stato: Pagato - in attesa di preparazione
+
+PRODOTTI
+{% for riga in ordine.righe.all %}- {{ riga.nome_prodotto }} (SKU: {{ riga.sku }})
+  {{ riga.quantita }} x EUR {{ riga.prezzo_unitario|floatformat:2 }} = EUR {{ riga.totale|floatformat:2 }}
+{% endfor %}
+Subtotale: EUR {{ ordine.subtotale|floatformat:2 }}
+Spedizione: EUR {{ ordine.costo_spedizione|floatformat:2 }}
+Totale: EUR {{ ordine.totale|floatformat:2 }}
+
+SPEDIZIONE
+{{ ordine.nome_cliente }}
+{{ ordine.indirizzo_completo }}
+{% if ordine.telefono %}Telefono: {{ ordine.telefono }}
+{% endif %}{% if ordine.note %}
+Note: {{ ordine.note }}
+{% endif %}
+
+Ti aggiorneremo non appena il tuo ordine verra' spedito.
+
+Il team VivaLei
