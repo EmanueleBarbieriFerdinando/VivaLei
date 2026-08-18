@@ -261,6 +261,8 @@
 
             <!-- UTENTI -->
 
+            {% if request.user.is_superuser %}
+
             <div class="col-12 col-md-6 col-xl-4">
 
 
@@ -320,6 +322,8 @@
 
 
             </div>
+
+            {% endif %}
 
 
 

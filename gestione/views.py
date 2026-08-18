@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import user_passes_test
 from django.core.paginator import Paginator
 from django.db.models import Max, Q
 from django.shortcuts import get_object_or_404, redirect, render
@@ -274,6 +275,10 @@ def gestione_ordini(request):
         context,
     )
 @staff_member_required(login_url="users:login")
+@user_passes_test(
+    lambda user: user.is_superuser,
+    login_url="gestione:dashboard",
+)
 def gestione_utenti(request):
 
     ricerca = request.GET.get(
@@ -374,6 +379,10 @@ def gestione_utenti(request):
 
 
 @staff_member_required(login_url="users:login")
+@user_passes_test(
+    lambda user: user.is_superuser,
+    login_url="gestione:dashboard",
+)
 def modifica_utente(request, utente_id):
 
     utente = get_object_or_404(
