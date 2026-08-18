@@ -447,6 +447,20 @@
         cursor: pointer;
     }
 
+    .admin-gallery-replace {
+        display: block;
+        margin-top: 8px;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .admin-gallery-replace .form-control {
+        min-height: auto;
+        margin-top: 5px;
+        padding: 5px;
+        font-size: 11px;
+    }
+
     .admin-upload-box {
         padding: 18px;
         border: 1px dashed #cfc6cc;
@@ -960,6 +974,17 @@
 
                                                         Elimina immagine
 
+                                                    </label>
+
+                                                    <label class="admin-gallery-replace">
+                                                        Sostituisci immagine
+
+                                                        <input
+                                                            type="file"
+                                                            class="form-control"
+                                                            name="sostituisci_immagine_{{ immagine.id }}"
+                                                            accept="image/*"
+                                                        >
                                                     </label>
 
                                                 </div>
@@ -1800,6 +1825,21 @@
                                     Se non scegli un file, resterà quella attuale.
                                 </div>
 
+                                <div class="form-check mt-2">
+                                    <input
+                                        type="checkbox"
+                                        class="form-check-input"
+                                        id="eliminaImmaginePrincipale"
+                                        name="elimina_immagine_principale"
+                                    >
+                                    <label
+                                        class="form-check-label text-danger small"
+                                        for="eliminaImmaginePrincipale"
+                                    >
+                                        Elimina immagine principale
+                                    </label>
+                                </div>
+
                             </div>
 
 
@@ -2123,6 +2163,11 @@
                     document.getElementById(
                         "modificaProdottoImmagine"
                     ).value = "";
+
+
+                    document.getElementById(
+                        "eliminaImmaginePrincipale"
+                    ).checked = false;
 
 
                     document.getElementById(

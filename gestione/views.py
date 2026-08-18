@@ -95,7 +95,23 @@ def elimina_immagini_extra(request, prodotto):
         immagine.delete()
 
 
+def sostituisci_immagini_extra(request, prodotto):
 
+    for immagine in prodotto.immagini_extra.all():
+
+        nuova_immagine = request.FILES.get(
+            f"sostituisci_immagine_{immagine.id}"
+        )
+
+        if not nuova_immagine:
+            continue
+
+        if immagine.immagine:
+            immagine.immagine.delete(save=False)
+
+        immagine.immagine = nuova_immagine
+        immagine.alt_text = prodotto.nome
+        immagine.save(update_fields=["immagine", "alt_text"])
 
 
 @staff_member_required(login_url="users:login")
@@ -701,10 +717,35 @@ def modifica_prodotto(request, prodotto_id):
 
     if form.is_valid():
 
+        immagine_principale_precedente = prodotto.immagine
+
         prodotto = form.save()
 
 
+        if (
+            request.POST.get("elimina_immagine_principale")
+            and not request.FILES.get("immagine")
+            and prodotto.immagine
+        ):
+            prodotto.immagine.delete(save=False)
+            prodotto.immagine = None
+            prodotto.save(update_fields=["immagine", "data_modifica"])
+
+        elif (
+            request.FILES.get("immagine")
+            and immagine_principale_precedente
+            and immagine_principale_precedente.name != prodotto.immagine.name
+        ):
+            immagine_principale_precedente.delete(save=False)
+
+
         elimina_immagini_extra(
+            request,
+            prodotto,
+        )
+
+
+        sostituisci_immagini_extra(
             request,
             prodotto,
         )
