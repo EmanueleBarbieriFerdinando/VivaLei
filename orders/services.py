@@ -1,10 +1,39 @@
 from decimal import Decimal
 
 from django.db import transaction
+from django.template.loader import render_to_string
+from django.utils import timezone
 
+from core.services.email_service import invia_email
 from products.models import Prodotto
 
-from .models import RigaSessioneCheckout, SessioneCheckout
+from .models import NotificaOrdine, RigaSessioneCheckout, SessioneCheckout
+
+
+def invia_email_ordine_ricevuto(notifica_id):
+    """Invia e registra la conferma dell'ordine senza bloccare il checkout."""
+    notifica = NotificaOrdine.objects.select_related("ordine").prefetch_related("ordine__righe").get(pk=notifica_id)
+    ordine = notifica.ordine
+    contesto = {"ordine": ordine}
+
+    try:
+        invia_email(
+            destinatari=[notifica.destinatario],
+            oggetto=f"VivaLei - Ordine {ordine.codice} ricevuto",
+            corpo_testo=render_to_string("orders/email/conferma_ordine.txt", contesto),
+            corpo_html=render_to_string("orders/email/conferma_ordine.html", contesto),
+        )
+    except Exception as errore:
+        notifica.stato = NotificaOrdine.Stato.ERRORE
+        notifica.errore = str(errore)[:2000]
+        notifica.save(update_fields=["stato", "errore"])
+        return False
+
+    notifica.stato = NotificaOrdine.Stato.INVIATA
+    notifica.data_invio = timezone.now()
+    notifica.errore = ""
+    notifica.save(update_fields=["stato", "data_invio", "errore"])
+    return True
 
 
 @transaction.atomic

@@ -6,7 +6,8 @@ from django.contrib.auth import get_user_model
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Ordine, RigaSessioneCheckout, SessioneCheckout
+from .models import NotificaOrdine, Ordine, RigaOrdine, RigaSessioneCheckout, SessioneCheckout
+from .services import invia_email_ordine_ricevuto
 
 
 class ConfermaPagamentoStripeTests(TestCase):
@@ -61,6 +62,7 @@ class ConfermaPagamentoStripeTests(TestCase):
         self.assertEqual(self.sessione.stato, SessioneCheckout.Stato.COMPLETATA)
         self.assertIsNotNone(self.sessione.ordine_id)
         self.assertEqual(self.sessione.ordine.stato_pagamento, Ordine.StatoPagamento.PAGATO)
+        self.assertTrue(self.sessione.ordine.notifiche.filter(tipo=NotificaOrdine.Tipo.ORDINE_RICEVUTO).exists())
         self.assertContains(risposta, "Grazie per il tuo ordine")
         self.assertContains(risposta, "Ordine")
 
@@ -82,6 +84,49 @@ class ConfermaPagamentoStripeTests(TestCase):
         self.assertEqual(risposta.status_code, 200)
         self.assertIsNone(self.sessione.ordine_id)
         self.assertContains(risposta, "Stiamo verificando il pagamento con Stripe")
+
+
+class EmailOrdineTests(TestCase):
+    def test_la_mail_di_conferma_contiene_i_dati_dell_ordine(self):
+        utente = get_user_model().objects.create_user(email="cliente@example.com", password="password-test")
+        ordine = Ordine.objects.create(
+            utente=utente,
+            stato=Ordine.Stato.PAGATO,
+            stato_pagamento=Ordine.StatoPagamento.PAGATO,
+            nome="Mario",
+            cognome="Rossi",
+            email=utente.email,
+            telefono="3331234567",
+            indirizzo="Via Roma",
+            numero_civico="1",
+            cap="00100",
+            citta="Roma",
+            provincia="RM",
+            note="Citofonare Rossi",
+            subtotale=Decimal("14.90"),
+            totale=Decimal("14.90"),
+        )
+        RigaOrdine.objects.create(
+            ordine=ordine,
+            nome_prodotto="Prodotto test",
+            sku="TEST-0001",
+            prezzo_unitario=Decimal("14.90"),
+            quantita=1,
+        )
+        notifica = NotificaOrdine.objects.create(
+            ordine=ordine,
+            tipo=NotificaOrdine.Tipo.ORDINE_RICEVUTO,
+            destinatario=utente.email,
+        )
+
+        with patch("orders.services.invia_email") as invia_email_mock:
+            self.assertTrue(invia_email_ordine_ricevuto(notifica.pk))
+
+        notifica.refresh_from_db()
+        self.assertEqual(notifica.stato, NotificaOrdine.Stato.INVIATA)
+        self.assertEqual(invia_email_mock.call_args.kwargs["destinatari"], [utente.email])
+        self.assertIn("Prodotto test", invia_email_mock.call_args.kwargs["corpo_html"])
+        self.assertIn("Via Roma 1", invia_email_mock.call_args.kwargs["corpo_html"])
 
 
 class GestioneOrdineTests(TestCase):

@@ -8,8 +8,8 @@ from django.shortcuts import get_object_or_404, redirect, render
 from carrello.carrello import Carrello
 
 from .forms import CheckoutForm, GestioneOrdineForm, NotaInternaOrdineForm
-from .models import Ordine, SessioneCheckout, RigaOrdine
-from .services import crea_sessione_checkout_da_carrello
+from .models import NotificaOrdine, Ordine, SessioneCheckout, RigaOrdine
+from .services import crea_sessione_checkout_da_carrello, invia_email_ordine_ricevuto
 import stripe
 
 from django.conf import settings
@@ -307,6 +307,13 @@ def conferma_pagamento_stripe(sessione_stripe):
     sessione_checkout.ordine = ordine
     sessione_checkout.data_completamento = timezone.now()
     sessione_checkout.save(update_fields=["stato", "ordine", "data_completamento", "data_modifica"])
+
+    notifica = NotificaOrdine.objects.create(
+        ordine=ordine,
+        tipo=NotificaOrdine.Tipo.ORDINE_RICEVUTO,
+        destinatario=ordine.email,
+    )
+    transaction.on_commit(lambda notifica_id=notifica.pk: invia_email_ordine_ricevuto(notifica_id))
 
     return ordine
 

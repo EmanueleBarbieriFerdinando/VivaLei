@@ -110,6 +110,14 @@
         word-break: break-word;
     }
 
+    .account-form .account-data-row { padding: 12px 0; }
+    .account-form .form-control { min-height: 46px; border-color: var(--vivalei-border); border-radius: 10px; }
+    .account-form .form-control:focus { border-color: var(--vivalei-purple); box-shadow: 0 0 0 .2rem rgba(134, 22, 125, .12); }
+    .account-form .invalid-feedback { display: block; }
+    .account-save { width: 100%; min-height: 50px; margin-top: 20px; border: 0; border-radius: 12px; background: var(--vivalei-purple); color: #fff; font-weight: 700; transition: .2s ease; }
+    .account-save:hover { background: var(--vivalei-purple-dark); }
+    .account-security-card { margin-bottom: 24px; }
+
     .account-action {
         display: flex;
         align-items: center;
@@ -315,11 +323,64 @@
 
                     </div>
 
+                    <form method="post" action="{% url 'users:modifica_profilo' %}" class="account-form mt-2">
+                        {% csrf_token %}
+                        <div class="account-data-row">
+                            <label for="{{ profilo_form.first_name.id_for_label }}" class="account-data-label">Nome</label>
+                            {{ profilo_form.first_name }}
+                            {% for error in profilo_form.first_name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="account-data-row">
+                            <label for="{{ profilo_form.last_name.id_for_label }}" class="account-data-label">Cognome</label>
+                            {{ profilo_form.last_name }}
+                            {% for error in profilo_form.last_name.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="account-data-row">
+                            <label for="{{ profilo_form.email.id_for_label }}" class="account-data-label">Email</label>
+                            {{ profilo_form.email }}
+                            {% for error in profilo_form.email.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="account-data-row">
+                            <label for="{{ profilo_form.telefono.id_for_label }}" class="account-data-label">Telefono</label>
+                            {{ profilo_form.telefono }}
+                            {% for error in profilo_form.telefono.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        {% for error in profilo_form.non_field_errors %}<div class="invalid-feedback mt-2">{{ error }}</div>{% endfor %}
+                        <button type="submit" class="account-save"><i class="bi bi-check2 me-2"></i>Salva modifiche</button>
+                    </form>
+
                 </div>
 
             </div>
 
             <div class="col-12 col-lg-6">
+
+                <div class="account-card account-security-card">
+                    <div class="account-card-header">
+                        <div class="account-card-icon"><i class="bi bi-shield-lock"></i></div>
+                        <h2 class="account-card-title">Cambia password</h2>
+                    </div>
+                    <form method="post" action="{% url 'users:cambia_password' %}" class="account-form">
+                        {% csrf_token %}
+                        <div class="account-data-row">
+                            <label for="{{ password_form.old_password.id_for_label }}" class="account-data-label">Password attuale</label>
+                            {{ password_form.old_password }}
+                            {% for error in password_form.old_password.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="account-data-row">
+                            <label for="{{ password_form.new_password1.id_for_label }}" class="account-data-label">Nuova password</label>
+                            {{ password_form.new_password1 }}
+                            {% for error in password_form.new_password1.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        <div class="account-data-row">
+                            <label for="{{ password_form.new_password2.id_for_label }}" class="account-data-label">Conferma nuova password</label>
+                            {{ password_form.new_password2 }}
+                            {% for error in password_form.new_password2.errors %}<div class="invalid-feedback">{{ error }}</div>{% endfor %}
+                        </div>
+                        {% for error in password_form.non_field_errors %}<div class="invalid-feedback mt-2">{{ error }}</div>{% endfor %}
+                        <button type="submit" class="account-save"><i class="bi bi-key me-2"></i>Aggiorna password</button>
+                    </form>
+                </div>
 
                 <div class="account-card">
 
