@@ -1,0 +1,5 @@
+Django==6.1
+django-tinymce==5.0.0
+Pillow==12.3.0
+python-dotenv==1.2.2
+stripe==15.4.0
