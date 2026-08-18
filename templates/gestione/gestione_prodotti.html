@@ -1087,15 +1087,14 @@
     aria-hidden="true"
 >
 
-    <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
 
-        <div class="modal-content">
-
-            <form
-                method="post"
-                action="{% url 'gestione:inserisci_prodotto' %}"
-                enctype="multipart/form-data"
-            >
+        <form
+            method="post"
+            action="{% url 'gestione:inserisci_prodotto' %}"
+            class="modal-content"
+            enctype="multipart/form-data"
+        >
 
                 {% csrf_token %}
 
@@ -1336,9 +1335,7 @@
 
                 </div>
 
-            </form>
-
-        </div>
+        </form>
 
     </div>
 
