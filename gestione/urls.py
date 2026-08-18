@@ -9,6 +9,8 @@ from .views import (
     inserisci_prodotto,
     modifica_prodotto,
     modifica_utente,
+    elimina_prodotto,
+    elimina_utente,
     gestione_chat,
     dettaglio_chat,
     chiudi_chat_staff,
@@ -44,6 +46,11 @@ urlpatterns = [
         modifica_utente,
         name="modifica_utente"
     ),
+    path(
+        "utenti/<int:utente_id>/elimina/",
+        elimina_utente,
+        name="elimina_utente"
+    ),
 
 
     path(
@@ -68,6 +75,11 @@ urlpatterns = [
         "prodotti/<int:prodotto_id>/modifica/",
         modifica_prodotto,
         name="modifica_prodotto"
+    ),
+    path(
+        "prodotti/<int:prodotto_id>/elimina/",
+        elimina_prodotto,
+        name="elimina_prodotto"
     ),
 
 
