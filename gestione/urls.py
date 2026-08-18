@@ -10,7 +10,6 @@ from .views import (
     modifica_prodotto,
     modifica_utente,
     elimina_prodotto,
-    elimina_utente,
     gestione_chat,
     dettaglio_chat,
     chiudi_chat_staff,
@@ -46,13 +45,6 @@ urlpatterns = [
         modifica_utente,
         name="modifica_utente"
     ),
-    path(
-        "utenti/<int:utente_id>/elimina/",
-        elimina_utente,
-        name="elimina_utente"
-    ),
-
-
     path(
         "prodotti/",
         gestione_prodotti,

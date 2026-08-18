@@ -3,7 +3,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth import get_user_model
 from django.core.paginator import Paginator
 from django.db.models import Max, Q
-from django.db.models.deletion import ProtectedError
 from django.shortcuts import get_object_or_404, redirect, render
 from django.utils import timezone
 
@@ -444,39 +443,6 @@ def modifica_utente(request, utente_id):
     return redirect(
         "gestione:utenti"
     )
-
-
-@staff_member_required(login_url="users:login")
-def elimina_utente(request, utente_id):
-
-    if request.method != "POST":
-        return redirect("gestione:utenti")
-
-    utente = get_object_or_404(User, id=utente_id)
-
-    if utente == request.user:
-        messages.error(request, "Non puoi eliminare il tuo account.")
-    elif utente.is_superuser:
-        messages.error(request, "Non è possibile eliminare un superutente.")
-    elif utente.is_staff and not request.user.is_superuser:
-        messages.error(request, "Solo un superutente può eliminare un membro dello staff.")
-    else:
-        email = utente.email
-
-        try:
-            utente.delete()
-        except ProtectedError:
-            messages.error(
-                request,
-                f"L'utente {email} ha ordini o checkout associati e non può essere eliminato.",
-            )
-        else:
-            messages.success(request, f"L'utente {email} è stato eliminato.")
-
-    return redirect("gestione:utenti")
-
-
-
 
 
 @staff_member_required(login_url="users:login")

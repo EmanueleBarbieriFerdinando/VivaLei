@@ -59,6 +59,18 @@
         color: #fff;
     }
 
+    .admin-button-danger {
+        border: 1px solid #a43f3f;
+        background: #a43f3f;
+        color: #fff;
+    }
+
+    .admin-button-danger:hover {
+        border-color: #823131;
+        background: #823131;
+        color: #fff;
+    }
+
     .admin-button-outline {
         border: 1px solid var(--vivalei-purple);
         background: #fff;
@@ -946,18 +958,17 @@
                                         Modifica
                                     </button>
 
-                                    <form
-                                        method="post"
-                                        action="{% url 'gestione:elimina_prodotto' prodotto.id %}"
-                                        class="d-inline"
-                                        onsubmit="return confirm('Eliminare definitivamente il prodotto {{ prodotto.nome|escapejs }}?');"
+                                    <button
+                                        type="button"
+                                        class="admin-delete"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#eliminaProdottoModal"
+                                        data-url="{% url 'gestione:elimina_prodotto' prodotto.id %}"
+                                        data-nome="{{ prodotto.nome|escape }}"
                                     >
-                                        {% csrf_token %}
-                                        <button type="submit" class="admin-delete">
-                                            <i class="bi bi-trash"></i>
-                                            Elimina
-                                        </button>
-                                    </form>
+                                        <i class="bi bi-trash"></i>
+                                        Elimina
+                                    </button>
 
 
                                     <!--
@@ -1133,6 +1144,52 @@
 <!-- =====================================================
      NUOVO PRODOTTO
 ===================================================== -->
+
+<div
+    class="modal fade admin-modal"
+    id="eliminaProdottoModal"
+    tabindex="-1"
+    aria-labelledby="eliminaProdottoModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-dialog-centered">
+        <form method="post" id="eliminaProdottoForm" class="modal-content">
+            {% csrf_token %}
+
+            <div class="modal-header">
+                <h2 class="modal-title fs-5" id="eliminaProdottoModalLabel">
+                    Elimina prodotto
+                </h2>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Chiudi"
+                ></button>
+            </div>
+
+            <div class="modal-body">
+                <p class="mb-0">
+                    Stai per eliminare definitivamente <strong id="nomeProdottoDaEliminare"></strong>.
+                    Questa operazione non può essere annullata.
+                </p>
+            </div>
+
+            <div class="modal-footer">
+                <button
+                    type="button"
+                    class="admin-button admin-button-neutral"
+                    data-bs-dismiss="modal"
+                >
+                    Annulla
+                </button>
+                <button type="submit" class="admin-button admin-button-danger">
+                    Elimina prodotto
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div
     class="modal fade admin-modal"
@@ -1972,6 +2029,19 @@
     document.addEventListener("DOMContentLoaded", function() {
 
         const modificaProdottoModal = document.getElementById("modificaProdottoModal");
+
+        const eliminaProdottoModal = document.getElementById("eliminaProdottoModal");
+
+        if (eliminaProdottoModal) {
+            eliminaProdottoModal.addEventListener("show.bs.modal", function(event) {
+                const pulsante = event.relatedTarget;
+
+                document.getElementById("eliminaProdottoForm").action =
+                    pulsante.dataset.url;
+                document.getElementById("nomeProdottoDaEliminare").textContent =
+                    pulsante.dataset.nome;
+            });
+        }
 
         const inputPrincipaleNuovo = document.getElementById(
             "{{ form_prodotto.immagine.id_for_label }}"
