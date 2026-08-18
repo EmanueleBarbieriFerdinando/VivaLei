@@ -1,0 +1,315 @@
+{% extends "base.html" %}
+
+{% block title %}
+Gestione Chat
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h1 class="text-vivalei">
+            Assistenza clienti
+        </h1>
+
+        <span class="badge bg-secondary">
+            {{ numero_risultati }} richieste
+        </span>
+
+    </div>
+
+
+    <div class="card shadow-sm mb-4">
+
+        <div class="card-body">
+
+            <form method="get">
+
+                <div class="row g-3">
+
+
+                    <div class="col-md-4">
+
+                        <label class="form-label">
+                            Cerca
+                        </label>
+
+                        <input
+                            type="text"
+                            name="q"
+                            class="form-control"
+                            value="{{ ricerca }}"
+                            placeholder="Codice, email, messaggio..."
+                        >
+
+                    </div>
+
+
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">
+                            Stato
+                        </label>
+
+                        <select
+                            name="stato"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Aperte in corso
+                            </option>
+
+
+                            {% for valore, nome in stati_chat %}
+
+                                <option
+                                    value="{{ valore }}"
+                                    {% if stato == valore %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ nome }}
+                                </option>
+
+                            {% endfor %}
+
+                        </select>
+
+                    </div>
+
+
+
+                    <div class="col-md-3">
+
+                        <label class="form-label">
+                            Categoria
+                        </label>
+
+
+                        <select
+                            name="categoria"
+                            class="form-select"
+                        >
+
+                            <option value="">
+                                Tutte
+                            </option>
+
+
+                            {% for valore, nome in categorie_chat %}
+
+                                <option
+                                    value="{{ valore }}"
+                                    {% if categoria == valore %}
+                                        selected
+                                    {% endif %}
+                                >
+                                    {{ nome }}
+                                </option>
+
+                            {% endfor %}
+
+
+                        </select>
+
+
+                    </div>
+
+
+
+                    <div class="col-md-2 d-flex align-items-end">
+
+                        <button
+                            class="btn btn-vivalei w-100"
+                        >
+                            Filtra
+                        </button>
+
+                    </div>
+
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="card shadow-sm">
+
+
+        <div class="table-responsive">
+
+
+            <table class="table table-hover mb-0">
+
+
+                <thead>
+
+                    <tr>
+
+                        <th>
+                            Codice
+                        </th>
+
+
+                        <th>
+                            Cliente
+                        </th>
+
+
+                        <th>
+                            Oggetto
+                        </th>
+
+
+                        <th>
+                            Stato
+                        </th>
+
+
+                        <th>
+                            Ultimo aggiornamento
+                        </th>
+
+
+                        <th>
+                            Azione
+                        </th>
+
+
+                    </tr>
+
+
+                </thead>
+
+
+                <tbody>
+
+
+                {% for chat in pagina %}
+
+
+                    <tr>
+
+
+                        <td>
+                            <strong>
+                                {{ chat.codice }}
+                            </strong>
+                        </td>
+
+
+                        <td>
+
+                            {{ chat.cliente.email }}
+
+                            {% if chat.cliente_ha_risposto %}
+
+                                <span class="badge bg-danger">
+                                    Nuova risposta
+                                </span>
+
+                            {% endif %}
+
+                        </td>
+
+
+                        <td>
+                            {{ chat.oggetto }}
+                        </td>
+
+
+                        <td>
+
+                            {% if chat.stato == "aperta" %}
+
+                                <span class="badge bg-success">
+                                    Aperta
+                                </span>
+
+
+                            {% elif chat.stato == "in_elaborazione" %}
+
+                                <span class="badge bg-warning">
+                                    In elaborazione
+                                </span>
+
+
+                            {% else %}
+
+                                <span class="badge bg-secondary">
+                                    Chiusa
+                                </span>
+
+
+                            {% endif %}
+
+
+                        </td>
+
+
+                        <td>
+                            {{ chat.data_modifica|date:"d/m/Y H:i" }}
+                        </td>
+
+
+                        <td>
+
+                            <a
+                                href="{% url 'gestione:dettaglio_chat' chat.id %}"
+                                class="btn btn-sm btn-vivale-outline"
+                            >
+                                Apri
+                            </a>
+
+                        </td>
+
+
+                    </tr>
+
+
+                {% empty %}
+
+
+                    <tr>
+
+                        <td
+                            colspan="6"
+                            class="text-center py-4"
+                        >
+
+                            Nessuna richiesta trovata.
+
+                        </td>
+
+                    </tr>
+
+
+                {% endfor %}
+
+
+                </tbody>
+
+
+            </table>
+
+
+        </div>
+
+
+    </div>
+
+
+
+</div>
+
+{% endblock %}

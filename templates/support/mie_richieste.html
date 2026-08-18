@@ -1,0 +1,122 @@
+{% extends "base.html" %}
+
+
+{% block title %}
+Le mie richieste
+{% endblock %}
+
+
+
+{% block content %}
+
+<div class="container py-5">
+
+
+<h1 class="text-vivalei mb-4">
+    Le mie richieste
+</h1>
+
+
+
+<div class="row g-3">
+
+
+{% for chat in chats %}
+
+
+<div class="col-md-6">
+
+
+<div class="card shadow-sm">
+
+
+<div class="card-body">
+
+
+<h5>
+    {{ chat.oggetto }}
+</h5>
+
+
+<p class="mb-2">
+
+    <strong>
+        Codice:
+    </strong>
+
+    {{ chat.codice }}
+
+</p>
+
+
+
+<p>
+
+{% if chat.stato == "aperta" %}
+
+<span class="badge bg-success">
+    Aperta
+</span>
+
+
+{% elif chat.stato == "in_elaborazione" %}
+
+<span class="badge bg-warning">
+    In elaborazione
+</span>
+
+
+{% else %}
+
+<span class="badge bg-secondary">
+    Chiusa
+</span>
+
+
+{% endif %}
+
+</p>
+
+
+
+<a
+href="{% url 'support:dettaglio_chat' chat.id %}"
+class="btn btn-vivalei-outline"
+>
+
+Apri conversazione
+
+</a>
+
+
+
+</div>
+
+
+</div>
+
+
+</div>
+
+
+
+{% empty %}
+
+
+<div class="alert alert-secondary">
+
+Non hai ancora inviato richieste.
+
+</div>
+
+
+{% endfor %}
+
+
+</div>
+
+
+</div>
+
+
+{% endblock %}

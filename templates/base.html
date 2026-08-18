@@ -884,6 +884,11 @@
                                     I miei ordini
                                 </a>
 
+                                <a href="{% url 'support:mie_richieste' %}" class="dropdown-item">
+                                    <i class="bi bi-chat-dots"></i>
+                                    Le mie richieste
+                                </a>
+
                                 <a href="{% url 'carrello:dettaglio' %}" class="dropdown-item">
                                     <i class="bi bi-bag"></i>
                                     Il mio carrello
@@ -1067,6 +1072,12 @@
                     <span>I miei ordini</span>
                     <i class="bi bi-box-seam"></i>
                 </a>
+
+                <a href="{% url 'support:mie_richieste' %}" class="vivalei-mobile-menu-link">
+                    <span>Le mie richieste</span>
+                    <i class="bi bi-chat-dots"></i>
+                </a>
+
 
                 <a href="{% url 'carrello:dettaglio' %}" class="vivalei-mobile-menu-link">
                     <span>Il mio carrello</span>
@@ -1312,7 +1323,9 @@
                         </h2>
 
                         <nav class="vivalei-footer-links">
-                            <a href="#">Contattaci</a>
+                            <a href="{% url 'support:crea_chat' %}">
+                                Contattaci
+                            </a>
                             <a href="#">FAQ</a>
                             <a href="#">Spedizioni</a>
                             <a href="#">Resi e rimborsi</a>
@@ -1347,9 +1360,15 @@
                                 </a>
                             {% endif %}
 
-                            <a href="#">
-                                I miei ordini
-                            </a>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'orders:miei_ordini' %}">
+                                    I miei ordini
+                                </a>
+
+                                <a href="{% url 'support:mie_richieste' %}">
+                                    Le mie richieste
+                                </a>
+                            {% endif %}
 
                         </nav>
 

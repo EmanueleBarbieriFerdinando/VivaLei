@@ -103,20 +103,6 @@
         color: #fff;
     }
 
-    .admin-btn-disabled {
-        min-height: 44px;
-        padding: 9px 15px;
-        display: inline-flex;
-        align-items: center;
-        gap: 7px;
-        border: 1px solid #e1dddf;
-        border-radius: 9px;
-        background: #f4f2f3;
-        color: #918c8f;
-        font-size: 14px;
-        font-weight: 600;
-    }
-
     @media (max-width: 767.98px) {
         .admin-page {
             padding: 28px 0 48px;
@@ -130,18 +116,20 @@
             padding: 20px;
         }
 
-        .admin-btn,
-        .admin-btn-disabled {
+        .admin-btn {
             width: 100%;
         }
     }
 </style>
 {% endblock %}
 
+
 {% block content %}
 
 <section class="admin-page">
+
     <div class="container">
+
 
         <div class="admin-header">
 
@@ -149,21 +137,31 @@
                 Area amministrativa
             </div>
 
+
             <h1 class="admin-title">
                 Pannello gestione
             </h1>
+
 
             <p class="admin-subtitle">
                 Gestisci le principali funzioni del negozio.
             </p>
 
+
         </div>
 
+
+
         <div class="row g-3">
+
+
+
+            <!-- PRODOTTI -->
 
             <div class="col-12 col-md-6 col-xl-4">
 
                 <div class="admin-card">
+
 
                     <div class="admin-card-top">
 
@@ -171,32 +169,49 @@
                             <i class="bi bi-box-seam"></i>
                         </div>
 
+
                         <h2 class="admin-card-title">
                             Prodotti
                         </h2>
 
+
                     </div>
+
+
 
                     <p class="admin-card-description">
                         Aggiungi e modifica prodotti, categorie, prezzi e disponibilità.
                     </p>
 
+
+
                     <div class="admin-card-action">
 
                         <a href="{% url 'gestione:prodotti' %}" class="admin-btn">
+
                             Gestisci prodotti
+
                             <i class="bi bi-chevron-right"></i>
+
                         </a>
 
                     </div>
+
 
                 </div>
 
             </div>
 
+
+
+
+
+            <!-- ORDINI -->
+
             <div class="col-12 col-md-6 col-xl-4">
 
                 <div class="admin-card">
+
 
                     <div class="admin-card-top">
 
@@ -204,65 +219,184 @@
                             <i class="bi bi-receipt"></i>
                         </div>
 
+
                         <h2 class="admin-card-title">
                             Ordini
                         </h2>
 
+
                     </div>
+
+
 
                     <p class="admin-card-description">
                         Visualizza e gestisci gli ordini ricevuti.
                     </p>
 
+
+
                     <div class="admin-card-action">
 
+
                         <a href="{% url 'gestione:ordini' %}" class="admin-btn">
+
                             Gestisci ordini
+
                             <i class="bi bi-chevron-right"></i>
+
                         </a>
+
 
                     </div>
 
+
                 </div>
 
+
             </div>
+
+
+
+
+
+            <!-- UTENTI -->
 
             <div class="col-12 col-md-6 col-xl-4">
 
+
                 <div class="admin-card">
+
 
                     <div class="admin-card-top">
 
+
                         <div class="admin-card-icon">
+
                             <i class="bi bi-people"></i>
+
                         </div>
 
+
                         <h2 class="admin-card-title">
+
                             Utenti
+
                         </h2>
+
 
                     </div>
 
+
+
+
                     <p class="admin-card-description">
+
                         Consulta gli utenti registrati e gestisci i loro account.
+
                     </p>
+
+
+
 
                     <div class="admin-card-action">
 
+
                         <a href="{% url 'gestione:utenti' %}" class="admin-btn">
+
+
                             Gestisci utenti
+
+
                             <i class="bi bi-chevron-right"></i>
+
+
                         </a>
+
 
                     </div>
 
+
                 </div>
+
 
             </div>
 
+
+
+
+
+            <!-- RICHIESTE CLIENTI -->
+
+            <div class="col-12 col-md-6 col-xl-4">
+
+
+                <div class="admin-card">
+
+
+                    <div class="admin-card-top">
+
+
+                        <div class="admin-card-icon">
+
+                            <i class="bi bi-chat-dots"></i>
+
+                        </div>
+
+
+
+                        <h2 class="admin-card-title">
+
+                            Richieste clienti
+
+                        </h2>
+
+
+                    </div>
+
+
+
+
+                    <p class="admin-card-description">
+
+                        Gestisci le conversazioni con i clienti, rispondi alle richieste e consulta lo storico.
+
+                    </p>
+
+
+
+
+                    <div class="admin-card-action">
+
+
+                        <a href="{% url 'gestione:chat' %}" class="admin-btn">
+
+
+                            Gestisci richieste
+
+
+                            <i class="bi bi-chevron-right"></i>
+
+
+                        </a>
+
+
+                    </div>
+
+
+                </div>
+
+
+            </div>
+
+
+
         </div>
 
+
     </div>
+
+
 </section>
+
 
 {% endblock %}
