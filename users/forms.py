@@ -1,5 +1,8 @@
 from django import forms
-from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, PasswordChangeForm, PasswordResetForm, UserCreationForm
+from django.template.loader import render_to_string
+
+from core.services.email_service import invia_email
 from .models import User
 
 
@@ -80,3 +83,21 @@ class CambioPasswordForm(PasswordChangeForm):
                 "placeholder": placeholder,
                 "autocomplete": "current-password" if name == "old_password" else "new-password",
             })
+
+
+class RecuperoPasswordForm(PasswordResetForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"].widget.attrs.update({
+            "class": "form-control",
+            "placeholder": "nome@esempio.it",
+            "autocomplete": "email",
+        })
+
+    def send_mail(self, subject_template_name, email_template_name, context, from_email, to_email, html_email_template_name=None):
+        invia_email(
+            destinatari=[to_email],
+            oggetto=render_to_string(subject_template_name, context).strip(),
+            corpo_testo=render_to_string(email_template_name, context),
+            corpo_html=render_to_string(html_email_template_name, context),
+        )

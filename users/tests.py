@@ -1,5 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import TestCase
+from django.test import override_settings
+from django.core import mail
 from django.urls import reverse
 
 
@@ -37,5 +39,13 @@ class AccountTests(TestCase):
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password("NuovaPasswordSicura123!"))
         self.assertTrue(self.client.get(reverse("users:account")).wsgi_request.user.is_authenticated)
+
+    @override_settings(EMAIL_BACKEND="django.core.mail.backends.locmem.EmailBackend")
+    def test_il_reset_password_invia_un_link_all_email_dell_utente(self):
+        response = self.client.post(reverse("users:password-reset"), {"email": self.user.email})
+
+        self.assertRedirects(response, reverse("users:password_reset_done"))
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertIn("password-reset/", mail.outbox[0].body)
 
 # Create your tests here.
