@@ -102,6 +102,19 @@ class Prodotto(models.Model):
         decimal_places=2,
     )
 
+    prezzo_acquisto = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        verbose_name="Prezzo di acquisto",
+    )
+
+    fornitore = models.CharField(
+        max_length=200,
+        blank=True,
+        verbose_name="Fornitore",
+    )
+
     quantita_disponibile = models.PositiveIntegerField(
         default=0,
     )

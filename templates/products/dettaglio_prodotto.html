@@ -731,7 +731,7 @@
 
                     <h1 class="product-title">{{ prodotto.nome }}</h1>
 
-                    {% if prodotto.sku %}
+                    {% if prodotto.sku and user.is_staff%}
                         <div class="product-code">
                             Codice prodotto: {{ prodotto.sku }}
                         </div>

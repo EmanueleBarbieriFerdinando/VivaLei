@@ -91,6 +91,21 @@ class ProdottoForm(forms.ModelForm):
         ),
     )
 
+    prezzo_acquisto = forms.DecimalField(
+        label="Prezzo di acquisto",
+        min_value=0,
+        max_digits=10,
+        decimal_places=2,
+        widget=forms.NumberInput(
+            attrs={
+                "class": "form-control",
+                "step": "0.01",
+                "min": "0",
+                "placeholder": "0,00",
+            }
+        ),
+    )
+
     descrizione = forms.CharField(
         label="Descrizione",
         required=False,
@@ -128,6 +143,8 @@ class ProdottoForm(forms.ModelForm):
             "nome",
             "descrizione",
             "prezzo",
+            "prezzo_acquisto",
+            "fornitore",
             "quantita_disponibile",
             "immagine",
             "attivo",
@@ -136,6 +153,7 @@ class ProdottoForm(forms.ModelForm):
         labels = {
             "categoria": "Categoria",
             "nome": "Nome prodotto",
+            "fornitore": "Fornitore",
             "quantita_disponibile": "Quantità disponibile",
             "immagine": "Immagine principale",
             "attivo": "Prodotto attivo",
@@ -157,6 +175,12 @@ class ProdottoForm(forms.ModelForm):
                 attrs={
                     "class": "form-control",
                     "min": 0,
+                }
+            ),
+            "fornitore": forms.TextInput(
+                attrs={
+                    "class": "form-control",
+                    "placeholder": "Nome del fornitore",
                 }
             ),
             "immagine": forms.ClearableFileInput(

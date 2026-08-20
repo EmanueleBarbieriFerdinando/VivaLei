@@ -50,6 +50,8 @@ class ProdottoAdmin(admin.ModelAdmin):
         "sku",
         "categoria",
         "prezzo",
+        "prezzo_acquisto",
+        "fornitore",
         "quantita_disponibile",
         "attivo",
     ]
